@@ -10,6 +10,7 @@ description: >-
   shared/reused", "make a platform layer", "are we reimplementing this", "decompose the milestone
   into shared + thin", "review for DRY across these issues".
 argument-hint: "[milestone | phase | label | issue list]"
+license: MIT
 ---
 
 # Platform Audit
@@ -17,8 +18,8 @@ argument-hint: "[milestone | phase | label | issue list]"
 ## What this is for
 
 A milestone of feature issues, read one at a time, hides the fact that most of them want the same
-machinery (a generation engine, a provider call, a prompt, an upload, a filtered grid, an async
-job). Built blind, each feature reimplements it, so you get N copies to maintain and N security surfaces.
+machinery (a processing pipeline, a third-party API client, an upload, a filtered grid, an
+async job, a notification sender). Built blind, each feature reimplements it, so you get N copies to maintain and N security surfaces.
 This skill reads the whole set and proposes a **shared platform**: a small set of engines,
 primitives, and UI the features *consume*, plus a thin layer per feature on top.
 
@@ -49,12 +50,13 @@ Run these as parallel read-only sweeps (dispatch agents when the set is large), 
 ### 1. Find the candidate commons
 Read the issues and look for the same capability described in >= 2 places under different names.
 Sweep these recurring categories (adapt to the domain):
-- **Engines:** a generation/processing pipeline, a provider/model gateway, a prompt/template
-  assembler, a job/queue + streaming layer, an asset/storage service, a registry.
+- **Engines:** a processing pipeline, a third-party/provider gateway (payments, email, AI models,
+  maps), a template/rendering assembler, a job/queue + streaming layer, an asset/storage service,
+  a registry.
 - **Primitives:** a hardened outbound fetch (SSRF), an upload validator, a cache wrapper, a
   cost/pricing table, a tenant/ownership scoping helper, a signer, an idempotency guard.
-- **UI kit:** a filter/search/grid, an async-job hook, a gate hook, an estimate hook, a
-  stat/KPI strip, a loading/empty/error/retry wrapper.
+- **UI kit:** a filter/search/grid, an async-job status hook, a feature-flag or entitlement
+  gate, a cost/quota estimate display, a stat/KPI strip, a loading/empty/error/retry wrapper.
 
 ### 2. Cross-phase ownership check (the step people skip)
 For each candidate, before proposing to build it, determine:
@@ -95,7 +97,8 @@ Always produce, in this order:
    to do instead. This section is mandatory; an audit with no "resist" list did not do the work.
 4. **Missed commons** - anything shared across >= 3 issues your list did not name.
 5. **Build order** - the dependency-ordered sequence, naming which issues each piece unblocks.
-6. (when authorized) **The platform spec + issues** - write a single platform doc (the SSOT), then
+6. (only when the user authorizes it) **The platform spec + issues** - write a single platform doc
+   (the SSOT; ask where it lives, for example `docs/platform.md`), then
    create the build-first platform issues with `blocks` / `blocked-by` (or your tracker's dependency links) wired so feature issues
    depend on them, and fold foundation-level pieces (cost table, scoping, multi-step transaction handling) into the existing
    foundation issue rather than spawning micro-issues.
@@ -113,3 +116,5 @@ Always produce, in this order:
 - A single feature: nothing to share across, just build it.
 - Ungroomed issues: the candidates will be vague. Groom the issues first.
 - A request to summarise rather than restructure: that is a briefing, not an audit.
+- Duplication inside existing code rather than across planned issues: use `refactoring-guru` /
+  `code-smell-detector` (Duplicate Code, Shotgun Surgery) instead.

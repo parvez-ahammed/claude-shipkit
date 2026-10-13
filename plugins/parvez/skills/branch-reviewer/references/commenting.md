@@ -391,7 +391,8 @@ glab mr note <IID> -m "$(cat summary.md)"                        # MR-level summ
 - Anchor to a line that exists on the **source** branch. A line number from the target branch lands in
   the wrong place or is rejected.
 - If the `gh` / `az` / `glab` CLI is missing or not signed in, stop and tell the user; do not fall back
-  to scraping or unauthenticated calls.
+  to scraping or unauthenticated calls. (`az repos` needs `az extension add --name azure-devops` and
+  `az login`; `gh auth status` and `glab auth status` check the other two.)
 
 ### 6. Report back
 

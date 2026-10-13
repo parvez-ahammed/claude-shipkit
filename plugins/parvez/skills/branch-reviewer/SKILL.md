@@ -16,8 +16,11 @@ when_to_use: >-
   Also for "post these findings to PR 123" when the findings already exist (comment-only mode), and
   for "code review only" or "QA only" passes. Use it even on small or "trivial-looking" PRs: many
   recurring review hits come from PRs the author thought were tiny. Not for testing a running app
-  (use qa-ux) or for judging whether a shipped feature keeps its promise (use grill-feature).
+  (use branch-test-report or qa-ux) or for judging whether a shipped feature keeps its promise (use
+  grill-feature).
 argument-hint: "[PR number | branch] [advanced] [comment]"
+license: MIT
+compatibility: "Requires git and a sub-agent (Agent) tool for the parallel seats. Comment mode needs the PR host's CLI signed in: gh (GitHub), az with the azure-devops extension (Azure DevOps) or glab (GitLab). Builds use the project's own toolchain."
 ---
 
 # branch-reviewer
@@ -35,15 +38,15 @@ confident-but-wrong findings before the author pays for them.
 The seats are **not** separate skills. Each is a rubric under `references/`, passed to a sub-agent by
 this orchestrator. A seat run on its own reports without the ownership split, the severity floors or
 the verify pass, and a partial review then gets mistaken for a full one. The entry point is always
-this skill.
+this skill. Every `references/` and `assets/` path in this file is relative to `${CLAUDE_SKILL_DIR}`.
 
 ## When to use / not use
 
 - **Use when** the thing under review is code: a local branch, a diff, or someone else's pull
   request. Also when the question is "what should be tested before this merges" - QA is a seat here,
   not a separate run.
-- **Do not use** to test a **running** app. This is a static review; it never clicks anything. For a
-  release report with screenshots from the live app, use `qa-ux`.
+- **Do not use** to test a **running** app. This is a static review; it never clicks anything. For
+  evidence from the live app, use `branch-test-report` (one branch) or `qa-ux` (release report).
 - **Do not use** to ask whether an already shipped feature keeps its promise to users. That is
   `grill-feature`, which interrogates features, not diffs.
 - **Do not use** for a one-line typo fix where you only want a quick correctness glance. A plain
@@ -372,8 +375,9 @@ the diff reproduces the author's blind spots.
    proceed quietly with fewer.
 
 1. **Read the project rules** (see above) and **detect the base.**
-   - Local branch: find the default branch (`git symbolic-ref --short refs/remotes/origin/HEAD`, or
-     the project rules), then `git fetch origin --quiet` and
+   - Local branch: find the default branch (the project rules, or
+     `git symbolic-ref --short refs/remotes/origin/HEAD` minus its `origin/` prefix; if that is unset,
+     run `git remote set-head origin --auto` first), then `git fetch origin --quiet` and
      `git diff --name-status $(git merge-base HEAD origin/<default>)...HEAD`. Use `origin/<default>`,
      not the local branch: a stale local base fills the diff with other people's merged work.
    - Pull request: take the base from the PR (see `references/commenting.md` for the GitHub, Azure
@@ -422,7 +426,7 @@ the diff reproduces the author's blind spots.
 
 6. **Write the HTML report** from `assets/report-template.html`, as `references/report-output.md`
    describes (default location `.reviews/<branch>/review.html`). Skip this step in `code-only` mode.
-   Open the report for the user when done.
+   Open the report for the user when done (`start`, `open` or `xdg-open` by OS).
 
 7. **Return the punch list.** Order by leverage, not by file: correctness and data loss, then
    security, then structure, then missed simplifications, then the rest. A report that opens with

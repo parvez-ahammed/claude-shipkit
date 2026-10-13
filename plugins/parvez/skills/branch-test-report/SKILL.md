@@ -2,6 +2,8 @@
 name: branch-test-report
 description: Tests a branch, pull request or ticket against the real running app and hands back proof. Runs the backend tests, seeds and cleans test data, drives the API and the browser, and writes one self-contained HTML report with screenshots that a product owner can read - a run against the live app, not a reading of the diff. Use when asked "run the tests and give me a report", "test this branch end to end", "automated test with visual verification", "QA this with screenshots", or "give me a test report for this PR".
 argument-hint: "[branch | PR number | ticket id]"
+license: MIT
+compatibility: "Needs git, the app running locally (API and UI), the project's own test runner, a browser automation tool such as Playwright MCP for UI evidence, and a CLI client for the project's database when seeding test data."
 ---
 
 # Branch test report
@@ -19,12 +21,12 @@ diff and obvious in the browser.
 
 - Use when: a branch or PR is ready to try, and someone wants evidence that it works - cases,
   screenshots, data checks, and a verdict.
-- Don't use when: the user wants a code review (read the diff instead), or only wants the unit
-  tests run (run them directly).
+- Don't use when: the user wants a code review of the diff (use `branch-reviewer`), a release-wide
+  QA and UX audit (use `qa-ux`), or only wants the unit tests run (run them directly).
 
 ## Before the first run on a project
 
-Copy `references/environment-template.md` into the project (for example
+Copy `${CLAUDE_SKILL_DIR}/references/environment-template.md` into the project (for example
 `.claude/test-environment.md`) and fill it in once: ports, how to prove the running build is
 current, sign-in, how to call the API with a real token, database access, seed conventions. Read
 it at the start of every run. If it does not exist yet, find each answer, then write it down - the
@@ -57,10 +59,10 @@ If the folder already holds numbered files, continue that sequence.
    often already running in the user's IDE. **Prove the running API was built after the last
    commit** before you trust any result from it.
 
-3. **Run the backend suite.** Map each changed test file to its test project and run each project.
-   Record passed/failed per project.
+3. **Run the backend suite.** Map each changed test file to its test project, package or module and
+   run each with the project's test command. Record passed/failed per project.
 
-4. **Look at the data.** Query the tables the feature reads. Most local databases do not hold the
+4. **Look at the data.** Query the tables (or collections) the feature reads. Most local databases do not hold the
    states a new screen must show. Ask the user before you write to their database, then seed with a
    marker prefix (for example `zz<ticket>_`) so cleanup is exact.
 
@@ -73,12 +75,12 @@ If the folder already holds numbered files, continue that sequence.
 
 7. **Drive the browser.** Use a browser automation tool (for example Playwright MCP). Read the page
    first (accessibility snapshot or a DOM read through `evaluate`), then take the screenshot to
-   prove it.
+   prove it. No browser tool available: mark every UI case **Not covered** and say why.
 
 8. **Clean up and prove it.** Run the cleanup script. The report must show the row count back at
    its starting value.
 
-9. **Write the report.** Copy `references/report-template.html`. Findings ranked first, each with
+9. **Write the report.** Copy `${CLAUDE_SKILL_DIR}/references/report-template.html`. Findings ranked first, each with
    where it shows, how to reproduce, a screenshot, and a suggested fix. Then the case tables. Then
    what you did not cover and why. Follow the report rules below.
 
@@ -87,7 +89,9 @@ If the folder already holds numbered files, continue that sequence.
 - **Compare the base branch with this branch only.** "On the base branch the grid shows X. On this branch it
   shows Y." No history of how the branch got there.
 - **No commit hashes, no local file names, no evidence paths** in the visible text. Screenshots
-  are embedded as data URIs, so the report is one file to share. Name the screen and the steps, not the source file.
+  are embedded as data URIs, so the report is one file to share (base64 with `base64 -w0 shot.png`,
+  `base64 -i shot.png` on macOS, or PowerShell `[Convert]::ToBase64String([IO.File]::ReadAllBytes($p))`).
+  Name the screen and the steps, not the source file.
 - **Open items only.** No closed findings, no "fixed during testing" list, no empty sections, no
   revision history or rounds. Delete any template section you have nothing for.
 - Plain words. If a sentence needs a developer to explain it, rewrite it.
@@ -136,5 +140,6 @@ lacks. A report that only ever shows one state has not been tested.
 
 ## Reference map
 
-- `references/environment-template.md` - copy into the project and fill in before the first run.
-- `references/report-template.html` - copy for each report and replace every TODO.
+- `${CLAUDE_SKILL_DIR}/references/environment-template.md` - copy into the project and fill in before
+  the first run.
+- `${CLAUDE_SKILL_DIR}/references/report-template.html` - copy for each report and replace every TODO.

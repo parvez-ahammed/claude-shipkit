@@ -28,13 +28,13 @@ Skills currently in this library (`plugins/parvez/skills/`). Install via the plu
 | **plain-writer** | House style for prose that lands in git, PRs and docs: ASCII punctuation, Simplified Technical English, no jargon, short commit messages, why-only code comments, plus a PR-description sub-skill that fills any repo's template. | generic |
 | **seo-aeo** | Audit and improve a site's SEO and AEO (AI answer engines): meta, JSON-LD, robots, sitemap, llms.txt, prerendering for SPAs, then prove it with local test scripts. | generic |
 | **timesheet-from-transcripts** | Reconstruct what you worked on for past dates (tickets, descriptions, time blocks) from local Claude Code transcripts, ready for a timesheet. Configurable ticket patterns. | generic |
-| **generate-ux-improvements** | Fan out parallel read-only UX auditors over an app, then file what survives as GitHub issues. Partitions the surface into disjoint territories first (unpartitioned agents all return the same loudest two findings), enforces a fixed issue contract with `file:line` evidence and named comparable products, then dedups, drops the unevidenced, and files with `--body-file`. Configurable agents (default 3) and issues each (default 3). Works when the app cannot be run: audits from source and stamps every issue with that provenance. Complements `qa-ux`, which needs a running app and emits HTML reports instead of issues. | generic |
+| **generate-ux-improvements** | Fan out parallel read-only UX auditors over an app, then turn what survives into tickets. Partitions the surface into disjoint territories first (unpartitioned agents all return the same loudest two findings), enforces a fixed issue contract with `file:line` evidence, then dedups, drops the unevidenced, writes a markdown file, and files to GitHub, GitLab, Jira or Azure DevOps only after explicit confirmation. Configurable agents (default 3) and issues each (default 3). Works when the app cannot be run. Complements `qa-ux`, which needs a running app and emits HTML reports instead of tickets. | generic |
 
 ## Hooks (`hooks/`)
 
 | Hook | What it does |
 |------|--------------|
 | **secret-hygiene** | Pre-commit block on secrets (gitleaks + regex fallback). git pre-commit hook or Claude Code PreToolUse hook. |
-| **safe-commit** | commit-msg validator: no stray `@`, conventional subject, length; optional em-dash + AI-coauthor rejection. |
+| **safe-commit** | commit-msg validator: no stray `@`, conventional subject, length; optional em-dash + AI-coauthor rejection. Skips git-generated merge / revert / autosquash subjects. |
 
-More skills/hooks are in progress and will land here as they're generalized for public use.
+Both hooks install with `bash install.sh <repo>` or `pwsh -File install.ps1 -Repo <repo>`.

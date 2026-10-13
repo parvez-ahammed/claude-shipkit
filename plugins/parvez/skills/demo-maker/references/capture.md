@@ -91,9 +91,9 @@ Bring the tab to the front and take a screenshot before each snapshot.
 
 ### 6. Build and serve
 
-1. Edit `PAGES` and `REPLACEMENTS` in `build.py`, then `python build.py`. Pages get versioned links
+1. Edit `PAGES` and `REPLACEMENTS` in `<work-dir>/capture/build.py`, then run `python build.py` there. Pages get versioned links
    (`?v=`), and dev-only overlays are hidden with CSS.
-2. `python -m http.server <port>` in the work folder. Open pages with `?r=<time>`.
+2. `python -m http.server <port>` in `<work-dir>/demo/`. Open pages with `?r=<time>`.
 
 ### Compose new states
 

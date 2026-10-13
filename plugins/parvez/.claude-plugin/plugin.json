@@ -1,10 +1,10 @@
 {
   "name": "parvez",
-  "description": "Parvez's Claude Code toolkit: skills for shipping (push-to-deploy VPS CI/CD, honest health checks, clean/hexagonal architecture with an enforced layering guard), refactoring (refactoring-guru orchestrator + smell detector, Fowler methods, GoF pattern scorers), review (platform-audit, grill-feature), and local usage stats (show-usage); also qa-ux. Deliver: video-maker, demo-maker, user-guide-maker, branch-test-report, seo-aeo. Review and workflow: branch-reviewer, bug-fixer, story-implementer, plain-writer, timesheet-from-transcripts.",
-  "version": "0.4.0",
+  "description": "24 general-purpose Claude Code skills plus git hooks. Ship: vps-deploy, honest-health-check, clean-architecture. Refactor: refactoring-guru hub with code-smell-detector, refactoring-methods and creational/structural/behavioral pattern scorers. Review: branch-reviewer, grill-feature, platform-audit. Test and QA: branch-test-report, qa-ux, generate-ux-improvements, bug-fixer. Build: story-implementer. Deliver: video-maker, demo-maker, user-guide-maker, seo-aeo. Write: plain-writer. Insight: show-usage, timesheet-from-transcripts.",
+  "version": "0.5.0",
   "author": {
     "name": "Parvez Ahammed",
-    "email": ""
+    "url": "https://github.com/parvez-ahammed"
   },
   "homepage": "https://github.com/parvez-ahammed/claude-skills",
   "repository": "https://github.com/parvez-ahammed/claude-skills",
@@ -28,6 +28,11 @@
     "testing",
     "seo",
     "technical-writing",
-    "timesheet"
+    "timesheet",
+    "qa",
+    "ux",
+    "bug-fixing",
+    "user-stories",
+    "architecture"
   ]
 }

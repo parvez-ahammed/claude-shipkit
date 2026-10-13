@@ -15,15 +15,25 @@ when_to_use: >-
   abandon", "is this ready to ship", or a request for screenshot-backed QA including mobile (via
   viewport resize). Runs BOTH passes unless the user scopes to just one ("just QA", "only UX").
 argument-hint: "[app-url] [qa|ux]"
+license: MIT
+compatibility: "Needs the web app running and reachable, plus a browser-automation tool that can screenshot and resize the viewport (Playwright MCP, Claude in Chrome or similar). ffprobe is optional, for media checks."
 ---
 
 # qa-ux
 
 Put a **running** product through the fire and report back like a leadership-facing reviewer.
 
+**Not for:** an app that cannot be run (use `generate-ux-improvements`, which audits from source and
+turns findings into tickets), or a clickable preview of a planned change (use `demo-maker`).
+
+**Safety:** test against a local, dev or staging environment. Before any action with real-world
+effects (charging a card, sending email or SMS, deleting or bulk-editing shared data, calling a
+paid third-party API), stop and ask. On production, stay read-only unless the user says otherwise.
+
 ## Default: run BOTH passes -> TWO reports
 By default qa-ux runs both passes against the same running app and emits **two** self-contained HTML
-reports into `<out>/` (default `.qa-reports/`), sharing one `<out>/screenshots/` folder:
+reports into `<out>/` (default `.qa-reports/` in the repo root, or a folder the user names; suggest
+adding it to `.gitignore`), sharing one `<out>/screenshots/` folder:
 
 1. **QA pass** (engineering / release gate) -> `references/qa-mode.md` -> writes `qa-report.html`.
 2. **UX pass** (product experience / design) -> `references/ux-mode.md` -> writes `ux-report.html`.
@@ -71,10 +81,11 @@ that single report. If unsure, do both.
 - **Low** - minor polish / environment-only.
 - **Info** - observation, cosmetic, config smell.
 
-Release call: any open Critical -> BLOCKED; Highs with workarounds -> APPROVED WITH RISKS; only
-Low/Info -> APPROVED.
+Release call: any open Critical, or a High with no workaround -> BLOCKED; Highs with workarounds or
+open Mediums -> APPROVED WITH RISKS; only Low/Info -> APPROVED.
 
 ## Files
+Paths are relative to this skill's folder (`${CLAUDE_SKILL_DIR}`). `VERSION` holds the skill version.
 - `references/qa-mode.md` - 14-section QA release report spec.
 - `references/ux-mode.md` - six-persona / six-journey Product Experience audit spec + output.
 - `templates/qa-report-template.html` - QA report skeleton.

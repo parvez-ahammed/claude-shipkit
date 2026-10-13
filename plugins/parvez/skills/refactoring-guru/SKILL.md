@@ -2,12 +2,13 @@
 name: refactoring-guru
 argument-hint: "[file, directory, or symbol] [optional: pattern or smell]"
 description: Orchestrator for code refactoring and design-pattern work. Use when the user wants to improve, clean up, restructure, or "refactor" code; find code smells; decide whether or where to apply a design pattern (Factory, Builder, Strategy, Observer, Adapter, etc.); or asks "is this pattern right here", "where can I use a pattern", "how do I fix this smell". Understands the user's intent, then routes to the right spoke skill (code-smell-detector, refactoring-methods, creational-patterns, structural-patterns, behavioral-patterns) and merges their findings. Patterns are only recommended when a code site meets scored preconditions with cited evidence.
+license: MIT
 ---
 
 # Refactoring Guru (orchestrator)
 
 You route refactoring and design-pattern requests to spoke skills and merge their reports.
-You do NOT detect smells or score patterns yourself. You decide intent, invoke the right
+You do NOT detect smells or score patterns yourself (except as the fallback in Step 2). You decide intent, invoke the right
 spoke via the `Skill` tool, and present a single ranked result.
 
 Knowledge is from refactoring.guru / Martin Fowler's catalog and the GoF patterns,
@@ -31,11 +32,17 @@ If intent is ambiguous, ask one short question before routing. Do not guess.
 ## Step 2: dispatch
 
 Invoke spokes via the `Skill` tool, sequentially, in this conversation. Pass the target
-(file path, dir, function, or pasted snippet) explicitly.
+(file path, dir, function, or pasted snippet) explicitly. Use the name exactly as the
+available-skills list shows it: installed as a plugin, spokes are namespaced (e.g.
+`parvez:code-smell-detector`); copied into `~/.claude/skills/`, they are bare names.
+
+If a spoke is not installed, say which one is missing and answer at reduced depth yourself:
+use `${CLAUDE_SKILL_DIR}/references/linkage-map.md` to name the candidate fix and
+`${CLAUDE_SKILL_DIR}/references/verdict-format.md` to score it, with the same evidence rule.
 
 - Pattern family selection: creational (object construction), structural (object
   composition / interfaces), behavioral (object interaction / responsibility). If unsure
-  which family, consult `references/linkage-map.md` or invoke more than one spoke and let
+  which family, consult `${CLAUDE_SKILL_DIR}/references/linkage-map.md` or invoke more than one spoke and let
   scoring decide.
 - "Where can I apply pattern P" is a scan split three ways: you coordinate,
   `code-smell-detector` does the symptom sweep that surfaces candidate sites, the pattern
@@ -79,12 +86,15 @@ NEXT: <which skill/step, e.g. "apply via refactoring-methods: Extract Method">
   CONSIDER with a warning. Simple, stable code stays simple.
 - Scope: operate only on the files/dirs the user points at. No whole-repo auto-scan unless
   asked.
+- Not this skill: layer/module boundaries ("which layer does this go in", "did I break the
+  dependency rule") belong to `clean-architecture`; a full PR review belongs to a code-review
+  skill. This one works at function/class/pattern level.
 
 ## References
 
-- `references/linkage-map.md` - read when choosing which spoke(s) to invoke for a symptom:
+- `${CLAUDE_SKILL_DIR}/references/linkage-map.md` - read when choosing which spoke(s) to invoke for a symptom:
   smell -> candidate refactoring/pattern -> spoke, plus the disambiguation questions.
-- `references/verdict-format.md` - read when merging or explaining verdicts: the shared
+- `${CLAUDE_SKILL_DIR}/references/verdict-format.md` - read when merging or explaining verdicts: the shared
   scored-precondition schema. The pattern spokes and refactoring-methods load it via
   `${CLAUDE_SKILL_DIR}/../refactoring-guru/references/verdict-format.md` and carry an inline
   summary so they still work if installed without this skill.

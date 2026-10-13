@@ -2,6 +2,7 @@
 name: behavioral-patterns
 argument-hint: "[file or symbol]"
 description: Score whether a behavioral design pattern (Strategy, State, Command, Observer, Chain of Responsibility, Template Method, Visitor, Mediator, Iterator, Memento) fits a code site, and recommend it only when scored preconditions are met. Use when the user asks "should I use a strategy/state/observer here", "where can I apply a behavioral pattern", or when object interaction is awkward (switch on a type to pick an algorithm, behavior driven by internal state, requests needing queue/undo, one-to-many notifications, request handled by a chain, duplicated algorithm skeletons, operations spread across a class hierarchy, tangled many-to-many communication). Each pattern has opportunity signatures, weighted preconditions, a threshold, and hard-veto anti-indicators; emits APPLY / CONSIDER / REJECT with cited evidence. Spoke of refactoring-guru; usable standalone.
+license: MIT
 ---
 
 # Behavioral Patterns
@@ -16,7 +17,7 @@ REJECT; apply language notes last and downgrade one step when an idiom makes the
 redundant.
 
 The three highest-value, most-confused patterns (Strategy, State, Command) have deep entries
-with worked disambiguation in `references/strategy-state-command.md`. Read it when scoring
+with worked disambiguation in `${CLAUDE_SKILL_DIR}/references/strategy-state-command.md`. Read it when scoring
 any of them, when a Switch-Statements smell points here, or when you need a cross-pattern
 distinguishing question. The other seven patterns are fully specified inline below; there is
 no separate reference file for them.
@@ -264,7 +265,17 @@ cost: memento storage and lifecycle.
 Emit per scored site in the orchestrator's unified report shape, with matched preconditions
 and `file:line` evidence, score, any veto, verdict, one-line why. For the classic confusions
 (Strategy vs State, Template Method vs Strategy, Decorator vs Chain, Observer vs Mediator),
-state the single distinguishing question; they are all in references/strategy-state-command.md.
+state the single distinguishing question; they are all in
+`${CLAUDE_SKILL_DIR}/references/strategy-state-command.md`.
+
+```
+TARGET: path/to/File.ext:Symbol
+FINDING: <pattern> opportunity
+EVIDENCE: file:line - <matched precondition [weight]>   (one line per match; plus any veto)
+VERDICT: APPLY | CONSIDER | REJECT   (score N / threshold M) - <one-line why>
+RECOMMENDATION: <pattern or simpler alternative> - <one line>
+NEXT: <e.g. "safe steps via refactoring-methods" or "leave as is">
+```
 
 ## Evals
 

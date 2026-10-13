@@ -5,7 +5,8 @@
 // Claude Code writes one JSONL transcript per session under
 //   ~/.claude/projects/<encoded-cwd>/<session-uuid>.jsonl
 // where <encoded-cwd> is the absolute working dir with every non-alphanumeric
-// char replaced by "-" (e.g. C:\code\my-app -> C--code-my-app).
+// char replaced by "-" (e.g. C:\code\my-app -> C--code-my-app,
+// /home/me/my-app -> -home-me-my-app). If CLAUDE_CONFIG_DIR is set, it replaces ~/.claude.
 //
 // Each line is a JSON record with a `timestamp` (ISO). "Active time" is the
 // WakaTime heuristic: sum the gaps between consecutive records, but treat any
@@ -81,8 +82,23 @@ for (let i = 0; i < argv.length; i++) {
     default: console.error(`unknown option: ${a}`); process.exit(2);
   }
 }
+const BY_DIMS = ['day', 'week', 'dow', 'hour', 'session', 'model', 'tool'];
+if (!BY_DIMS.includes(opt.by)) { console.error(`--by must be one of: ${BY_DIMS.join(', ')}`); process.exit(2); }
+if (!(opt.idle > 0)) { console.error('--idle must be a positive number of minutes'); process.exit(2); }
+if (!(opt.top > 0)) { console.error('--top must be a positive number'); process.exit(2); }
+if (!['utc', 'local'].includes(opt.tz)) { console.error('--tz must be utc or local'); process.exit(2); }
+for (const [k, v] of [['--since', opt.since], ['--until', opt.until]]) {
+  if (v && !/^\d{4}-\d{2}-\d{2}$/.test(v)) { console.error(`${k} must be YYYY-MM-DD`); process.exit(2); }
+}
 
-const PROJECTS_ROOT = path.join(os.homedir(), '.claude', 'projects');
+// Claude Code honours CLAUDE_CONFIG_DIR as an alternative to ~/.claude.
+const CONFIG_DIR = process.env.CLAUDE_CONFIG_DIR || path.join(os.homedir(), '.claude');
+const PROJECTS_ROOT = path.join(CONFIG_DIR, 'projects');
+if (!fs.existsSync(PROJECTS_ROOT)) {
+  console.error(`no Claude Code transcripts found at ${PROJECTS_ROOT}`);
+  console.error('tip: set CLAUDE_CONFIG_DIR if your Claude Code config lives elsewhere');
+  process.exit(1);
+}
 const IDLE_MS = opt.idle * 60 * 1000;
 
 // ---------- pricing (USD per 1M tokens), edit when Anthropic changes rates ----------
@@ -108,8 +124,15 @@ function costOf(model, t) {
 function usd(n) { return n >= 100 ? `$${n.toFixed(0)}` : `$${n.toFixed(2)}`; }
 
 function printHelp() {
-  const txt = fs.readFileSync(new URL(import.meta.url)).toString();
-  console.log(txt.split('\n').filter(l => l.startsWith('//')).map(l => l.slice(3)).join('\n'));
+  // Print only the leading comment block (the header), not every comment in the file.
+  const lines = fs.readFileSync(new URL(import.meta.url)).toString().split(/\r?\n/);
+  const out = [];
+  for (const l of lines) {
+    if (l.startsWith('#!')) continue;
+    if (!l.startsWith('//')) break;
+    out.push(l.slice(3));
+  }
+  console.log(out.join('\n'));
 }
 
 // ---------- helpers ----------
@@ -118,15 +141,29 @@ function encodeCwd(p) {
   return p.replace(/[^A-Za-z0-9]/g, '-');
 }
 
+// Claude Code caps the encoded name at 200 chars and appends a hash suffix for longer
+// paths, so fall back to a prefix match when the exact name is missing.
+function encodedDir(cwd) {
+  const enc = encodeCwd(cwd);
+  const exact = path.join(PROJECTS_ROOT, enc);
+  if (fs.existsSync(exact) || enc.length <= 200) return exact;
+  const hit = fs.readdirSync(PROJECTS_ROOT).find(d => d.startsWith(enc.slice(0, 200)));
+  return hit ? path.join(PROJECTS_ROOT, hit) : exact;
+}
+
 function resolveProjectDir(project) {
-  if (!project) return path.join(PROJECTS_ROOT, encodeCwd(process.cwd()));
-  // already an existing dir?
-  if (fs.existsSync(project) && fs.statSync(project).isDirectory()) return project;
+  if (!project) return encodedDir(process.cwd());
+  // an existing transcript dir (holds *.jsonl)? A normal repo dir falls through and is
+  // encoded as a cwd, so `--project ~/code/my-app` means "that repo's transcripts".
+  if (fs.existsSync(project) && fs.statSync(project).isDirectory()
+      && fs.readdirSync(project).some(f => f.endsWith('.jsonl'))) return project;
   // a bare encoded name under the projects root?
-  const asName = path.join(PROJECTS_ROOT, project);
-  if (fs.existsSync(asName)) return asName;
+  if (!/[\\/]/.test(project) && project !== '.' && project !== '..') {
+    const asName = path.join(PROJECTS_ROOT, project);
+    if (fs.existsSync(asName)) return asName;
+  }
   // treat as a cwd to encode
-  return path.join(PROJECTS_ROOT, encodeCwd(project));
+  return encodedDir(path.resolve(project));
 }
 
 function fmt(ms) {

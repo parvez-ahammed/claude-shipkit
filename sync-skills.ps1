@@ -1,8 +1,9 @@
-# Copy every skill in ./skills into the Claude Code personal skills dir so they go
+# Copy every skill in plugins/parvez/skills into the Claude Code personal skills dir so they go
 # live. This repo is the source of truth; ~/.claude/skills is a synced copy.
 #
 #   pwsh -File sync-skills.ps1            # sync all
 #   pwsh -File sync-skills.ps1 -WhatIf    # preview only
+#   (macOS / Linux: bash sync-skills.sh)
 [CmdletBinding(SupportsShouldProcess)]
 param(
   [string]$Dest = (Join-Path $env:USERPROFILE ".claude\skills")
@@ -21,8 +22,11 @@ Get-ChildItem -Path $src -Directory | ForEach-Object {
   if ($PSCmdlet.ShouldProcess($target, "sync skill '$name'")) {
     if (Test-Path $target) { Remove-Item -Recurse -Force $target }
     Copy-Item -Recurse -Force $_.FullName $target
+    # node_modules and packaging output are build artifacts, not skill content.
+    Get-ChildItem -Path $target -Recurse -Force -Include node_modules, *.zip, *.rar |
+      Remove-Item -Recurse -Force -ErrorAction SilentlyContinue
     Write-Host "synced $name -> $target" -ForegroundColor Green
   }
   $count++
 }
-Write-Host "`n$count skill(s) processed. Restart/refresh Claude Code to pick them up." -ForegroundColor Cyan
+Write-Host "`n$count skill(s) processed. Start a new Claude Code session to pick them up." -ForegroundColor Cyan

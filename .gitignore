@@ -4,3 +4,9 @@ Thumbs.db
 *.swp
 __pycache__/
 *.stackdump
+
+# Build / packaging output (never commit)
+node_modules/
+*.zip
+*.rar
+*.tgz

@@ -58,7 +58,9 @@ bad mobile layouts · places users may abandon.
 6. **Quick wins** (<30 min each).
 7. **Medium improvements.**
 8. **Big redesign opportunities.**
-9. **What makes competitors feel better** (concrete patterns, not vague envy).
+9. **What makes competitors feel better** (concrete patterns, not vague envy). Name a competitor only
+   if the user named it or you checked its product; otherwise describe the pattern and say it is a
+   common pattern in the category, not an observed comparison.
 10. **Release recommendation** (experience-based: ship / ship-with-fixes / hold).
 
 Plus, per the universal rules: a per-journey walkthrough with screenshots, and an evidence dashboard

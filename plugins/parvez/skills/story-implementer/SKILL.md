@@ -7,6 +7,7 @@ description: >-
   driven, not a one-off edit. Triggers on "/story-implementer", "build this story", "implement this
   ticket", "drive this feature", or a single scoped feature ask. One command, one user story.
 argument-hint: "[story text | ticket id | issue URL]"
+license: MIT
 ---
 
 # story-implementer - one command, one user story
@@ -22,8 +23,8 @@ analysis into implementation before the user picks tasks.
 
 - Use when: one scoped user story, ticket or feature ask is to be taken end-to-end, and the user wants
   the process driven.
-- Don't use when: it is a known bug with a stack trace (use `bug-fixer`); it is a pure code review;
-  it is a trivial one-line change (just make it).
+- Don't use when: it is a known bug with a stack trace (use `bug-fixer`); it is a pure code review
+  (use `branch-reviewer`); it is a trivial one-line change (just make it).
 
 ## Before you start
 
@@ -32,10 +33,11 @@ analysis into implementation before the user picks tasks.
 - **Builds:** follow the project's rule. If the user compiles in their IDE, do not run the full build;
   tell them what to build. Name **every** build target that owns a changed file. A change to a shared
   library must name every host and client that consumes it, or one of them breaks unseen.
-- **Merge the main branch into your branch before the PR opens**, and again if the main branch later
-  changes the same files.
+- **Merge the base branch (the one the PR targets) into your branch before the PR opens**, and again
+  if the base later changes the same files.
 - **Notes and artifacts** go in a per-ticket folder the project already uses (for example
-  `notes/<ticket>/`), never outside the repo.
+  `notes/<ticket>/`), never outside the repo. If it has none, ask before creating one, and keep it out
+  of version control unless the project says otherwise.
 - **Comments in code:** only the WHY that the code cannot say, one or two lines.
 - Follow existing conventions first. Use general good practice only where the repo is silent.
 
@@ -68,8 +70,8 @@ for answers to the blocking questions**:
 - **Ambiguities** - every term or scope that can be read two ways.
 - **Edge cases** - empty, null, max, concurrent, duplicate, partial failure, retry, ordering.
 - **Tenants, roles, security** - tenant isolation, data visible to the wrong customer, role gates,
-  differences between the sides of a shared record (for example owner and partner). Assume the wrong tenant or role can reach the data until you
-  have read the gate.
+  differences between the sides of a shared record (for example owner and partner). Assume the wrong
+  tenant or role can reach the data until you have read the gate.
 - **Destructive paths** - delete, void, overwrite, dedup, reconcile. "Handled automatically" is a flag
   to trace, not a reassurance. Trace the identity key (id, GUID, primary key) from where it is created,
   through lookup, to write. Same content is not the same identity.
@@ -97,8 +99,8 @@ independently shippable tasks**, each one a coherent slice, not a layer.
   (saving and storage) and forced a rework PR.
 
 **Entry-point table before code.** For each rule you add or change, list every place that must apply
-it: create flow, editor, viewer, duplicate; each side of a shared record; send and receive; each integration;
-server check and client check; each reader of the value. Mark each row "changed", "not needed because
+it: create flow, editor, viewer, duplicate; each side of a shared record; send and receive; each
+integration; server check and client check; each reader of the value. Mark each row "changed", "not needed because
 ...", or "missed". Save it in the notes folder. Do not start Phase 4 with an empty row.
 
 ### Phase 3 - User picks tasks
@@ -155,14 +157,15 @@ Return to Phase 4 for the next selected task, until all selected tasks are done 
   - **Project rules.** Check the changed files against the project's frontend and backend rules
     (hard-coded styles, inline style objects, raw library components where a wrapper exists, very long
     methods, logging rules).
-- Run your code review skill (or ask for a review) before calling it review-ready. Open the PR as a
+- Run your code review skill (for example `branch-reviewer`, or ask for a review) before calling it
+  review-ready; `branch-test-report` gives running-app evidence. Open the PR as a
   draft; publish it only when no medium-or-higher finding is left unhandled.
 
 ### Phase 8 - Skill improvement
 
 End every run with two to four concrete lines: what slowed this story down, what this skill should have
-said, which project convention was missing. Offer to add them to this file or to the project's
-`CLAUDE.md`.
+said, which project convention was missing. Offer to add them to the project's `CLAUDE.md` (or to a
+local copy of this skill; edits to a plugin-installed copy are lost on update).
 
 ## Quick reference
 

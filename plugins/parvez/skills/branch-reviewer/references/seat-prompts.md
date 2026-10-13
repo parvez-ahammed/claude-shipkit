@@ -16,9 +16,10 @@ Shared rules every seat follows - read these too: <SKILL_DIR>/references/severit
 Diff name-status (already classified, do not redo): <paste>
 Investigation method (follow before judging changed lines): <paste all 9 points>
 
-You have WebSearch and WebFetch. Any claim about an external system or library - syntax,
-operators, status codes, paging, limits, version floors - must be checked against the
-vendor's own documentation and the URL cited. Do not infer a third party's contract from
+Use WebSearch / WebFetch (or any docs tool you have). Any claim about an external system
+or library - syntax, operators, status codes, paging, limits, version floors - must be
+checked against the vendor's own documentation and the URL cited. No web access: the
+claim is a Question. Do not infer a third party's contract from
 this repo's internal consistency. Uncited external claims go under Questions.
 Output: STRICTLY the orchestrator's contract - Severity / Action / Issue / Failure / Fix.
 A finding without a concrete Failure line is a Question.

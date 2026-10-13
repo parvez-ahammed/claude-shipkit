@@ -39,8 +39,16 @@ startup" - say so to the user before you start it>.
 A running API is a compiled binary. It does not follow your branch.
 
 ```powershell
+# Windows
 (Get-Process -Id <pid>).StartTime
 (Get-Item "<path to build output>/<changed assembly or bundle>").LastWriteTime
+git log -1 --format=%cd HEAD
+```
+
+```bash
+# macOS / Linux
+ps -o lstart= -p <pid>
+ls -l --time-style=full-iso "<path to build output>/<changed file>"   # macOS: stat -f %Sm <file>
 git log -1 --format=%cd HEAD
 ```
 

@@ -1,16 +1,21 @@
 ---
 name: seo-aeo
-description: Audits and improves a website's SEO (search engines) and AEO (answer engines - ChatGPT, Perplexity, Google AI Overviews, Copilot, voice assistants), then prove the result with local tests. Use this whenever the user wants a site, landing page or marketing page to rank better, be found or cited by AI assistants, show correct previews when shared, or asks about meta tags, JSON-LD / schema.org, robots.txt, sitemap.xml, llms.txt, canonical URLs, noindex, prerendering or SSR for crawlers, Core Web Vitals / Lighthouse for a public page, featured snippets, FAQ schema, or "does our site follow this SEO/AEO article". Also use it when the user pastes an SEO or AEO blog post and asks whether the site does what it says. Works on any stack (React/Vite SPA, Next.js, static HTML, CMS) and on a live URL or a local build.
+description: Audits and improves a website's SEO (search engines) and AEO (answer engines - ChatGPT, Perplexity, Google AI Overviews, Copilot, voice assistants), then proves the result with local tests. Use this whenever the user wants a site, landing page or marketing page to rank better, be found or cited by AI assistants, show correct previews when shared, or asks about meta tags, JSON-LD / schema.org, robots.txt, sitemap.xml, llms.txt, canonical URLs, noindex, prerendering or SSR for crawlers, Core Web Vitals / Lighthouse for a public page, featured snippets, FAQ schema, or "does our site follow this SEO/AEO article". Also use it when the user pastes an SEO or AEO blog post and asks whether the site does what it says. Works on any stack (React/Vite SPA, Next.js, static HTML, CMS) and on a live URL or a local build.
 argument-hint: "[url or build-dir]"
+license: MIT
+compatibility: "Bundled scripts need Node 18+ (no packages). Optional: Playwright (Chromium) for no-JavaScript screenshots and Lighthouse via npx (needs Chrome) for speed cases."
 ---
 
 # SEO and AEO: audit, fix, prove
 
-This skill comes from a real shipped job: a React/Vite single-page app whose public landing page was
-invisible to crawlers (empty `<div id="root">`). The fix prerendered the page, added the head metadata and
-JSON-LD, set robots and sitemap rules per environment, added `llms.txt`, returned real 404s, kept the landing
-page fast, and added a build check that fails when any of this breaks. Every step below is the part of
-that job that applies to other sites.
+The typical failure this skill fixes: a client-rendered single-page app whose public landing page is
+invisible to crawlers (an empty `<div id="root">`). The full fix prerenders the page, adds head metadata
+and JSON-LD, sets robots and sitemap rules per environment, adds `llms.txt`, returns real 404s, keeps the
+landing page fast, and adds a build check that fails when any of this breaks. Server-rendered and static
+sites usually need only a subset; the audit tells you which.
+
+Not this skill: keyword research, backlink campaigns or paid search (marketing work, listed but not done
+here), and general web performance work on signed-in app pages (only the public pages matter for crawlers).
 
 The work has five phases. Do them in order. Stop after phase 2 if the user only asked "how are we doing".
 
@@ -63,7 +68,7 @@ Work in this order. Each step depends on the ones before it.
 1. **Content in the first HTML.** If the page is client-rendered, the crawler sees nothing. Options, best
    first: the framework's static generation or SSR (Next.js, Astro, Remix), then a build-time prerender of
    the public pages only, then a prerender service. For a Vite/CRA SPA, read `references/spa-prerender.md`
-   - it has the full pattern and the traps that cost time on the original job.
+   - it has the full pattern and the traps that usually cost time.
 2. **Head metadata** in the server HTML: unique `<title>` that says what the product does (not just the
    brand), meta description of about 150-160 characters, `<link rel="canonical">` with the absolute URL,
    Open Graph (`og:title`, `og:description`, `og:url`, `og:type`, `og:image` with an absolute https URL)
@@ -91,15 +96,15 @@ Work in this order. Each step depends on the ones before it.
 
 **Text the user sees is not yours to change.** Metadata, JSON-LD, `llms.txt`, alt text and heading tags
 (h2 vs p) are technical. Changing the words on the page, adding a FAQ, or renaming a heading changes the
-product copy. Write proposed copy in a notes file and ask the owner before it goes in. On the original job, copy
-changes made "for SEO" without being asked for had to be reverted.
+product copy. Write proposed copy in a notes file and ask the owner before it goes in. Copy changes made
+"for SEO" without being asked for tend to get reverted.
 
 ## Phase 4 - Build check
 
 Fixes like these break silently: a new import pulls the app back into the landing page, someone edits the
 title, a test deploy gets indexed. Add a script that runs after the build and fails it. Read
-`references/build-check.md` for the list of checks and a starting script. Wire it into the `build` script
-in `package.json` so CI runs it.
+`references/build-check.md` for the list of checks and a starting script. Wire it into the build (the
+`build` script in `package.json` for Node projects, or the equivalent CI build step) so CI runs it.
 
 Make the check able to fail: after writing it, break one thing on purpose (remove the canonical, add a
 second h1, flip the indexing flag) and confirm the build fails with a clear message. A check that never
@@ -135,7 +140,7 @@ case: case, what was done, result, evidence (file, screenshot, command output). 
 with the latest state only - no history of rounds. Put what needs a person (copy approval, production
 flag, post-deploy steps) in a separate short list at the end.
 
-## Traps from the original job
+## Common traps
 
 - A `<noscript>Enable JavaScript</noscript>` message is what crawlers index as your page text. Remove it
   once the content is prerendered.

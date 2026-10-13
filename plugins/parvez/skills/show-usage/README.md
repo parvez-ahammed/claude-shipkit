@@ -96,7 +96,8 @@ Claude Code stores one JSONL transcript per session under
 `~/.claude/projects/<encoded-cwd>/`, where `<encoded-cwd>` is the absolute working directory
 with every non-alphanumeric character replaced by `-` (for example `K:\code\my-app` becomes
 `K--code-my-app`). The script derives this from your current directory, or you can point it
-anywhere with `--project`.
+anywhere with `--project`. If you run Claude Code with `CLAUDE_CONFIG_DIR` set, the script
+reads `$CLAUDE_CONFIG_DIR/projects/` instead of `~/.claude/projects/`.
 
 ## Privacy
 

@@ -2,14 +2,25 @@
   "name": "parvez-tools",
   "owner": {
     "name": "Parvez Ahammed",
-    "email": ""
+    "url": "https://github.com/parvez-ahammed"
   },
-  "description": "Parvez's personal Claude Code toolkit — skills, hooks, and commands for building and shipping projects.",
+  "description": "Parvez Ahammed's open-source Claude Code toolkit: general-purpose skills and git hooks for building, reviewing, testing and shipping software.",
   "plugins": [
     {
       "name": "parvez",
       "source": "./plugins/parvez",
-      "description": "All-in-one toolkit. Ship: vps-deploy (push-to-deploy CI/CD + OAuth + DNS/TLS + hardening), honest-health-check (real readiness probes), clean-architecture (rulebook + bootstrap + layering guard). Refactor: refactoring-guru orchestrator + code-smell-detector, refactoring-methods, and creational/structural/behavioral pattern scorers. Review: platform-audit (DRY across a backlog), grill-feature (promise-level code interrogation). Plus show-usage (local time/token/cost stats). Deliver: video-maker, demo-maker, user-guide-maker, branch-test-report, seo-aeo. Review and workflow: branch-reviewer, bug-fixer, story-implementer, plain-writer, timesheet-from-transcripts."
+      "description": "24 general-purpose Claude Code skills plus git hooks. Ship: vps-deploy, honest-health-check, clean-architecture. Refactor: refactoring-guru hub with code-smell-detector, refactoring-methods and creational/structural/behavioral pattern scorers. Review: branch-reviewer, grill-feature, platform-audit. Test and QA: branch-test-report, qa-ux, generate-ux-improvements, bug-fixer. Build: story-implementer. Deliver: video-maker, demo-maker, user-guide-maker, seo-aeo. Write: plain-writer. Insight: show-usage, timesheet-from-transcripts.",
+      "category": "development",
+      "tags": [
+        "deployment",
+        "refactoring",
+        "code-review",
+        "testing",
+        "qa",
+        "documentation",
+        "video",
+        "seo"
+      ]
     }
   ]
 }

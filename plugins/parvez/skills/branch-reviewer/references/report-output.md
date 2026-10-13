@@ -22,8 +22,8 @@ Emit a short trailing block titled `Not covered by static review (verify separat
 that apply:
 
 - **Run-only behaviour** - duplicate notifications, dead click areas, stale screens, two-click flows,
-  visual issues. Exercise the touched flow before merge (a manual walkthrough, or the `qa-ux` skill
-  against the running app). Some of these are catchable statically once the global contract is known
+  visual issues. Exercise the touched flow before merge (a manual walkthrough, or the
+  `branch-test-report` / `qa-ux` skill against the running app). Some of these are catchable statically once the global contract is known
   (duplicate error toast, missing cache invalidation) and the seats flag those, but confirm by running.
 - **Missing requirements** - a case simply not implemented. A diff reviewer reviews lines that exist.
   Map each requirement to a change and a verification at plan time.

@@ -2,6 +2,7 @@
 name: creational-patterns
 argument-hint: "[file or symbol]"
 description: Score whether a creational design pattern (Factory Method, Abstract Factory, Builder, Prototype, Singleton) fits a code site, and recommend it only when scored preconditions are met. Use when the user asks "should I use a factory/builder here", "where can I apply a creational pattern", "how should I construct these objects", or when object construction is awkward (telescoping constructors, scattered `new`, type-switch instantiation, expensive clones, hand-rolled globals). Each pattern has opportunity signatures, weighted preconditions, a threshold, and hard-veto anti-indicators; emits APPLY / CONSIDER / REJECT with cited evidence. Spoke of refactoring-guru; usable standalone.
+license: MIT
 ---
 
 # Creational Patterns
@@ -10,12 +11,17 @@ Creational patterns are about object construction: making the system independent
 objects are created. You score a code site against each candidate and report a verdict. You
 do not edit code.
 
-Use the shared scoring rules in `${CLAUDE_SKILL_DIR}/../refactoring-guru/references/verdict-format.md`
-(bundled with the refactoring-guru skill): match preconditions only with cited `file:line`
-evidence, hard-veto wins, three verdicts (APPLY at threshold with the anchor met, CONSIDER
-for a near-miss or when cost outweighs the problem, else REJECT), apply language notes last. When the user points at a site, score it. When asked "where can I apply
-one", run the opportunity signatures over the target first (or ask code-smell-detector to),
-then score the hits.
+Follow the shared scoring rules in
+`${CLAUDE_SKILL_DIR}/../refactoring-guru/references/verdict-format.md` (bundled with the
+refactoring-guru skill). If it is not installed, the rules are: a precondition scores only
+with a cited `file:line`; any anti-indicator is an absolute veto (REJECT); score >= threshold
+with the anchor met -> APPLY, near-miss or cost outweighs the problem -> CONSIDER, else
+REJECT; apply language notes last and downgrade one step when an idiom makes the pattern
+redundant.
+
+When the user points at a site, score it. When asked "where can I apply one", run the
+opportunity signatures over the target first (or ask code-smell-detector to), then score
+the hits.
 
 ---
 
@@ -160,6 +166,15 @@ Emit per scored site, in the orchestrator's unified report shape, with the match
 preconditions and their `file:line` evidence, the score, any veto, and APPLY/CONSIDER/REJECT
 plus a one-line why. If two creational patterns both fit (rare), show both and the
 distinguishing precondition.
+
+```
+TARGET: path/to/File.ext:Symbol
+FINDING: <pattern> opportunity
+EVIDENCE: file:line - <matched precondition [weight]>   (one line per match; plus any veto)
+VERDICT: APPLY | CONSIDER | REJECT   (score N / threshold M) - <one-line why>
+RECOMMENDATION: <pattern or simpler alternative> - <one line>
+NEXT: <e.g. "safe steps via refactoring-methods" or "leave as is">
+```
 
 ## Evals
 

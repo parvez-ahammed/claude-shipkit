@@ -11,10 +11,15 @@ import shutil
 import subprocess
 import sys
 
-import fitz  # PyMuPDF, so no poppler (pdftoppm) install is needed
+try:
+    import fitz  # PyMuPDF, so no poppler (pdftoppm) install is needed
+except ImportError:
+    sys.exit("PyMuPDF is missing: pip install pymupdf")
 
 CANDIDATES = [
     r"C:\Program Files\Google\Chrome\Application\chrome.exe",
+    r"C:\Program Files (x86)\Google\Chrome\Application\chrome.exe",
+    r"C:\Program Files\Microsoft\Edge\Application\msedge.exe",
     r"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe",
     "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
     "/Applications/Microsoft Edge.app/Contents/MacOS/Microsoft Edge",
@@ -24,7 +29,7 @@ CANDIDATES = [
 def find_browser():
     if os.environ.get("CHROME_PATH"):
         return os.environ["CHROME_PATH"]
-    for name in ("google-chrome", "chromium", "chromium-browser", "chrome", "msedge"):
+    for name in ("google-chrome", "google-chrome-stable", "chromium", "chromium-browser", "chrome", "msedge", "microsoft-edge"):
         if shutil.which(name):
             return shutil.which(name)
     for path in CANDIDATES:

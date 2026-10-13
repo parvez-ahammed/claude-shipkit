@@ -2,6 +2,7 @@
 name: timesheet-from-transcripts
 description: Reconstructs what the user worked on for one or more past dates, as paste-ready timesheet rows. Use when the user needs to fill in a timesheet or time log - "I need to fill my timesheet for these days", "what did I do on the 13th and 14th", "fill up my time log for last week", "search my conversations and check what I did on Monday". Produces ticket numbers, short descriptions and non-overlapping time blocks per day from local Claude Code session transcripts under ~/.claude/projects, ready to paste into a time tracker.
 argument-hint: "[date | date list | range like \"last week\"]"
+license: MIT
 ---
 
 # Timesheet from transcripts
@@ -37,8 +38,9 @@ Also confirm, or ask once:
 
 ## Step 2 - Find candidate session files
 
-Transcripts live at `~/.claude/projects/<project-dir>/*.jsonl` (on Windows,
-`%USERPROFILE%\.claude\projects\`). There is one directory per working directory Claude Code was
+Transcripts live at `~/.claude/projects/<project-dir>/*.jsonl` on macOS and Linux, and
+`%USERPROFILE%\.claude\projects\` on Windows. If `CLAUDE_CONFIG_DIR` is set, they are under
+`$CLAUDE_CONFIG_DIR/projects/` instead. There is one directory per working directory Claude Code was
 opened in; the name is the absolute path with every character that is not a letter or digit replaced by `-`
 (for example `/home/me/code/my-app` gives `-home-me-code-my-app`, `C:\code\my.app` gives
 `C--code-my-app`). Subagent transcripts sit in subfolders
@@ -48,8 +50,19 @@ you want, since they run inside a parent session that already covers the time.
 Find files with activity on each target date without reading them:
 
 ```bash
-grep -l '"timestamp":"YYYY-MM-DDT' ~/.claude/projects/*/*.jsonl
+# macOS / Linux / Git Bash / WSL
+grep -l '"timestamp":"YYYY-MM-DDT' "${CLAUDE_CONFIG_DIR:-$HOME/.claude}"/projects/*/*.jsonl
 ```
+
+```powershell
+# Windows PowerShell (no grep)
+$root = if ($env:CLAUDE_CONFIG_DIR) { $env:CLAUDE_CONFIG_DIR } else { "$HOME\.claude" }
+Select-String -Path "$root\projects\*\*.jsonl" -Pattern '"timestamp":"YYYY-MM-DDT' -SimpleMatch -List |
+  Select-Object -ExpandProperty Path
+```
+
+With thousands of files the bash glob can hit "argument list too long"; loop per project
+directory instead (`for d in .../projects/*/; do grep -l ... "$d"*.jsonl; done`).
 
 UTC dates and local dates differ near midnight. Grep the day before and the day after as well, and
 filter by local time later.

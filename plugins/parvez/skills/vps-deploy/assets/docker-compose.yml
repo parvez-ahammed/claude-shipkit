@@ -9,7 +9,9 @@ services:
       dockerfile: Dockerfile.api
     image: app-api:local
     restart: always
-    env_file: ./app.env
+    env_file:
+      - path: ./app.env
+        format: raw                # pass values literally: no $-interpolation (Compose 2.30+)
     expose:
       - "8080"                     # adjust to your API's listen port
     # Disable a Dockerfile HEALTHCHECK that uses wget/curl if the runtime image
@@ -19,13 +21,15 @@ services:
       disable: true
     networks: [app]
 
-  worker:
+  worker:                          # optional: delete if the app has no background worker
     build:
       context: ../server
       dockerfile: Dockerfile.worker
     image: app-worker:local
     restart: always
-    env_file: ./app.env
+    env_file:
+      - path: ./app.env
+        format: raw                # pass values literally: no $-interpolation (Compose 2.30+)
     networks: [app]
 
   caddy:

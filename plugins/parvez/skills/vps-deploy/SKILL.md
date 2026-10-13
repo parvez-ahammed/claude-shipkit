@@ -17,6 +17,8 @@ when_to_use: >-
   Trigger even when the user mentions only one piece of the flow, e.g.
   "redirect_uri_mismatch after moving hosts", "move off Heroku to my own server",
   "add Caddy in front of my container", "my deploy is green but the app is down".
+license: MIT
+compatibility: "Requires a GitHub repo with Actions, an Ubuntu LTS VPS reachable over SSH, and Docker + compose on the VPS. gh CLI recommended for secrets and run watching. migrate-secrets.ps1 needs PowerShell 7 (pwsh); migrate-secrets.sh is the bash equivalent."
 ---
 
 # Deploy any containerized app to a VPS (CI/CD + OAuth + DNS/TLS + hardening)
@@ -27,6 +29,10 @@ domain through **any DNS provider**, OAuth/OIDC redirect setup, and **baseline
 hardening**. The same flow works whether the app is Node.js, Python, Go, .NET, or
 anything that runs in a container, and whether the host is Hetzner, DigitalOcean,
 Contabo, Oracle, a cloud VM, or a bare box you SSH into.
+
+Not for Kubernetes clusters, serverless, or multi-node fleets: this is one box running
+`docker compose`. CI is GitHub Actions; on GitLab CI / other runners the same steps
+(render env, rsync over SSH, `compose up`, probe) port directly, but the YAML does not.
 
 The deep value is the **gotchas** under each phase — they produce green pipelines or
 "looks fine" states that are actually broken. Read them before writing config.
@@ -72,7 +78,11 @@ GitHub (main) --push--> GitHub Actions
    decommission the old backend. See `references/phase3-dns-tls.md`.
 
 Templates to copy live in `${CLAUDE_SKILL_DIR}/assets/`: `docker-compose.yml`, `Caddyfile`,
-`vps-deploy.yml`, `migrate-secrets.ps1` (PaaS->GitHub secrets), `harden.sh`.
+`vps-deploy.yml`, `migrate-secrets.sh` / `migrate-secrets.ps1` (PaaS->GitHub secrets,
+bash or pwsh), `harden.sh`.
+
+For the health endpoint itself (what `/health` vs `/readyz` should assert), see the
+sibling `honest-health-check` skill; this skill covers wiring the probe into the deploy.
 
 ---
 
@@ -99,16 +109,19 @@ from GitHub Secrets, gated by an honest health check — on a hardened box.
    rendered env.
 6. **Secrets into GitHub**: anything the app needs that isn't already a GitHub secret
    (commonly the DB URL + provider tokens if migrating off a PaaS) — add it.
-   `assets/migrate-secrets.ps1` shows the source->`gh secret set` loop.
+   `assets/migrate-secrets.sh` (bash) or `assets/migrate-secrets.ps1` (pwsh) shows the
+   source->`gh secret set` loop.
 7. **Push, `gh run watch`, iterate** until the health check is green *and honest*.
 
 ### Phase 1 gotchas (these will bite you)
 
-- **`env_file:` not compose `${VAR}` substitution for secrets.** Compose substitutes
-  `${VAR}` in the compose file using `./.env`, and a secret containing a literal `$`
-  (common in DB passwords/URLs) gets mangled. `env_file:` values are passed to the
-  container **literally**. Render the app's real keys into the env file; point each
-  service at it via `env_file:`. Don't map secrets through `environment: KEY: ${SECRET}`.
+- **Secrets with `$` get mangled by Compose interpolation.** Compose substitutes
+  `${VAR}` in the compose file, and Compose v2 **also interpolates unquoted `env_file:`
+  values** - so `p@$$w0rd` arrives as `p@$w0rd` and `ab$cd` as `ab`. Render the app's
+  real keys into an env file and load it with the long syntax
+  `env_file: [{ path: ./app.env, format: raw }]` (Compose 2.30+), which passes values
+  **literally** (as the template does). Don't map secrets through
+  `environment: KEY: ${SECRET}`. Check with `docker compose version`.
 - **A green deploy can be a lie.** Many `/health` endpoints are **liveness only** —
   200 the moment the process boots, without touching the DB. Gate on **both** liveness
   *and* a readiness signal (grep logs for a DB-connection fatal, or hit an endpoint
@@ -172,7 +185,9 @@ exposes your server IP.
 3. **Lock the origin to the CDN.** Proxying hides the IP from web visitors, but the box
    is still directly reachable (and SSH is never proxied). Restrict the firewall so
    80/443 accept **only Cloudflare's IP ranges**, and SSH only from your IP/VPN — then
-   scanning the IP reveals nothing. See `references/vps-hardening.md`.
+   scanning the IP reveals nothing. **Caddy runs in Docker, and Docker-published ports
+   bypass plain UFW rules** - use `ufw-docker` + `ufw route` rules or a Cloudflare
+   Tunnel. See `references/vps-hardening.md` section 5.
 4. **Verify externally**, **cut the frontend over** (new API base URL + redeploy;
    confirm CORS), then **decommission** the old backend once login + data are verified.
 
@@ -184,6 +199,9 @@ exposes your server IP.
   Fix DNS, restart Caddy, confirm the log shows `acme-v02` (production).
 - **Proxy alone doesn't hide the origin** — pair it with the CDN-IP firewall lockdown,
   or attackers scan the IP directly and bypass the CDN entirely.
+- **`ufw allow from <cdn-range>` does nothing for a Docker-published port.** Docker's
+  iptables rules run before UFW's, so Caddy's 80/443 stay world-open. Test from outside
+  with `curl -skI https://<VPS_IP>/`; fix with `ufw-docker` route rules or a tunnel.
 - **Cutover is two switches**: frontend API base URL *and* provider redirect URIs.
 
 ---

@@ -7,10 +7,11 @@ Concrete command sequences. Templates are in `assets/`.
 Ubuntu LTS VM. **Harden it first** (`references/vps-hardening.md`: non-root user,
 key-only SSH on a non-standard port, fail2ban, default-deny firewall) before exposing
 anything — a fresh box on port 22 gets brute-forced within minutes. Then install
-Docker (over your custom SSH port):
+Docker (over your custom SSH port; `-t` so sudo can prompt for the password you set
+with `passwd`):
 
 ```bash
-ssh -p $SSH_PORT user@VM "curl -fsSL https://get.docker.com | sudo sh && \
+ssh -t -p $SSH_PORT user@VM "curl -fsSL https://get.docker.com | sudo sh && \
   sudo usermod -aG docker \$USER && sudo systemctl enable --now docker && \
   docker --version && docker compose version"
 ```
@@ -48,15 +49,17 @@ Copy `assets/docker-compose.yml` and `assets/Caddyfile` into `deploy/`. Adapt:
 
 Copy `assets/vps-deploy.yml` to `.github/workflows/`. Adapt `API_BASE`/`API_HOST`,
 `REMOTE_DIR`, the `Render app.env` env keys (match your framework's config keys),
-and `SVC`/`PORT` at the top of the health-check script (compose service name + listen
-port). The Host header comes from `API_HOST`, and the compose network is read off the
+and `SVC`/`PORT`/`HEALTH_PATH`/`EXPECT` at the top of the health-check script (compose
+service name, listen port, readiness path, expected body; `EXPECT=` gates on HTTP 2xx
+only, which suits JSON health responses). The Host header comes from `API_HOST`, and the compose network is read off the
 running container, so neither needs editing.
 
 ## 5. Secrets into GitHub
 
 List what's there: `gh secret list -R OWNER/REPO`. Anything the backend needs that
 isn't present (very commonly the **DB connection string** and provider tokens, if
-they only lived in the old PaaS store) must be added. `assets/migrate-secrets.ps1`
+they only lived in the old PaaS store) must be added. `assets/migrate-secrets.sh`
+(bash, reads a dotenv export) or `assets/migrate-secrets.ps1` (pwsh, Azure example)
 shows the source->gh loop — run it yourself (safety layers block an assistant from
 reading prod secret values).
 

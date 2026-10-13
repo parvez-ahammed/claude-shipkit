@@ -9,14 +9,23 @@ description: >-
   demo for a ticket or user story - even if they do not say "skill". Not for free-form design
   exploration or Figma work.
 argument-hint: "[ticket-id or story]"
+license: MIT
+compatibility: "Needs the target web app running locally and signed in, a browser-automation tool that can run page JavaScript (Playwright MCP, Claude in Chrome or similar) and Python 3. Optional desktop adapter is Windows-only and needs the .NET 8 SDK."
 ---
 
 # demo-maker
 
 Build a demo of a new workflow from the app's own rendered components, not from look-alikes. The
 main path is web: the live page's DOM and CSS, captured from the running app. An optional adapter
-covers Windows desktop apps built with WinForms: the app's own controls, rendered to PNG. The output is a folder of static HTML (for example `<work-dir>/<ticket>/demo/`).
+covers Windows desktop apps built with WinForms: the app's own controls, rendered to PNG.
 No product code changes.
+
+Work folder: pick one per demo, outside the product source or git-ignored (for example `demos/<ticket>/`;
+ask if the project has no convention). Below it is `<work-dir>`. It holds `capture/` (scripts, snapshots,
+parts) and `demo/` (the static HTML you hand over).
+
+Prerequisites: Python 3 (`python` on Windows, often `python3` on macOS/Linux), a browser-automation tool
+that can evaluate JavaScript in the signed-in page, and the app's dev server running.
 
 The value is the capture technique and its traps. A hand-written mockup that is "close to" the app
 drifts in spacing, fonts and colours, and stakeholders then argue about the drift instead of the
@@ -27,7 +36,8 @@ workflow.
 - Use when: a planned change to an existing app must be shown as it will really look, step by step,
   before or while it is built.
 - Do not use when: the app does not exist yet or the screen is new from scratch (use a design tool),
-  or the user wants a UX critique of today's screen (use a review skill).
+  the user wants a UX critique of today's screen (use `qa-ux` or `generate-ux-improvements`), or an
+  animated promo video rather than a clickable demo (use `video-maker`).
 
 ## Principle: stay as close as possible to the current app
 
@@ -75,7 +85,7 @@ This decides every design question:
    - the unchanged page matches the capture;
    - one full click-through of the main path, with every button in it;
    - the app's API log shows no write calls during capture.
-8. **Deliver.** `index.html` holds the step thumbnails, the rules with their sources, the text
+8. **Deliver.** `demo/index.html` holds the step thumbnails, the rules with their sources, the text
    register and the open questions. Open it for the user. List every process you started (API,
    dev server, desktop app, http server).
 
@@ -97,7 +107,7 @@ A reworded text that the ticket does not require goes back to today's wording.
 
 - **Fonts fall back silently.** Bundlers (Vite and others) inject package CSS as `<style>` tags, so
   relative font URLs resolve against the page and download `index.html`. Replace every asset that
-  `file` reports as HTML with the real file from `node_modules` (`@fontsource/*/files`, the
+  `file` reports as HTML (Git Bash, macOS and Linux have `file`; elsewhere check whether the first bytes are `<!doctype` or `<html`) with the real file from `node_modules` (`@fontsource/*/files`, the
   component library's icon-font folder) or `src/`.
 - **CSS-in-JS rules live only in the CSSOM.** Emotion, styled-components and JSS insert rules with
   `insertRule`, so the `<style>` text is empty. Read `cssRules` for those sheets.

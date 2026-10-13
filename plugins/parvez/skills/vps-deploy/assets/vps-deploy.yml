@@ -36,7 +36,7 @@ jobs:
     runs-on: ubuntu-latest
     environment: production
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Setup SSH
         env:
@@ -48,8 +48,8 @@ jobs:
           ssh-keyscan -p "${SSH_PORT}" -H "${{ vars.VPS_HOST }}" >> ~/.ssh/known_hosts 2>/dev/null
 
       # Render the app's REAL config keys (examples below mix flat + .NET-style; use
-      # whatever your framework reads). env_file in compose passes these literally,
-      # avoiding compose ${VAR} substitution mangling secrets that contain '$'.
+      # whatever your framework reads). env_file with `format: raw` (see
+      # docker-compose.yml) passes these literally; plain env_file would $-interpolate.
       # Pass secrets through step `env:`, never inline `${{ secrets.X }}` in the heredoc:
       # inline values are pasted into the script text, so a '$' or backtick in a
       # password is expanded by bash before it reaches the file. Expanding an env var
@@ -107,20 +107,26 @@ jobs:
           HOST_HDR="$2"
           SVC=api      # compose service name of the app (must match docker-compose.yml)
           PORT=8080    # the app's listen port inside the container
+          HEALTH_PATH=/health   # prefer a READINESS endpoint (e.g. /readyz) that touches the DB
+          EXPECT='^healthy'     # body regex (case-insensitive); set EXPECT= to gate on HTTP 2xx only
           # Resolve the network the app container is actually on (no name guessing).
           CID=$(docker compose ps -q "$SVC")
           [ -n "$CID" ] || { echo "service '$SVC' is not running"; docker compose ps; exit 1; }
           NET=$(docker inspect -f '{{range $k, $v := .NetworkSettings.Networks}}{{$k}} {{end}}' "$CID" | awk '{print $1}')
           ok=
           for i in $(seq 1 25); do
-            if docker run --rm --network "$NET" curlimages/curl:8.11.1 \
+            # -f makes curl fail on any non-2xx, so a 503 from a readiness endpoint never passes.
+            if BODY=$(docker run --rm --network "$NET" curlimages/curl:8.11.1 \
                  -sf --max-time 5 -H "Host: ${HOST_HDR}" \
-                 "http://${SVC}:${PORT}/health" 2>/dev/null | grep -qi '^healthy'; then
+                 "http://${SVC}:${PORT}${HEALTH_PATH}" 2>/dev/null) \
+               && { [ -z "$EXPECT" ] || printf '%s' "$BODY" | grep -qiE "$EXPECT"; }; then
               echo "liveness OK"; ok=1; break
             fi
             echo "waiting for app... ($i)"; sleep 6
           done
           [ -n "$ok" ] || { echo "app never came up"; docker compose ps; docker compose logs --tail=60 "$SVC"; exit 1; }
+          # Fallback readiness signal for apps whose health endpoint is liveness-only:
+          # scan recent logs for DB-connection fatals. Extend the pattern for your stack.
           if docker compose logs --tail=120 "$SVC" 2>&1 | grep -qiE "ConnectionString.*not been initialized|authentication failed|could not connect|ECONNREFUSED"; then
             echo "FAIL: app up but DB unreachable (check secrets)"; exit 1
           fi

@@ -42,7 +42,7 @@ get them unless the user asks - the user usually has the figures from their IDE 
 
 | Rule | Why |
 |---|---|
-| **Measure the length.** Hosts have hard caps: Azure DevOps refuses a description over 4,000 characters (HTTP 400); GitHub allows about 65,000. Under a 4,000 cap, aim for 2,800-3,500 and treat 3,900 as the ceiling so a CRLF round trip cannot push it over. | A cap is a rejected API call, not a style issue. Measure: `python3 -c "import io;print(len(io.open(r'<file>',encoding='utf-8').read()))"` |
+| **Measure the length.** Hosts have hard caps: Azure DevOps refuses a description over 4,000 characters (HTTP 400); GitHub allows about 65,000. Under a 4,000 cap, aim for 2,800-3,500 and treat 3,900 as the ceiling so a CRLF round trip cannot push it over. | A cap is a rejected API call, not a style issue. Measure: `python3 -c "import io;print(len(io.open(r'<file>',encoding='utf-8').read()))"` (use `python` where `python3` is missing), or `LC_ALL=C.UTF-8 wc -m <file>`. |
 | No section left empty. Where a section does not apply, write the fact: `None.` / `Not relevant.` | An empty section reads as "forgot", a `None.` reads as "checked". |
 | Checkboxes stay `- [ ]` unless the template says otherwise. | The author ticks them, not the agent. |
 | Title: match the repo's PR title habit (check recent merged PRs). | It can differ from the commit subject form. |

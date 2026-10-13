@@ -13,18 +13,27 @@ bypass intentionally.
 
 Works for everyone committing in the repo - humans and AI agents alike.
 
-```powershell
-pwsh -File install.ps1 -Repo C:\path\to\your\repo
+```bash
+bash install.sh /path/to/your/repo                     # macOS / Linux / Git Bash
 ```
 
-or manually: copy `pre-commit` into `<repo>/.git/hooks/pre-commit` and `chmod +x` it.
+```powershell
+pwsh -File install.ps1 -Repo C:\path\to\your\repo   # Windows (PowerShell 5.1 or 7)
+```
+
+Both installers ask git for the hooks directory, so they work in worktrees and respect
+`core.hooksPath`, and back up an existing `pre-commit` hook to `pre-commit.bak`. Manual
+install: copy `pre-commit` into the directory printed by `git rev-parse --git-path hooks`
+and `chmod +x` it.
 Install gitleaks for best coverage (the hook auto-uses it when present).
 
 ## Install (optional): Claude Code PreToolUse hook
 
 Belt-and-suspenders so Claude's own `git commit` calls are scanned even in a repo
 without the git hook. See `claude-settings-snippet.json` - add it under `hooks` in
-`~/.claude/settings.json` (or a project `.claude/settings.json`) and fix the path.
+`~/.claude/settings.json` (or a project `.claude/settings.json`) and fix the path. Needs
+`jq` and `bash` on PATH. It scans what is already staged, so `git commit -a` changes that
+are not yet staged are only caught by the git hook.
 (The `update-config` skill can wire this for you.)
 
 ## Why both

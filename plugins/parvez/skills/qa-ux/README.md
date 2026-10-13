@@ -19,6 +19,8 @@ verifies correctness out-of-band (API, data, file probes), and never invents dat
 ```
 qa-ux/
   SKILL.md                         entry point, mode router, universal rules
+  VERSION                          skill version
+  README.md                        this file
   references/qa-mode.md            14-section QA release report spec
   references/ux-mode.md            six-persona / six-journey UX audit spec + output
   templates/qa-report-template.html
@@ -26,9 +28,15 @@ qa-ux/
 ```
 
 ## Output
-A self-contained HTML report (dark, Linear/Notion/Stripe style: sticky nav, severity colors,
-collapsible sections, badges, callouts, execution timeline, CSS charts) next to a `screenshots/`
-folder, opened in the browser when done.
+Two self-contained HTML reports, `qa-report.html` and `ux-report.html` (or one, when scoped), in
+`.qa-reports/` by default. Dark, Linear/Notion/Stripe style: sticky nav, severity colors, collapsible
+sections, badges, callouts, execution timeline, CSS charts. They link to each other and share one
+`screenshots/` folder next to them. Both open in the browser when done.
+
+## Requirements
+The app must be running. A browser-automation tool that can take screenshots and resize the viewport
+(Playwright MCP, Claude in Chrome or similar). `ffprobe` is optional, for media checks. Test against a
+dev or staging environment; the skill asks before actions with real-world effects.
 
 ## Install
 Ships in this plugin. To use standalone, copy this folder to `~/.claude/skills/qa-ux/` (personal) or

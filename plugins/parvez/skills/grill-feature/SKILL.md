@@ -12,6 +12,7 @@ description: >-
   bulletproof, or evaluate whether the cost/margin is too much. One feature (inline) or a whole
   release/phase (workflow sweep).
 argument-hint: "[feature name | release or phase]"
+license: MIT
 ---
 
 # Grill room
@@ -65,10 +66,18 @@ Set `shipBlocker: true` when a gap would hurt a paying customer or lose money/da
 
 ### One feature, inline (fast)
 
-Dispatch a single read-only interrogator (the `Explore` agent fits) with the protocol above for the
-one feature, and report its verdict. Use this for a "grill X" request about a single feature.
+Dispatch a single read-only interrogator with the Agent tool (the `Explore` agent type fits) with the
+protocol above for the one feature, and report its verdict. Use this for a "grill X" request about a
+single feature. If no subagent tool is available, run the protocol yourself in the main context.
 
 ### A whole release/phase, as a sweep (the room)
+
+**Prerequisite:** the sweep runs on Claude Code's Workflow tool. Use it only when that tool is available
+in the session and the user has opted in to running a workflow (say what it will fan out and ask first if
+they have not). Otherwise use the **fallback**: dispatch one inline interrogator per feature with the
+Agent tool, in parallel batches, plus the cost evaluator if wanted, then write the synthesis report
+yourself in the same shape the script asks for (executive summary, verdict table, ship-blockers, cracks,
+cost read, top 10 fixes).
 
 Run the bundled workflow, which fans out one interrogator per feature plus the CEO cost pass and
 synthesizes one report. The script ships beside this skill at
@@ -79,7 +88,7 @@ Workflow({
   scriptPath: "${CLAUDE_SKILL_DIR}/room-workflow.js",
   args: {
     features: [{ id, area, name, promise, hints }, ...],
-    costPass: false,          // true only for products with metered or paid actions
+    costPass: false,          // default false; true only for products with metered or paid actions
     date: "YYYY-MM-DD"        // optional; stamped into the report heading
   }
 })

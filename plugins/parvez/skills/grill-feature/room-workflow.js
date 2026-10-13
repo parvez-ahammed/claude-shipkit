@@ -57,8 +57,8 @@ const COST = {
 
 const SYNTH = { type: 'object', additionalProperties: false, required: ['report'], properties: { report: { type: 'string' } } }
 
-// args.costPass: false skips the CEO pass (products with no per-action / metered cost).
-const RUN_COST_PASS = A.costPass !== false
+// The CEO pass is opt-in: pass args.costPass: true for products with metered or paid actions.
+const RUN_COST_PASS = A.costPass === true
 
 const interrogate = (f) => `You are a skeptical senior engineer + QA, interrogating ONE shipped feature at the PROMISE level, by reading the ACTUAL code. Read-only.
 

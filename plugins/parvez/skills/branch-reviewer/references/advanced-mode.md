@@ -17,6 +17,10 @@ applies on top when the user asked for both.
 
 ```bash
 DEFAULT=$(git symbolic-ref --short refs/remotes/origin/HEAD 2>/dev/null | sed 's#^origin/##')
+if [ -z "$DEFAULT" ]; then   # origin/HEAD not recorded locally: ask the remote once
+  git remote set-head origin --auto >/dev/null
+  DEFAULT=$(git symbolic-ref --short refs/remotes/origin/HEAD | sed 's#^origin/##')
+fi
 git fetch origin "$DEFAULT" --quiet
 BASE=$(git merge-base HEAD "origin/$DEFAULT")   # origin/<default>, not the local branch - it is usually stale
 git log --oneline "$BASE"..HEAD | head -50
@@ -245,7 +249,7 @@ rather than asserting it.
 
 ### Publishing
 
-- Keep the favicon and file path stable across republishes of the same review, so the URL holds.
+- Keep the icon and file path stable across republishes of the same review, so the URL holds.
 - A follow-up review after fixes is a new artifact; the original records what was found before.
 
 ## Honesty rules specific to this mode

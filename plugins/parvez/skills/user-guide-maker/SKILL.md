@@ -9,6 +9,8 @@ description: >-
   ticket, or asks to update, re-verify or re-attach a guide after the code changed - even if they do
   not say "skill".
 argument-hint: "[ticket-id or PR number]"
+license: MIT
+compatibility: "PDF step needs Python 3.8+, PyMuPDF (pip install pymupdf) and Chrome, Chromium or Edge (set CHROME_PATH if not found). Attaching needs the tracker's CLI or API access: gh, az (Azure DevOps) or curl with a Jira token."
 ---
 
 # User guide maker
@@ -24,7 +26,8 @@ places, and users trust it).
 - Use when: a feature is built (or nearly built) on a branch and end users need to learn it.
 - Don't use when: you need developer docs, API reference or a changelog entry. Don't use for
   screenshot-heavy Markdown help pages either; this format has no screenshots on purpose, so it
-  does not go stale every time the UI moves a pixel.
+  does not go stale every time the UI moves a pixel. For a clickable preview of a planned flow use
+  `demo-maker`; for a promo video use `video-maker`.
 
 ## The format is fixed
 
@@ -48,7 +51,8 @@ open it - who sees what - fields or columns - messages - limitations - known beh
 2. **Write** the guide inside the repo, in a folder the team uses for working files (for example
    `docs/guides/` or a git-ignored working folder such as `.work/<ticket>/`), as `<ticket>-<Feature>-User-Guide.html`. The
    file name becomes the attachment name on the ticket, so never a generic name like `guide.html`.
-   - Plain words, short active sentences, ASCII only. If the `plain-writer` skill is installed,
+   - Plain words, short active sentences, ASCII only (unless the product's UI language needs other
+     characters; then skip the ASCII check in step 4). If the `plain-writer` skill is installed,
      load it first.
    - Audience is end users: no file names, code, commit or PR history, review findings.
    - Describe *when* something happens in the user's terms first ("when you mark the task Done"),
@@ -61,7 +65,9 @@ open it - who sees what - fields or columns - messages - limitations - known beh
    (with replacement text) or UNVERIFIABLE - plus behaviour the guide is MISSING and places where
    the guide contradicts itself. The agent that wrote the guide never verifies it.
 4. **Apply every fix.** Then grep the guide for each old wrong phrase (a bulk rewrite often leaves
-   one copy behind), and check for non-ASCII: `grep -cP '[^\x00-\x7F]' <guide>.html` must print 0.
+   one copy behind), and check for non-ASCII: `grep -cP '[^\x00-\x7F]' <guide>.html` must print 0
+   (GNU grep; on macOS or without `-P` use
+   `python -c "import sys; print(sum(ord(c) > 127 for c in open(sys.argv[1], encoding='utf-8').read()))" <guide>.html`).
 5. **PDF:** `python "${CLAUDE_SKILL_DIR}/scripts/make_pdf.py" <guide>.html <guide>.pdf` (same base name). Read two or
    three of the preview PNGs it writes. A page flagged `<-- check` usually has a heading left
    alone at the bottom or a card pushed to the next page: adjust `break-inside` / `break-after`
@@ -112,8 +118,8 @@ copy on the ticket does not update itself.
 
 ## Reference map
 
-Paths are relative to this skill's folder (`${CLAUDE_SKILL_DIR}`).
-
+Paths are relative to this skill's folder (`${CLAUDE_SKILL_DIR}`). Use `python3` instead of
+`python` where that is the interpreter's name (macOS, most Linux).
 
 - `assets/example-guide.html` - the format to copy (fictional example).
 - `scripts/make_pdf.py` - HTML to PDF with headless Chrome or Edge, page-fill report, PNG previews.

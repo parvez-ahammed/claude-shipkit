@@ -9,7 +9,8 @@ app code unless asked).
 1. **Bring up / locate the app.** Record build: branch, commit SHA, env, versions. UNKNOWN if not derivable.
 2. **Generate the test-case catalogue from code** (subagents, one per domain): read routes/controllers/
    services + existing e2e specs; emit IDs, preconditions, steps, expected, priority. Don't test from memory.
-3. **Execute via the browser**, a screenshot per state + console errors per page. Real data, complete flows.
+3. **Execute via the browser**, a screenshot per state + console errors per page. Real data, complete flows
+   (follow the Safety rule in SKILL.md: ask before payments, outbound messages or destructive actions).
 4. **Verify the high-stakes paths at the API/data level** with subagents - whatever the app has of
    payments, balances/quotas, generated files or media, external integrations (values before/after,
    idempotency, refunds, signed URLs, `ffprobe` on media). Save raw findings to JSON.
@@ -19,7 +20,7 @@ app code unless asked).
 1. **Cover** - product, report title, test cycle #, branch + commit SHA, environment, execution date,
    tester, build version, release candidate. (UNKNOWN if not derivable.)
 2. **Release recommendation** (top, highlighted) - 🟢 APPROVED / 🟡 APPROVED WITH RISKS / 🔴 BLOCKED +
-   decision, reasoning, blocking issues, required fixes.
+   decision, reasoning, blocking issues, required fixes. Apply the release-call rule in SKILL.md > Severity.
 3. **Executive summary** - goal, scope, what was validated, confidence level, major risks + KPI cards
    (cases executed, pass %, failed, blocked, coverage %, critical defects, production readiness).
 4. **Test scope** - Included / Excluded (with reasons) / Assumptions / Dependencies.

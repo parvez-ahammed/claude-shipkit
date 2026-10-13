@@ -6,10 +6,20 @@
 import fs from "node:fs";
 
 const args = process.argv.slice(2);
+const usage = "usage: node audit-url.mjs <url> [--expect expect.json] [--json out.json]";
+if (args.includes("--help") || args.includes("-h")) {
+  console.log(`${usage}
+
+Fetches <url> as a browser and as search/answer-engine bots (no JavaScript run) and reports
+head metadata, JSON-LD, headings, visible text, robots.txt, sitemap, llms.txt and soft-404 status.
+expect.json (all optional): { "phrases": [], "title": "", "canonical": "", "jsonLdTypes": [], "indexable": true }
+Exit code 1 when a check or expectation fails, or the page is not reachable.`);
+  process.exit(0);
+}
 const option = (name) => (args.includes(name) ? args[args.indexOf(name) + 1] : undefined);
 const target = args.find((a, i) => !a.startsWith("--") && !["--expect", "--json"].includes(args[i - 1]));
 if (!target) {
-  console.error("usage: node audit-url.mjs <url> [--expect expect.json] [--json out.json]");
+  console.error(usage);
   process.exit(1);
 }
 const expect = option("--expect") ? JSON.parse(fs.readFileSync(option("--expect"), "utf8")) : {};
@@ -182,4 +192,6 @@ if (failures.length) console.log(`\nFAILURES (${failures.length})\n` + failures.
 if (option("--json")) {
   fs.writeFileSync(option("--json"), JSON.stringify({ url: pageUrl.href, status: page.status, head, social, jsonLd, headings, firstAnswer, textLength: text.length, blockedBots, robots: robotsTxt.status, sitemap: sitemap.status, llms: llms.status, unknownUrlStatus: missing.status, perAgent: Object.fromEntries(Object.entries(perAgent).map(([k, r]) => [k, { status: r.status, bytes: r.body.length }])), warnings, failures }, null, 2));
 }
-process.exit(failures.length ? 1 : 0);
+// Set exitCode instead of calling process.exit(): exiting while fetch keep-alive sockets are
+// still closing aborts Node on Windows (libuv "UV_HANDLE_CLOSING" assertion, exit 127).
+process.exitCode = failures.length ? 1 : 0;

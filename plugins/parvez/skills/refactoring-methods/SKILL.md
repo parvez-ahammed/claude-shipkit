@@ -2,6 +2,7 @@
 name: refactoring-methods
 argument-hint: "[smell or refactoring name] [file or symbol]"
 description: Apply Martin Fowler's refactoring techniques to fix a known code smell. Use when the user knows what is wrong and wants the safe step-by-step mechanics to fix it, "how do I extract this method", "how do I break up this class", "replace this conditional with polymorphism", "introduce a parameter object". Holds the refactoring catalog grouped as composing methods, moving features, organizing data, simplifying conditionals, simplifying method calls, and dealing with generalization, with a one-line mechanic per entry, deep step-by-step mechanics for the most-used ones, and a test-after-each-step safety rule. Recommends and gives mechanics only; never auto-edits. Spoke of refactoring-guru; usable standalone.
+license: MIT
 ---
 
 # Refactoring Methods
@@ -102,9 +103,9 @@ config, public API), delete, run tests.
 
 ## References
 
-- `references/composing-methods.md` - read when giving mechanics for Extract Method,
+- `${CLAUDE_SKILL_DIR}/references/composing-methods.md` - read when giving mechanics for Extract Method,
   Replace Temp with Query, or Replace Method with Method Object.
-- `references/simplifying-conditionals.md` - read when giving mechanics for Decompose
+- `${CLAUDE_SKILL_DIR}/references/simplifying-conditionals.md` - read when giving mechanics for Decompose
   Conditional, Guard Clauses, Replace Conditional with Polymorphism, or Introduce Null Object.
 
 ## Output

@@ -21,6 +21,9 @@ src/
 
 Domain `.csproj` references nothing. If someone adds `Infrastructure` to Domain's refs,
 it's a visible, reviewable change - and the guard's `dotnet` DAG check fails it.
+The sample `clean-arch.json` roots (`src/Domain`, ...) do not match this
+`src/MyApp.Domain/` naming: set each layer's `roots` to your real project folders, or the
+forbidden-import scan finds no files (the guard warns, and exits 2 if no layer matched).
 
 ## TypeScript / Node (folders + a boundary linter)
 

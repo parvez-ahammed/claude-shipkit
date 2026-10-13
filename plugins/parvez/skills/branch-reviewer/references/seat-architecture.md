@@ -69,7 +69,7 @@ should be smaller.
 - **Event orchestration.** A business service raises **one** event; an orchestrator routes it to
   channels. The same notification must not be sent twice from two places.
 - **Coupling between integrations.** Integration A using integration B's enum or types. Lift the type
-  to a shared assembly under a neutral name, or give A its own type.
+  to a shared module under a neutral name, or give A its own type.
 - **Public methods exposing internal helper signatures.** A public method whose parameters only make
   sense to the same service. Make it internal or give callers a higher-level API.
 - **Domain model leak across a service boundary.** A service returns the entity instead of a DTO.

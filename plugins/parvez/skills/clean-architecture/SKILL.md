@@ -10,6 +10,8 @@ description: >-
   user asks "set up clean architecture", "how should I structure this", "is this the
   right layer", "did I break the dependency rule", "bootstrap a hexagonal project". Ships
   a config-driven layering guard so the boundaries are enforced, not just hoped for.
+license: MIT
+compatibility: "Layering guard (scripts/check-layering.ps1) needs PowerShell 7+ (pwsh), which runs on Windows, macOS and Linux; Windows PowerShell 5.1 also works. Without PowerShell, apply the same config by hand with grep. The rulebook and bootstrap guidance need nothing installed."
 ---
 
 # Clean Architecture: rulebook, bootstrap, and guard
@@ -64,7 +66,7 @@ the dependency now points inward (adapter -> port). This is the whole game.
 
 ## Bootstrap a new project
 
-Pick your stack in `references/bootstrap-by-stack.md` - it gives the concrete folder/
+Pick your stack in `${CLAUDE_SKILL_DIR}/references/bootstrap-by-stack.md` - it gives the concrete folder/
 project layout and, crucially, **how to make the dependency direction enforceable** in
 that ecosystem (project references in .NET, module boundaries / ESLint in TS, Gradle
 modules in Java, internal packages in Go). Start with the inner layers and the ports;
@@ -81,15 +83,18 @@ or a test - they're architectural. Add the guard:
    ```
    pwsh -File "${CLAUDE_SKILL_DIR}/scripts/check-layering.ps1" -Config clean-arch.json -Root .
    ```
-   Needs PowerShell 7 (`pwsh`), which runs on Windows, macOS and Linux. If it is not
-   installed and cannot be, apply the same config by hand with Grep (one search per
-   layer root and forbidden pattern) and say the guard was not run.
+   Needs PowerShell 7 (`pwsh`), which runs on Windows, macOS and Linux (Windows
+   PowerShell 5.1 also works). If it is not installed and cannot be, apply the same config
+   by hand with Grep (one search per layer root and forbidden pattern) and say the guard
+   was not run.
    It scans each layer for forbidden imports (language-agnostic) and, for .NET, can
-   verify the `.csproj` reference DAG. Non-zero exit on a hard violation.
+   verify the `.csproj` reference DAG. Exit 1 on a hard violation; exit 2 when no layer
+   root matched any source file (a mistyped `roots` must not pass silently).
 3. Wire it into CI and/or a pre-commit hook so the boundary is checked every change, not
-   remembered.
+   remembered. CI does not have the skill folder: commit a copy of the script (e.g.
+   `scripts/check-layering.ps1`) next to `clean-arch.json` and call that copy.
 
-See `references/dependency-rule.md` for the deep dive: ports vs adapters, mapping at
+See `${CLAUDE_SKILL_DIR}/references/dependency-rule.md` for the deep dive: ports vs adapters, mapping at
 boundaries, the common violations and how to fix each by inverting instead of bending the
 rule.
 
@@ -99,3 +104,7 @@ Clean Architecture is a means, not a trophy. For a tiny CRUD app it can be overk
 layers earn their keep when business rules are non-trivial and you want them independent
 of frameworks and testable in isolation. Apply the dependency rule strictly where it
 pays; don't add ceremony where it doesn't.
+
+For problems inside one layer (a long method, a god class, "should this be a Strategy")
+use `refactoring-guru` and its spokes instead; this skill is about where code lives and
+which way dependencies point.

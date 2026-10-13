@@ -10,6 +10,7 @@ description: >-
   or is debugging a service that's "up" but not actually serving. A health endpoint
   that returns 200 unconditionally silently defeats every gate built on it - so make it
   assert something true.
+license: MIT
 ---
 
 # Honest health checks
@@ -72,7 +73,11 @@ few seconds if probes are frequent.
   `AllowedHosts`, Django `ALLOWED_HOSTS`, Rails `config.hosts`. Send the real `Host`
   header on the probe.
 - **Matching "healthy" loosely**: `grep -i healthy` also matches `Unhealthy`. Anchor it
-  (`^healthy`) or check the HTTP status code.
+  (`^healthy`) or check the HTTP status code. For JSON bodies (`{"status":"ok"}`), gate
+  on the status code only (`curl -sf`) rather than a body regex.
+- **"Degraded" is 200 by default in some frameworks** (ASP.NET Core maps `Degraded` to
+  HTTP 200 with body `Degraded`). A status-only gate passes it; a `^healthy` body gate
+  fails it. Decide which you want and make the probe match.
 - **Liveness that checks the DB**: a transient DB blip then restart-loops the app. Keep
   the DB check in readiness, not liveness.
 - **Probe timeout shorter than a cold dependency**: cross-region DB latency can exceed a
@@ -84,3 +89,6 @@ Most frameworks have a health-checks library; prefer it over hand-rolling. See
 `references/readiness-by-framework.md` for ready/live endpoint snippets in Node,
 Python, Go, and .NET, plus the matching deploy-probe and HEALTHCHECK wiring. Pairs
 directly with the `vps-deploy` skill's health-check step.
+
+Not this skill: uptime monitoring / alerting from outside (use a monitoring service),
+or load testing. This skill is about what the endpoint asserts and the gates that read it.

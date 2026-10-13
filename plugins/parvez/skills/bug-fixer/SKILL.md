@@ -7,6 +7,7 @@ description: >-
   end-to-end. Triggers on "/bug-fixer", "fix this bug", "why is this broken", "root cause this",
   "this wrote wrong data". One command, one bug, root cause before fix.
 argument-hint: "[bug description | ticket id | error text]"
+license: MIT
 ---
 
 # bug-fixer - one command, one bug, root cause first
@@ -21,8 +22,8 @@ a fix for a symptom only moves the bug somewhere harder to find.
 
 - Use when: one reported defect, regression, crash or wrong-data case is to be taken end-to-end;
   "it was working yesterday"; intermittent failures; wrong or missing values after an operation.
-- Don't use when: it is a new feature or story (use `story-implementer`); it is a pure code review;
-  it is a support case that must first be read out of production logs (read the logs first, then come
+- Don't use when: it is a new feature or story (use `story-implementer`); it is a pure code review
+  (use `branch-reviewer`); it is a support case that must first be read out of production logs (read the logs first, then come
   back here for the fix).
 
 ## Before you start
@@ -33,7 +34,8 @@ a fix for a symptom only moves the bug somewhere harder to find.
   or the full test suite; write the fix and the test, and tell them exactly what to run. A filtered run
   of the one new test is fine.
 - **Notes and artifacts** go in a per-ticket folder the project already uses (for example
-  `notes/<ticket>/`), never outside the repo.
+  `notes/<ticket>/`), never outside the repo. If it has none, ask before creating one, and keep it out
+  of version control unless the project says otherwise.
 - **Comments in code:** only the WHY that the code cannot say, one or two lines.
 - **Verify before asserting.** Read every step of the code path before you claim a mechanism. Label
   each claim Verified (`file:line`) / Hypothesis (say what would confirm it) / Unknown. Evidence that
@@ -80,8 +82,9 @@ Trace the code path from the symptom back to the cause. Read **every step**: con
 mapper, query, transform, client. The step you skip is the step that breaks the claim. Known traps:
 
 - **Tenant / role** - the wrong tenant or role can reach the data; the two sides of a shared record
-  (for example owner and partner, sender and receiver) run different code; a global query filter drops rows. Example: in an ORM, eager-loading a required navigation
-  whose target is soft-deletable can silently drop the parent row. Project the columns instead.
+  (for example owner and partner, sender and receiver) run different code; a global query filter
+  drops rows. Example: in an ORM, eager-loading a required navigation whose target is soft-deletable
+  can silently drop the parent row. Project the columns instead.
 - **Content is not identity** - on wrong or duplicate records, "these are the same object" is a claim
   about content, not identity. Trace the key that is created (id, GUID, primary key) from where it is
   created, through lookup, to write. Trace the key, not the payload. A key that is scoped to one side
@@ -134,14 +137,15 @@ A UI-only fix with no test runner: record the click path you checked instead.
 - Reproduce the **original** scenario and confirm it is gone. This is not optional. If you cannot run
   it, say exactly what the user must check. Never write "this should fix it".
 - **Adjacent hunt:** other callers of the changed method, missing cache or query invalidation, the
-  other side of the operation (sender and receiver, owner and shared-with party), other integrations that share
-  the path, branches that are now dead.
+  other side of the operation (sender and receiver, owner and shared-with party), other integrations
+  that share the path, branches that are now dead.
 - **Judge on the final tree.** A later commit can undo an earlier fix. Re-read the final diff, not your
   memory of the commits.
 
 ### Phase 7 - Debug report and review
 
-Write the report, then run your code review skill (or ask for a review) on the diff:
+Write the report, then run your code review skill (for example `branch-reviewer`, or ask for a
+review) on the diff:
 
 ```
 DEBUG REPORT
@@ -157,7 +161,8 @@ Status:          DONE | DONE_WITH_CONCERNS | BLOCKED
 ### Phase 8 - Skill improvement
 
 Two to four concrete lines: what slowed the diagnosis, which trap this skill should have named, which
-project convention was missing. Offer to add them to this file or to the project's `CLAUDE.md`.
+project convention was missing. Offer to add them to the project's `CLAUDE.md` (or to a local copy
+of this skill; edits to a plugin-installed copy are lost on update).
 
 ## Quick reference
 

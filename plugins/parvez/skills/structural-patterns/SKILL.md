@@ -2,6 +2,7 @@
 name: structural-patterns
 argument-hint: "[file or symbol]"
 description: Score whether a structural design pattern (Adapter, Bridge, Composite, Decorator, Facade, Flyweight, Proxy) fits a code site, and recommend it only when scored preconditions are met. Use when the user asks "should I use an adapter/decorator/facade here", "where can I apply a structural pattern", or when object composition is awkward (incompatible interfaces, subclass explosion across two dimensions, part-whole trees, runtime-added responsibilities, message chains into a subsystem, memory blowup from many similar objects, controlled access). Each pattern has opportunity signatures, weighted preconditions, a threshold, and hard-veto anti-indicators; emits APPLY / CONSIDER / REJECT with cited evidence. Spoke of refactoring-guru; usable standalone.
+license: MIT
 ---
 
 # Structural Patterns
@@ -192,6 +193,15 @@ distinguish: Decorator adds behavior, Proxy controls access. Same shape, differe
 Emit per scored site in the orchestrator's unified report shape, with matched preconditions
 and `file:line` evidence, score, any veto, verdict, and one-line why. If Decorator and Proxy
 both seem to fit, state the distinguishing question (adding behavior vs controlling access).
+
+```
+TARGET: path/to/File.ext:Symbol
+FINDING: <pattern> opportunity
+EVIDENCE: file:line - <matched precondition [weight]>   (one line per match; plus any veto)
+VERDICT: APPLY | CONSIDER | REJECT   (score N / threshold M) - <one-line why>
+RECOMMENDATION: <pattern or simpler alternative> - <one line>
+NEXT: <e.g. "safe steps via refactoring-methods" or "leave as is">
+```
 
 ## Evals
 

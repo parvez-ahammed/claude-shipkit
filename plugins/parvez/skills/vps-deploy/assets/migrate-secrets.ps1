@@ -8,7 +8,8 @@
 #
 #   pwsh -File migrate-secrets.ps1
 #
-# Requires az + gh logged in with access to the source and the repo.
+# Requires PowerShell 7 (pwsh, any OS), plus az + gh logged in with access to the
+# source and the repo. No pwsh? Use migrate-secrets.sh (bash, reads a dotenv export).
 
 $ErrorActionPreference = 'Stop'
 $Repo   = 'OWNER/REPO'

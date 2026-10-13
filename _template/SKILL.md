@@ -8,7 +8,10 @@ description: >-
   they don't say 'skill'"). List concrete trigger examples. Avoid vague verbs.
   Keep it under 1,024 characters (portable Agent Skills limit; Claude Code truncates
   description + when_to_use at 1,536 in the skill listing).
+license: MIT
 # Optional fields (delete what you don't need):
+# compatibility: "Requires Node 18+ and ffmpeg on PATH."  # <= 500 chars; only if tools must be installed
+# when_to_use: >-                         # extra trigger phrases; counts toward the 1,536 cap
 # argument-hint: "[pr-number]"          # shown in the / menu autocomplete
 # allowed-tools: Read Grep Glob         # tools usable without a prompt while the skill runs
 # disable-model-invocation: true        # only the user can fire it (for side-effecting skills)

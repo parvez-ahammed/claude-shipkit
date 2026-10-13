@@ -2,6 +2,7 @@
 name: code-smell-detector
 argument-hint: "[file, directory, or function]"
 description: Detect code smells in a file, function, or directory and map each to candidate fixes. Use when the user wants to find what is wrong with code, "find code smells", "review this for quality", "what should I clean up here", or as the first step of a vague "refactor this" / "improve this" request. Covers the 22 refactoring.guru smells across five groups (Bloaters, Object-Orientation Abusers, Change Preventers, Dispensables, Couplers). Reports each smell with cited file:line evidence and the candidate refactoring or design pattern it maps to. Spoke of refactoring-guru; usable standalone.
+license: MIT
 ---
 
 # Code Smell Detector
@@ -84,7 +85,9 @@ NEXT: <which spoke, e.g. "score with creational-patterns" or "apply via refactor
 ```
 
 For smells whose fix is a design pattern, set NEXT to the pattern spoke so the orchestrator
-routes there for scoring. Do not score the pattern yourself.
+routes there for scoring. Do not score the pattern yourself. Used standalone (spoke not
+installed), still name the candidate fix in RECOMMENDATION and mark the pattern as
+unscored, so the user knows a fit was not tested.
 
 ## References
 
@@ -92,9 +95,9 @@ Only two groups have deep reference files; the other three (OO Abusers, Change P
 Dispensables) are covered by the triage table above, which is enough to detect and route
 them. The full fix mechanics for every group live in `refactoring-methods`.
 
-- `references/bloaters.md` - read when a Bloater is found and you need signs/fix detail
+- `${CLAUDE_SKILL_DIR}/references/bloaters.md` - read when a Bloater is found and you need signs/fix detail
   (Long Method, Large Class, Long Parameter List, Primitive Obsession, Data Clumps).
-- `references/couplers.md` - read when a Coupler is found (Feature Envy, Inappropriate
+- `${CLAUDE_SKILL_DIR}/references/couplers.md` - read when a Coupler is found (Feature Envy, Inappropriate
   Intimacy, Message Chains, Middle Man); the costliest group in layered apps.
 
 ## Evals

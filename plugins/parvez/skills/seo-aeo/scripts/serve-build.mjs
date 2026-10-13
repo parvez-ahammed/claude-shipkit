@@ -4,13 +4,21 @@
 //   real file      -> the file
 //   app route      -> app.html if it exists, else index.html
 //   anything else  -> 404.html with status 404 (index.html with status 404 when there is no 404.html)
-//   "/nojs"        -> index.html with its module scripts removed
+//   "/nojs"        -> index.html with every script removed (JSON-LD kept), to see the no-JavaScript view
 import http from "node:http";
 import fs from "node:fs";
 import path from "node:path";
 import zlib from "node:zlib";
 
 const args = process.argv.slice(2);
+if (args.includes("--help") || args.includes("-h")) {
+  console.log([
+    'usage: node serve-build.mjs <build-dir> [port=4180] [--app-routes "<regex on the path without the leading />"]',
+    '  "/" -> index.html; real files as-is; app routes -> app.html (else index.html);',
+    '  anything else -> 404.html with status 404; "/nojs" -> index.html with scripts removed.',
+  ].join("\n"));
+  process.exit(0);
+}
 const appRoutesIndex = args.indexOf("--app-routes");
 const appRoutes = appRoutesIndex >= 0 ? new RegExp(args[appRoutesIndex + 1]) : null;
 // Guard the index: with no --app-routes, appRoutesIndex + 1 === 0 would drop the build dir.
@@ -62,7 +70,10 @@ http
     }
     if (rel === "nojs") {
       return send(req, res, 200, inBuild("index.html"), (html) =>
-        html.replace(/<script type="module"[^>]*>[\s\S]*?<\/script>/g, "").replace(/<link rel="modulepreload"[^>]*>/g, ""),
+        // Drop every script except JSON-LD (Vite module scripts, CRA/webpack defer scripts, inline boot code).
+        html
+          .replace(/<script\b(?![^>]*application\/ld\+json)[^>]*>[\s\S]*?<\/script>/gi, "")
+          .replace(/<link\b[^>]*>/gi, (tag) => (/rel=["']?modulepreload/i.test(tag) || (/rel=["']?preload/i.test(tag) && /\bas=["']?script/i.test(tag)) ? "" : tag)),
       );
     }
     if (rel === "") return send(req, res, 200, inBuild("index.html"));

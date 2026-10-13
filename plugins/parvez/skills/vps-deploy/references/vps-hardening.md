@@ -67,7 +67,8 @@ backend  = systemd
 
 [sshd]
 enabled  = true
-port     = 49222        # match your SSH port
+# match your SSH port (keep comments on their own line in fail2ban configs)
+port     = 49222
 EOF
 sudo systemctl enable --now fail2ban
 sudo fail2ban-client status sshd
@@ -101,7 +102,31 @@ directly reachable at its IP, and SSH is never proxied. Anyone who finds the IP 
 DNS history, email headers, scanning) can bypass the CDN and hit the origin or brute
 SSH. To actually hide/protect the origin:
 
-- **Restrict 80/443 to Cloudflare's published IP ranges** so direct hits are dropped:
+- **Docker bypasses UFW for published ports.** In this architecture 80/443 are
+  published by the Caddy *container*, and Docker inserts its own iptables rules
+  (nat PREROUTING + FORWARD) that are evaluated before UFW's INPUT rules. So plain
+  `ufw allow from <range> to any port 443` / `ufw delete allow 443/tcp` does **not**
+  restrict the container: the port stays open to the world. Verify from an outside
+  host with `curl -skI https://<VPS_IP>/`. Pick one fix:
+  - **ufw-docker** (keeps UFW as the one firewall): install
+    [chaifeng/ufw-docker](https://github.com/chaifeng/ufw-docker), run
+    `sudo ufw-docker install && sudo systemctl restart ufw`, then allow the CDN with
+    **`ufw route`** rules (they apply to forwarded/container traffic):
+    ```bash
+    for ip in $(curl -s https://www.cloudflare.com/ips-v4) $(curl -s https://www.cloudflare.com/ips-v6); do
+      sudo ufw route allow proto tcp from $ip to any port 443
+      sudo ufw route allow proto tcp from $ip to any port 80
+    done
+    sudo ufw status numbered
+    ```
+  - **Cloudflare Tunnel** (`cloudflared` as a compose service): the origin makes an
+    outbound connection to Cloudflare, so you publish no web port at all and the
+    lockdown problem disappears.
+  - **`DOCKER-USER` chain**: hand-written iptables/ipset rules that drop new
+    connections to 80/443 unless the source is a Cloudflare range. Most control,
+    most to maintain.
+- **Host-level services (not in Docker)** - e.g. Caddy installed via apt - do obey
+  UFW. For those, restrict 80/443 to Cloudflare's published IP ranges directly:
   ```bash
   # fetch ranges and allow only those to 443 (and 80); deny the rest
   for ip in $(curl -s https://www.cloudflare.com/ips-v4) $(curl -s https://www.cloudflare.com/ips-v6); do
@@ -117,6 +142,8 @@ SSH. To actually hide/protect the origin:
 - **Restrict SSH to your IP/VPN** if it's static: `sudo ufw allow from YOUR_IP to any port 49222 proto tcp` and remove the open SSH rule. If your IP is dynamic, rely on key-only + fail2ban + non-standard port.
 - Set Cloudflare SSL/TLS mode to **Full(strict)** and install a **Cloudflare Origin
   Certificate** (or use Caddy DNS-01) so the origin only trusts the CDN.
+
+SSH runs on the host, not in Docker, so the plain `ufw` rules above do apply to it.
 
 This combination means a port scan of the IP finds a closed box, and web traffic must
 come through Cloudflare (where you also get WAF/DDoS/rate-limiting).

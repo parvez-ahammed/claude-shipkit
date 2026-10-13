@@ -1,6 +1,7 @@
 ---
 name: plain-writer
-description: House style for any prose that lands in git history or on a reviewer's screen - PR descriptions, commit subjects and bodies, PR comments, code comments, README and docs prose, ticket notes. Enforces ASCII punctuation only, Simplified Technical English (ASD-STE100), no filler, no jargon, and comments that only explain a non-obvious why. Carries a PR-description sub-skill that finds and fills the repo's own PR template section by section. Use BEFORE writing or editing such prose. Triggers on "write the PR description", "fill the PR template", "draft the PR body", "write a commit message", "write this up", "clean up this comment", "make this readable", and on any request to generate text destined for a commit, a PR, a code comment or repo docs.
+description: An opinionated, adoptable house style for prose that lands in git history or on a reviewer's screen - PR descriptions, commit subjects and bodies, PR comments, code comments, README and docs prose, ticket notes. By default it applies ASCII-only punctuation, Simplified Technical English (ASD-STE100), no filler, no jargon, and comments that only explain a non-obvious why; a repo's own style guide overrides it. Carries a PR-description sub-skill that finds and fills the repo's own PR template section by section. Use BEFORE writing or editing such prose. Triggers on "write the PR description", "fill the PR template", "draft the PR body", "write a commit message", "write this up", "clean up this comment", "make this readable", and on any request to generate text destined for a commit, a PR, a code comment or repo docs.
+license: MIT
 ---
 
 # plain-writer - house style for anything a reviewer will read
@@ -11,6 +12,21 @@ Two failures this skill prevents:
    commit message cannot be fixed after the push. One em-dash costs a follow-up commit and a review thread.
 2. **Prose that reads as generated.** Long hedged sentences, filler openings, em-dash asides, invented
    jargon. Reviewers notice a drifting register in a diff at once, and stop trusting the rest.
+
+## Adopting and adjusting the style
+
+This is one opinionated style, not a universal rule set. Every rule below is a default you can keep, change
+or turn off:
+
+- **A repo's own conventions win.** If the repo has a style guide (`CONTRIBUTING.md`, a docs style page, a
+  Vale or markdownlint config, a commit-message linter), follow it and use this skill only for the gaps.
+- **ASCII-only punctuation is this style's choice.** It suits repos where commits cannot be amended after a
+  push and tools render Unicode unevenly. Drop it for repos that use typographic punctuation on purpose, for
+  prose in languages that need non-ASCII punctuation, or when the user says so.
+- **Simplified Technical English and the jargon list** are tuned for reviewers who read English as a second
+  language. Relax them for audiences that prefer a looser register.
+- To make a change stick, record it where the agent will read it (the project's `CLAUDE.md` or a
+  contributing guide), for example: "plain-writer: Unicode punctuation allowed in docs/".
 
 ## Sub-skills
 
@@ -46,8 +62,14 @@ LC_ALL=C.UTF-8 grep -nP '[\x{2010}-\x{2015}\x{2018}\x{2019}\x{201C}\x{201D}\x{20
 ```
 
 Keep the `LC_ALL=C.UTF-8` prefix. Without it, some shells (Git Bash on Windows, minimal containers) print
-`grep: -P supports only unibyte and UTF-8 locales` and the check does nothing. Run the check; do not trust
-recall. Generated text leaks these characters often.
+`grep: -P supports only unibyte and UTF-8 locales` and the check does nothing. `grep -P` needs GNU grep.
+On macOS (BSD grep), or anywhere `-P` is missing, use Perl, which ships with macOS and Git for Windows:
+
+```bash
+perl -CSD -ne 'print "$.: $_" if /[\x{2010}-\x{2015}\x{2018}\x{2019}\x{201C}\x{201D}\x{2022}\x{2026}\x{2190}\x{2192}\x{2194}]/' <file>
+```
+
+Run the check; do not trust recall. Generated text leaks these characters often.
 
 ## Voice - Simplified Technical English
 

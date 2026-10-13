@@ -21,6 +21,11 @@ errs=0
 
 [ -z "$subject" ] && { red "empty commit subject"; errs=1; }
 
+# git-generated subjects (merge, revert, autosquash) are not hand-written; let them through.
+if printf '%s' "$subject" | grep -qE '^(Merge |Revert "|fixup! |squash! |amend! )'; then
+  exit 0
+fi
+
 # 1) stray '@'-prefixed line anywhere (a bash @'...'@ here-string slip leaks literal @)
 if grep -qE '^@' "$msg_file"; then
   red "a line starts with '@' (likely a bash @'...'@ slip) - rebuild the message with plain -m flags"

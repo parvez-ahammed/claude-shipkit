@@ -2,12 +2,18 @@
 name: show-usage
 description: Shows how much time, how many sessions, and how many tokens and dollars were spent on a coding project, from local Claude Code transcripts. Triggers on "show usage", "how long have I worked on this", "how much time did I spend", "my claude time", "wakatime for claude", "session stats", "token usage", "cost per project", "how many hours on this project". Prints WakaTime-style active time plus token/cost/tool tables. Local, read-only, zero deps.
 argument-hint: "[--by day|week|dow|hour|session|model|tool] [--since YYYY-MM-DD] [--project <path>]"
+license: MIT
+compatibility: "Requires Node 16+ on PATH. Reads Claude Code transcripts under ~/.claude/projects (or $CLAUDE_CONFIG_DIR/projects); works on macOS, Linux and Windows."
 ---
 
 # show-usage
 
 Local "WakaTime for Claude Code". Reports time, sessions, tokens, cost, and tool usage for a
-project, from the JSONL transcripts under `~/.claude/projects/`.
+project, from the JSONL transcripts under `~/.claude/projects/` (or `$CLAUDE_CONFIG_DIR/projects/`
+when that variable is set).
+
+For *what* was worked on per day (timesheet rows), use the sibling `timesheet-from-transcripts`
+skill; this one answers *how much*.
 
 ## Run
 

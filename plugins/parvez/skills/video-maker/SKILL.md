@@ -1,6 +1,8 @@
 ---
 name: video-maker
 description: Makes animated promo, explainer, product-launch, feature-announcement, tutorial-teaser or social-media videos entirely from code, as a ready-to-publish MP4 with voice-over, music, captions and a thumbnail. Use this skill whenever the user asks for a video, promo, teaser, ad, explainer, reel, short, TikTok, LinkedIn or YouTube clip, motion graphic, animated walkthrough, or "a video about this project/product/feature" - even if they do not name any tool - and whenever they want to change, lengthen, shorten, re-colour, re-voice or re-render a video made this way.
+license: MIT
+compatibility: "Requires Node.js 18+ and npm (engine deps installed once with npm ci; ffmpeg ships via ffmpeg-static), Playwright Chromium, about 1 GB free RAM per render worker, and network access on first run to download Chromium and the ~90 MB Kokoro voice model."
 ---
 
 # Video maker
@@ -17,10 +19,21 @@ Engine: the `engine/` folder next to this SKILL.md, i.e. `${CLAUDE_SKILL_DIR}/en
 - `claims.md` in the project: every spoken line and on-screen claim with its source
 - A storyboard table and an honest list of what they must check before publishing (see step 9)
 
+Not for: a click-through of the real app's screens (use `demo-maker`), or a written guide (use `user-guide-maker`).
+
 ## One-time setup
 
-If `$E/node_modules` does not exist: `cd $E && npm install && npx playwright install chromium`.
-The voice model (about 90 MB) downloads on the first `tts.mjs` run to `~/.cache/video-maker/models` and is reused by every project.
+Needs Node.js 18+ and npm. If `$E/node_modules` does not exist, install the pinned engine dependencies from the lockfile,
+then the browser the renderer drives:
+
+```
+cd "$E" && npm ci && npx playwright install chromium
+```
+
+On Linux, use `npx playwright install --with-deps chromium` (it installs the system libraries Chromium needs).
+ffmpeg comes from the `ffmpeg-static` package; no system ffmpeg is required. The voice model (about 90 MB) downloads
+on the first `tts.mjs` run to `~/.cache/video-maker/models` and is reused by every project. When the skill is installed
+as a plugin, a plugin update can replace the engine folder; if `node_modules` is gone afterwards, run the setup again.
 
 ## Workflow
 
@@ -152,8 +165,10 @@ Stills take seconds; a full render takes minutes. Iterate here.
 
 ```
 node $E/build.mjs <folder> --from music     # music -> render -> text -> mix -> check
-WORKERS=2 node $E/build.mjs <folder> --from render   # fewer browser workers when memory is low
+WORKERS=2 node $E/build.mjs <folder> --from render   # fewer browser workers when memory is low (bash/zsh)
 ```
+
+In PowerShell set the variable first: `$env:WORKERS=2; node $E/build.mjs <folder> --from render`.
 
 `build.mjs` with no `--from` also runs tts and plan. After a visual-only change use `--from render`.
 A 60 s 1080p video renders in about 7 minutes with 4 workers. The default worker count also looks at free memory

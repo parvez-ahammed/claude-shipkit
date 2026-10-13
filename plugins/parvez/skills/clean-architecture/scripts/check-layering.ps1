@@ -4,7 +4,8 @@
 #
 #   pwsh -File check-layering.ps1 -Config clean-arch.json [-Root .]
 #
-# Exit 1 on any hard violation. Wire into CI / a pre-commit hook.
+# Exit 1 on any hard violation; exit 2 if no layer root matched any source file
+# (a mistyped root must not pass silently). Wire into CI / a pre-commit hook.
 [CmdletBinding()]
 param([string]$Config = "clean-arch.json", [string]$Root = ".")
 
@@ -12,11 +13,12 @@ $ErrorActionPreference = 'Stop'
 if (-not (Test-Path $Config)) { throw "Config not found: $Config (copy assets/clean-arch.json and edit)" }
 $cfg = Get-Content $Config -Raw | ConvertFrom-Json
 
-$exts      = @($cfg.fileExtensions); if (-not $exts) { $exts = @('.cs','.ts','.tsx','.java','.kt','.go','.py') }
+$exts      = @($cfg.fileExtensions); if (-not $exts) { $exts = @('.cs','.ts','.tsx','.js','.jsx','.mjs','.cjs','.java','.kt','.go','.py') }
 # Default also catches C# `global using`, CommonJS `const x = require("y")`, and the
 # indented lines inside a Go `import ( ... )` block (a bare or aliased quoted path).
 $importRe  = $cfg.importLineRegex;  if (-not $importRe) { $importRe = '^\s*(global\s+)?(using|import|from|require|#include|use)\b|\brequire\s*\(|^\s*([\w.]+\s+)?"[^"]+"\s*$' }
 $fail = $false
+$scanned = 0
 
 Write-Host "Clean Architecture guard ($Config)`n"
 
@@ -32,6 +34,8 @@ foreach ($layer in $cfg.layers) {
   }
   # Roots like src/Domain and src/domain are the same folder on Windows/macOS; scan once.
   $files = @($files | Sort-Object FullName -Unique)
+  $scanned += $files.Count
+  if ($files.Count -eq 0) { Write-Host ("  WARN [{0}] no source files under roots: {1}" -f $layer.name, (@($layer.roots) -join ', ')) -ForegroundColor Yellow; continue }
   $layerHits = 0
   foreach ($f in $files) {
     $n = 0
@@ -73,4 +77,5 @@ if ($cfg.dotnet) {
 }
 
 if ($fail) { Write-Host "`nHard violations found." -ForegroundColor Red; exit 1 }
+if ($scanned -eq 0) { Write-Host "`nNo layer root matched any source file under '$Root' - fix 'roots' in $Config." -ForegroundColor Yellow; exit 2 }
 Write-Host "`nLayering intact." -ForegroundColor Green

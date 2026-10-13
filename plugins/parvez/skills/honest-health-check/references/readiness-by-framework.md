@@ -64,8 +64,12 @@ builder.Services.AddHealthChecks()
 app.MapHealthChecks("/healthz", new() { Predicate = c => c.Name == "self" });
 app.MapHealthChecks("/readyz");   // includes db
 ```
-Returns 200 "Healthy" / 503 "Unhealthy". Remember `AllowedHosts` rejects probes
-without the right Host header.
+`AddNpgSql` comes from the `AspNetCore.HealthChecks.NpgSql` package (sibling packages
+exist for SqlServer, MySql, Redis...); without a package, `AddDbContextCheck<T>()` from
+`Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore` does a real connect.
+Returns 200 "Healthy" / 503 "Unhealthy", and **200 "Degraded"** by default - a
+`^healthy` body gate fails on Degraded while a status-only gate passes it. Remember
+`AllowedHosts` rejects probes without the right Host header.
 
 ## Deploy probe (CI) - the honest gate
 
@@ -89,6 +93,22 @@ If the runtime image lacks curl/wget, disable the Dockerfile HEALTHCHECK
 (`healthcheck: { disable: true }` in compose) and rely on the external probe, OR add a
 tiny built-in checker. Give `start_period` enough room for boot + first DB connect so
 the startup window doesn't flap.
+
+When the image does have a client (or you add one), point the container check at
+**liveness**, not readiness - Swarm and other orchestrators replace unhealthy containers
+(plain `docker compose` only reports the state and gates `depends_on: condition:
+service_healthy`), and a DB blip must not trigger a replacement:
+
+```yaml
+healthcheck:
+  test: ["CMD", "curl", "-fsS", "http://localhost:8080/healthz"]   # or wget -qO- ...
+  interval: 15s
+  timeout: 3s
+  retries: 3
+  start_period: 40s
+```
+
+Node images without curl can use `["CMD", "node", "-e", "fetch('http://localhost:8080/healthz').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]` (Node 18+).
 
 ## Kubernetes
 

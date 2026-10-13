@@ -2,8 +2,8 @@
 
 Read the project rules the orchestrator passed you first. They override this rubric.
 
-**Stack labels.** Rules marked **[React]**, **[TanStack Query]**, **[MUI]** or **[virtualized grid]**
-apply only on that stack; on another stack apply the same intent with local idioms. The generic rules
+**Stack labels.** Rules marked **[React]**, **[TypeScript]**, **[TanStack Query]**, **[MUI]**,
+**[MUI + Tailwind]**, **[DevExtreme tabs]** or **[virtualized grid]** apply only on that stack; on another stack apply the same intent with local idioms. The generic rules
 apply everywhere. Add your project's own rules - its wrapper components, design tokens, folder layout,
 API layer contract, migrations in progress (for example "new UI uses library B, not legacy library A"),
 and repo-wide grep sweeps - to `.claude/review-rules.md` or `CLAUDE.md`.

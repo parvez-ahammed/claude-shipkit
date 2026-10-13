@@ -11,7 +11,8 @@ then write the report. Every case has evidence: a command output file, a screens
 3. Serve each build on its own port with the bundled server:
    `node "${CLAUDE_SKILL_DIR}/scripts/serve-build.mjs" <build-dir> 4180 --app-routes "<regex>"`
    (base on 4181). It is not the real host - say so in the report.
-4. Browser: Playwright (Chromium). For no-JavaScript cases use a context with `javaScriptEnabled: false`,
+4. Browser: Playwright (Chromium) - `npm i -D playwright && npx playwright install chromium` if the project
+   does not have it. Lighthouse needs a local Chrome/Chromium. For no-JavaScript cases use a context with `javaScriptEnabled: false`,
    or open `/nojs` on the bundled server.
 
 ## Cases
@@ -61,7 +62,9 @@ page.on("response", async (r) => {
 await page.goto("http://localhost:4180/", { waitUntil: "networkidle" });
 ```
 
-Schema.org validator for a local page (the "Fetch URL" option needs a public address, so paste the head):
+Schema.org validator for a local page (the "Fetch URL" option needs a public address, so paste the head).
+The selectors below match the validator UI at the time of writing; if they stop matching, paste the
+snippet by hand and screenshot the result:
 
 ```js
 const html = await (await page.request.get("http://localhost:4180/")).text();
@@ -79,8 +82,8 @@ await page.screenshot({ path: "schema-validator.png" });
 Lighthouse against the local server:
 
 ```bash
-npx --yes lighthouse@12 http://localhost:4180/ --throttling-method=devtools --output=json --output=html --output-path=lh/change-mobile-1 --chrome-flags="--headless=new" --quiet
-npx --yes lighthouse@12 http://localhost:4180/ --preset=desktop --output=json --output=html --output-path=lh/change-desktop-1 --chrome-flags="--headless=new" --quiet
+npx --yes lighthouse http://localhost:4180/ --throttling-method=devtools --output=json --output=html --output-path=lh/change-mobile-1 --chrome-flags="--headless=new" --quiet
+npx --yes lighthouse http://localhost:4180/ --preset=desktop --output=json --output=html --output-path=lh/change-desktop-1 --chrome-flags="--headless=new" --quiet
 ```
 
 Run the whole set from one script (`run-all-evidence.sh`) so it can be repeated after every fix.
