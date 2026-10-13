@@ -1,0 +1,68 @@
+# ShipKit
+
+> ShipKit is a free, open-source (MIT) plugin for Claude Code that adds 24 skills and 2 git hooks. The skills review branches, fix bugs from the root cause, test the running app, audit QA and UX, guide refactoring, deploy to a VPS, improve SEO and write videos, demos and user guides. It works on any stack, on Windows, macOS and Linux.
+
+ShipKit is for developers who use Claude Code. It is not a standalone app, a hosted service or a CI product; the skills run inside Claude Code.
+
+Install inside Claude Code:
+
+```
+/plugin marketplace add parvez-ahammed/claude-shipkit
+/plugin install shipkit@shipkit
+```
+
+Skills trigger on their own when a request matches their description, or run explicitly as `/shipkit:<skill>`. Author: Parvez Ahammed (https://github.com/parvez-ahammed).
+
+## Docs
+
+- [GitHub repository](https://github.com/parvez-ahammed/claude-shipkit): source, issues and pull requests
+- [README](https://github.com/parvez-ahammed/claude-shipkit/blob/master/README.md): install, skill list, requirements, FAQ
+- [License (MIT)](https://github.com/parvez-ahammed/claude-shipkit/blob/master/LICENSE)
+- [Website](https://parvez-ahammed.github.io/claude-shipkit/)
+
+## Review and fix
+
+- [review-branch](https://github.com/parvez-ahammed/claude-shipkit/blob/master/plugins/shipkit/skills/review-branch/SKILL.md): multi-seat code review of a branch or PR with a refutation pass, a ranked punch list and an HTML report
+- [fix-bug](https://github.com/parvez-ahammed/claude-shipkit/blob/master/plugins/shipkit/skills/fix-bug/SKILL.md): one bug end to end; root cause proven before any fix, with a regression test
+- [build-story](https://github.com/parvez-ahammed/claude-shipkit/blob/master/plugins/shipkit/skills/build-story/SKILL.md): one user story or ticket from raw ask to verified, review-ready code
+- [test-branch](https://github.com/parvez-ahammed/claude-shipkit/blob/master/plugins/shipkit/skills/test-branch/SKILL.md): tests a branch against the real running app and writes an HTML report with screenshots
+- [grill-feature](https://github.com/parvez-ahammed/claude-shipkit/blob/master/plugins/shipkit/skills/grill-feature/SKILL.md): checks whether a shipped feature's promise holds in the code, with file:line evidence
+
+## QA and UX
+
+- [audit-app](https://github.com/parvez-ahammed/claude-shipkit/blob/master/plugins/shipkit/skills/audit-app/SKILL.md): QA release report and six-persona UX audit of a running web app
+- [find-ux-gaps](https://github.com/parvez-ahammed/claude-shipkit/blob/master/plugins/shipkit/skills/find-ux-gaps/SKILL.md): parallel UX auditors whose findings become tickets, filed only after confirmation
+
+## Refactor and architecture
+
+- [refactor](https://github.com/parvez-ahammed/claude-shipkit/blob/master/plugins/shipkit/skills/refactor/SKILL.md): refactoring hub that routes to the right skill and merges findings
+- [find-code-smells](https://github.com/parvez-ahammed/claude-shipkit/blob/master/plugins/shipkit/skills/find-code-smells/SKILL.md): detects the 22 classic code smells with file:line evidence
+- [apply-refactoring](https://github.com/parvez-ahammed/claude-shipkit/blob/master/plugins/shipkit/skills/apply-refactoring/SKILL.md): Martin Fowler's refactoring catalog with safe step-by-step mechanics
+- [pick-creational-pattern](https://github.com/parvez-ahammed/claude-shipkit/blob/master/plugins/shipkit/skills/pick-creational-pattern/SKILL.md): scores creational design patterns against your code
+- [pick-structural-pattern](https://github.com/parvez-ahammed/claude-shipkit/blob/master/plugins/shipkit/skills/pick-structural-pattern/SKILL.md): scores structural design patterns against your code
+- [pick-behavioral-pattern](https://github.com/parvez-ahammed/claude-shipkit/blob/master/plugins/shipkit/skills/pick-behavioral-pattern/SKILL.md): scores behavioral design patterns against your code
+- [enforce-clean-architecture](https://github.com/parvez-ahammed/claude-shipkit/blob/master/plugins/shipkit/skills/enforce-clean-architecture/SKILL.md): Clean / Hexagonal architecture rulebook, bootstrap and layering guard
+- [find-shared-code](https://github.com/parvez-ahammed/claude-shipkit/blob/master/plugins/shipkit/skills/find-shared-code/SKILL.md): finds what is worth sharing across a backlog, with DRY / KISS / YAGNI judgment
+
+## Ship and operate
+
+- [deploy-to-vps](https://github.com/parvez-ahammed/claude-shipkit/blob/master/plugins/shipkit/skills/deploy-to-vps/SKILL.md): push-to-deploy CI/CD to a VPS with GitHub Actions, Caddy HTTPS, DNS, OAuth and hardening
+- [add-health-check](https://github.com/parvez-ahammed/claude-shipkit/blob/master/plugins/shipkit/skills/add-health-check/SKILL.md): health endpoints that report real readiness, wired into deploy gates and probes
+- [boost-seo](https://github.com/parvez-ahammed/claude-shipkit/blob/master/plugins/shipkit/skills/boost-seo/SKILL.md): SEO and AEO audit and fixes, proven with local tests
+
+## Create and document
+
+- [make-video](https://github.com/parvez-ahammed/claude-shipkit/blob/master/plugins/shipkit/skills/make-video/SKILL.md): promo and explainer videos built from code, rendered to MP4
+- [make-demo](https://github.com/parvez-ahammed/claude-shipkit/blob/master/plugins/shipkit/skills/make-demo/SKILL.md): pixel-exact clickable HTML demo captured from your running app
+- [write-user-guide](https://github.com/parvez-ahammed/claude-shipkit/blob/master/plugins/shipkit/skills/write-user-guide/SKILL.md): end-user feature guide as HTML and PDF, checked against the code
+- [write-plainly](https://github.com/parvez-ahammed/claude-shipkit/blob/master/plugins/shipkit/skills/write-plainly/SKILL.md): plain-English house style for commits, PRs, code comments and docs
+
+## Insight
+
+- [show-usage](https://github.com/parvez-ahammed/claude-shipkit/blob/master/plugins/shipkit/skills/show-usage/SKILL.md): active time, sessions, tokens and cost per project from local Claude Code transcripts
+- [fill-timesheet](https://github.com/parvez-ahammed/claude-shipkit/blob/master/plugins/shipkit/skills/fill-timesheet/SKILL.md): reconstructs past work as paste-ready timesheet rows
+
+## Optional
+
+- [secret-hygiene hook](https://github.com/parvez-ahammed/claude-shipkit/tree/master/hooks/secret-hygiene): git hook that blocks a commit that adds a secret
+- [safe-commit hook](https://github.com/parvez-ahammed/claude-shipkit/tree/master/hooks/safe-commit): git commit-message validator

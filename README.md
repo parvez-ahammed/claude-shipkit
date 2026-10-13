@@ -1,178 +1,207 @@
 <div align="center">
 
-# 🧩 Claude Skills
+<img src="docs/og.png" alt="ShipKit - 24 Claude Code skills that review, fix, test and ship your code" width="720">
 
-**An evolving, open-sourced toolkit of [Claude Code](https://claude.com/claude-code) building blocks — skills, hooks, and commands.**
+# ShipKit: Claude Code skills that review, fix, test and ship your code
+
+**24 production-ready [Claude Code](https://claude.com/claude-code) skills that work like a senior dev team in your terminal:
+a multi-seat code reviewer, a root-cause bug fixer, a QA + UX auditor, a refactoring coach, a VPS deployer, a promo-video maker and more.**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![Claude Code](https://img.shields.io/badge/Claude%20Code-plugin-d97757.svg)](https://claude.com/claude-code)
-[![PowerShell](https://img.shields.io/badge/PowerShell-5391FE.svg?logo=powershell&logoColor=white)](sync-skills.ps1)
-[![Skills: 24](https://img.shields.io/badge/skills-24-6f42c1.svg)](INDEX.md)
-[![PRs welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](#-contributing)
+[![Claude Code plugin](https://img.shields.io/badge/Claude%20Code-plugin-d97757.svg)](https://claude.com/claude-code)
+[![Skills: 24](https://img.shields.io/badge/skills-24-6f42c1.svg)](#-the-skills)
+[![Validate](https://github.com/parvez-ahammed/claude-shipkit/actions/workflows/validate.yml/badge.svg)](https://github.com/parvez-ahammed/claude-shipkit/actions/workflows/validate.yml)
+[![Windows | macOS | Linux](https://img.shields.io/badge/OS-Windows%20%7C%20macOS%20%7C%20Linux-informational.svg)](#-requirements)
+[![PRs welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
+
+[Install](#-install-in-30-seconds) · [Skills](#-the-skills) · [Examples](#-what-you-can-say) · [FAQ](#-faq) · [Website](https://parvez-ahammed.github.io/claude-shipkit/)
 
 </div>
 
 ---
 
-Every skill is stack-neutral and works on Windows, macOS and Linux unless its
-**Requirements** column says otherwise. Skills that touch the outside world (posting PR
-comments, filing tickets, attaching files) show you what they will send and wait for a yes.
+## ⚡ Install in 30 seconds
 
-Not just skills — a toolkit, because the right Claude Code primitive depends on the job:
+In Claude Code:
 
-| Primitive | Use it for | Triggered by |
-|-----------|-----------|--------------|
-| **Skill** | knowledge / a workflow the model *applies with judgment* ("how to do X") | the model, on a matching task |
-| **Hook** | deterministic **must-run-on-event** enforcement ("always do X when Y") | the harness, automatically |
-| **Command** | a saved prompt the **user** fires | `/name` |
+```
+/plugin marketplace add parvez-ahammed/claude-shipkit
+/plugin install shipkit@shipkit
+```
 
-Rule of thumb: "*always do X when Y happens*" is a **hook**, not a skill — the model
-forgets, the harness doesn't. "*how should I approach X*" is a **skill**.
+That's it. Every skill now triggers on its own when your request matches, or you can run
+one directly as `/shipkit:<skill>`, for example `/shipkit:review-branch`.
+Update later with `/plugin marketplace update shipkit`.
 
-## ✨ What's inside
+## 💬 What you can say
 
-### Skills (`plugins/parvez/skills/`)
+You don't need to remember any command. Just ask:
 
-| Skill | What it does | Scope |
-|-------|--------------|-------|
-| **vps-deploy** | Vendor-neutral push-to-deploy CI/CD to a VPS (any runtime: Node/Python/Go/.NET), Caddy auto-TLS, OAuth/OIDC redirect setup, DNS (proxied-by-default), and baseline hardening (fail2ban, SSH-port rotation, firewall, CDN origin lockdown). | generic |
-| **honest-health-check** | Design health endpoints that assert real readiness (DB/deps reachable) instead of a hardcoded 200, and wire them into deploy gates + container/orchestrator probes. Pairs with `vps-deploy`. | generic |
-| **generate-ux-improvements** | Parallel UX-gap audit that ends in tracked work. Partitions the app into disjoint territories, dispatches N auditors (default 3) for M issues each (default 3), triages, writes a markdown file, and files to GitHub, GitLab, Jira or Azure DevOps only after you confirm. Audits from source when the app cannot be run. | generic |
-| **clean-architecture** | Rulebook + bootstrap + config-driven guard for Clean / Hexagonal architecture in any language (.NET/TS/Java/Go/Python). The Dependency Rule, ports & adapters, per-stack layout, and a layering check to enforce boundaries. | generic |
-| **refactoring-guru** | Orchestrator for refactoring + design-pattern work. Understands intent, routes to the spokes below, and only recommends a pattern when a code site meets scored preconditions with cited evidence. | generic |
-| **code-smell-detector** | Detect the 22 refactoring.guru smells (Bloaters, OO-abusers, Change-preventers, Dispensables, Couplers) in a file/dir, each with `file:line` evidence mapped to a candidate fix. Spoke of refactoring-guru. | generic |
-| **refactoring-methods** | Martin Fowler's refactoring catalog: preconditions + ordered, safe mechanics to fix a known smell (extract method, replace conditional with polymorphism, introduce parameter object...). Spoke. | generic |
-| **creational-patterns** | Score whether a creational GoF pattern (Factory, Abstract Factory, Builder, Prototype, Singleton) fits a site; weighted preconditions + hard vetoes, emits APPLY/CONSIDER/REJECT with evidence. Spoke. | generic |
-| **structural-patterns** | Same scoring for structural patterns (Adapter, Bridge, Composite, Decorator, Facade, Flyweight, Proxy). Spoke. | generic |
-| **behavioral-patterns** | Same scoring for behavioral patterns (Strategy, State, Command, Observer, Chain of Responsibility, Template Method, Visitor, Mediator, Iterator, Memento). Spoke. | generic |
-| **platform-audit** | Find what to make shared across a milestone/backlog with DRY/KISS/YAGNI judgment: candidate commons, a verdict each (build-now / narrow / resist), a cross-phase ownership check, and a build order. Resists over-abstraction. | generic |
-| **grill-feature** | Promise-level, code-grounded interrogation of shipped features (does the real promise hold in the code, not "does it compile") returning BULLETPROOF / CRACKED / FAKE with `file:line` evidence, plus an optional unit-economics pass. Inline or workflow sweep. | generic |
-| **show-usage** | WakaTime-style local active time + token/cost/tool stats from Claude Code session transcripts. Read-only, zero-dep. | generic |
-| **qa-ux** | Pressure-test a running web app: a QA release report and a UX product-experience audit, two cross-linked HTML reports with screenshot evidence. | generic |
-| **video-maker** | Animated promo / explainer / social videos built entirely from code: HTML scenes, local TTS voice-over, generated music, captions and thumbnail, rendered to MP4. A claims check gates every on-screen statement. | generic |
-| **demo-maker** | Pixel-exact clickable HTML demos of a planned workflow, captured from the real running app (DOM + CSS snapshot) with an optional Windows desktop (WinForms) adapter, so the product owner sees exactly how it will look. Stays close to today's app. | generic |
-| **user-guide-maker** | User-facing feature guide for a ticket or PR as self-contained HTML + PDF. Learns from the code, then a fresh agent checks every claim. Optional attach to Azure DevOps, Jira or GitHub. | generic |
-| **branch-reviewer** | Multi-seat review of a branch / PR (backend, frontend, architecture, tests, QA, text, plus a licence seat for new dependencies), a refutation pass, a ranked punch list and an HTML report. Advanced mode adds an adversarial round; comment mode re-verifies each claim before posting to GitHub, Azure DevOps or GitLab. Reads your project rules file. | generic |
-| **branch-test-report** | Runs a branch against the live app (not a reading of the diff): seeds data, predicts results with queries, drives the browser, and writes an HTML report with screenshots for a product owner (base vs branch, open items only). | generic |
-| **bug-fixer** | One bug end-to-end: reproduce, root cause before fix, a regression test that fails without the fix, then verify. Hard-won debugging traps included. | generic |
-| **story-implementer** | One user story end-to-end: analyze, break down, pick tasks, implement, test, verify, with a pre-PR gate (criteria trace, backward compatibility, every client that calls a changed endpoint). | generic |
-| **plain-writer** | House style for prose that lands in git, PRs and docs: ASCII punctuation, Simplified Technical English, no jargon, short commit messages, why-only code comments, plus a PR-description sub-skill that fills any repo's template. | generic |
-| **seo-aeo** | Audit and improve a site's SEO and AEO (AI answer engines): meta, JSON-LD, robots, sitemap, llms.txt, prerendering for SPAs, then prove it with local test scripts. | generic |
-| **timesheet-from-transcripts** | Reconstruct what you worked on for past dates (tickets, descriptions, time blocks) from local Claude Code transcripts, ready for a timesheet. Configurable ticket patterns. | generic |
+| You type | ShipKit runs |
+|----------|--------------|
+| "review my PR before I open it" | `review-branch` - six reviewer seats, a refutation pass, one ranked punch list |
+| "this endpoint returns 500 since yesterday, fix it" | `fix-bug` - reproduce, prove the root cause, regression test, verify |
+| "implement this ticket" | `build-story` - analyze, break down, implement, test, pre-PR gate |
+| "QA the app and tell me if it's ready to ship" | `audit-app` - QA release report + UX audit with screenshots |
+| "find UX problems and file tickets" | `find-ux-gaps` - parallel auditors, evidence per issue, files only after you say yes |
+| "is checkout really bulletproof?" | `grill-feature` - checks the real promise in code: BULLETPROOF / CRACKED / FAKE |
+| "this class is a mess, refactor it" | `refactor` - smells with `file:line`, safe mechanics, patterns only when they score |
+| "deploy my app to my VPS on every push" | `deploy-to-vps` - GitHub Actions, Caddy HTTPS, DNS, OAuth, server hardening |
+| "make a 30-second promo video of this project" | `make-video` - MP4 with voice-over, music, captions and thumbnail, built from code |
+| "why doesn't my site show up in ChatGPT answers?" | `boost-seo` - SEO + AEO audit, JSON-LD, llms.txt, proven with local tests |
 
-### Requirements
+## 🧰 The skills
 
-Most skills are pure reasoning and need nothing beyond Claude Code. The ones that run
-bundled tools declare it in their `compatibility` frontmatter:
+### Review and fix
+
+| Skill | What it does |
+|-------|--------------|
+| [`review-branch`](plugins/shipkit/skills/review-branch/SKILL.md) | Multi-seat code review of a branch or PR: backend, frontend, architecture, tests, QA and text seats, plus a licence seat for new dependencies. Every finding survives a refutation pass. Ranked punch list + HTML report. Optional comment mode posts re-verified findings to GitHub, GitLab or Azure DevOps. |
+| [`fix-bug`](plugins/shipkit/skills/fix-bug/SKILL.md) | One bug end to end: reproduce, prove the root cause before any fix, write a regression test that fails without the fix, verify. |
+| [`build-story`](plugins/shipkit/skills/build-story/SKILL.md) | One user story or ticket end to end: skeptical requirement analysis, task breakdown, implement, test, and a pre-PR gate (criteria trace, backward compatibility, every caller of a changed endpoint). |
+| [`test-branch`](plugins/shipkit/skills/test-branch/SKILL.md) | Tests a branch against the real running app, not the diff: seeds data, drives the API and browser, and writes an HTML report with screenshots a product owner can read. |
+| [`grill-feature`](plugins/shipkit/skills/grill-feature/SKILL.md) | Interrogates shipped features at the promise level ("can users really do X?") and answers from the code with `file:line` evidence. |
+
+### QA and UX
+
+| Skill | What it does |
+|-------|--------------|
+| [`audit-app`](plugins/shipkit/skills/audit-app/SKILL.md) | Pressure-tests a running web app: a Staff-QA release report and a six-persona UX audit, two cross-linked HTML reports with screenshot evidence. Never invents data; anything unverified is UNKNOWN. |
+| [`find-ux-gaps`](plugins/shipkit/skills/find-ux-gaps/SKILL.md) | Partitions the app, fans out parallel UX auditors, triages, and turns the survivors into tickets for GitHub, GitLab, Jira or Azure DevOps after you confirm. Works even when the app cannot be run. |
+
+### Refactor and architecture
+
+| Skill | What it does |
+|-------|--------------|
+| [`refactor`](plugins/shipkit/skills/refactor/SKILL.md) | The refactoring hub: understands what you want and routes to the skills below, merging their findings. |
+| [`find-code-smells`](plugins/shipkit/skills/find-code-smells/SKILL.md) | Detects the 22 classic code smells with `file:line` evidence, each mapped to a candidate fix. |
+| [`apply-refactoring`](plugins/shipkit/skills/apply-refactoring/SKILL.md) | Martin Fowler's refactoring catalog: preconditions and ordered, safe mechanics. |
+| [`pick-creational-pattern`](plugins/shipkit/skills/pick-creational-pattern/SKILL.md) | Scores Factory, Builder, Prototype, Singleton... against your code. APPLY / CONSIDER / REJECT with evidence. |
+| [`pick-structural-pattern`](plugins/shipkit/skills/pick-structural-pattern/SKILL.md) | Same scoring for Adapter, Bridge, Composite, Decorator, Facade, Flyweight, Proxy. |
+| [`pick-behavioral-pattern`](plugins/shipkit/skills/pick-behavioral-pattern/SKILL.md) | Same scoring for Strategy, State, Command, Observer, Chain of Responsibility and more. |
+| [`enforce-clean-architecture`](plugins/shipkit/skills/enforce-clean-architecture/SKILL.md) | Clean / Hexagonal architecture rulebook, per-stack bootstrap (.NET, TypeScript, Java, Go, Python) and a layering guard you can run in CI. |
+| [`find-shared-code`](plugins/shipkit/skills/find-shared-code/SKILL.md) | Finds what is worth sharing across a backlog with DRY / KISS / YAGNI judgment, and what to resist abstracting. |
+
+### Ship and operate
+
+| Skill | What it does |
+|-------|--------------|
+| [`deploy-to-vps`](plugins/shipkit/skills/deploy-to-vps/SKILL.md) | Push-to-deploy CI/CD for any containerized app to any VPS: GitHub Actions, Caddy auto-HTTPS, DNS, OAuth redirects and baseline hardening. Encodes the gotchas that make deploys go green while the app is down. |
+| [`add-health-check`](plugins/shipkit/skills/add-health-check/SKILL.md) | Health endpoints that report real readiness instead of a hardcoded 200, wired into deploy gates and container probes. |
+| [`boost-seo`](plugins/shipkit/skills/boost-seo/SKILL.md) | SEO and AEO (AI answer engines) audit and fixes: meta tags, JSON-LD, robots, sitemap, llms.txt, SPA prerendering, proven with local test scripts. |
+
+### Create and document
+
+| Skill | What it does |
+|-------|--------------|
+| [`make-video`](plugins/shipkit/skills/make-video/SKILL.md) | Promo, explainer and social videos built entirely from code: HTML scenes, local text-to-speech, generated music, captions and thumbnail, rendered to MP4. Every on-screen claim is checked. |
+| [`make-demo`](plugins/shipkit/skills/make-demo/SKILL.md) | Pixel-exact clickable HTML demo of a planned workflow, captured from your real running app. |
+| [`write-user-guide`](plugins/shipkit/skills/write-user-guide/SKILL.md) | End-user feature guide for a ticket or PR as HTML + PDF; a fresh agent checks every claim against the code. |
+| [`write-plainly`](plugins/shipkit/skills/write-plainly/SKILL.md) | A plain-English house style for commits, PR descriptions, code comments and docs, with a PR-description writer that fills any repo's template. |
+
+### Insight
+
+| Skill | What it does |
+|-------|--------------|
+| [`show-usage`](plugins/shipkit/skills/show-usage/SKILL.md) | WakaTime-style active time, tokens and cost per project from your local Claude Code transcripts. Read-only, zero dependencies. |
+| [`fill-timesheet`](plugins/shipkit/skills/fill-timesheet/SKILL.md) | Reconstructs what you worked on for past dates, as paste-ready timesheet rows. |
+
+### Git hooks (bonus)
+
+| Hook | What it does |
+|------|--------------|
+| [`secret-hygiene`](hooks/secret-hygiene/README.md) | Blocks a commit that adds a secret (gitleaks when installed, regex fallback). Works as a git hook or a Claude Code `PreToolUse` hook. |
+| [`safe-commit`](hooks/safe-commit/README.md) | Commit-message validator: conventional subject, length, stray `@` lines; optional em-dash and AI co-author checks. |
+
+Install a hook with `bash hooks/<hook>/install.sh /path/to/repo` or
+`pwsh -File hooks/<hook>/install.ps1 -Repo C:\path\to\repo`.
+
+## 🎯 Why ShipKit
+
+- **Evidence over vibes.** Reviews, audits and refactoring advice cite `file:line`. Findings
+  that can't be proven are dropped or marked UNKNOWN, not padded in.
+- **Root cause before fix.** `fix-bug` won't write a fix until it can explain the bug, and
+  ships a regression test that fails without the fix.
+- **Asks before acting outside your machine.** Posting PR comments, filing tickets or
+  attaching files always shows you what will be sent and waits for a yes.
+- **Any stack, any OS.** No framework lock-in. Windows, macOS and Linux; where a helper
+  script depends on the shell, there is a bash and a PowerShell version.
+- **Built to the current skill spec.** Each skill is a self-contained folder (`SKILL.md` +
+  references + scripts) that follows the [Agent Skills](https://agentskills.io) format, so it also works
+  when copied on its own.
+
+## 📋 Requirements
+
+Most skills need nothing but Claude Code. Skills that run bundled tools say so in their
+`compatibility` field:
 
 | Skill | Needs |
 |-------|-------|
-| video-maker | Node 18+, `npm ci` in `engine/` (bundles Playwright Chromium and ffmpeg) |
-| demo-maker | Python 3, a browser tool (e.g. Playwright MCP); optional .NET 8 for the Windows desktop adapter |
-| user-guide-maker | Python 3.8+ with PyMuPDF, Chrome / Chromium / Edge; tracker CLI only if attaching |
-| qa-ux, branch-test-report | the app running locally, a browser tool (e.g. Playwright MCP) |
-| seo-aeo, show-usage | Node 18+ |
-| clean-architecture | PowerShell 7 (`pwsh`, cross-platform) or Windows PowerShell 5.1 for the layering guard |
-| vps-deploy | GitHub Actions, an Ubuntu VPS with Docker, `gh`; `pwsh` or `bash` for secret migration |
-| branch-reviewer | git; `gh` / `glab` / `az` only for comment mode |
+| make-video | Node 18+, `npm ci` in `engine/` (bundles Playwright Chromium and ffmpeg) |
+| make-demo | Python 3, a browser tool (e.g. Playwright MCP); optional .NET 8 for the Windows desktop adapter |
+| write-user-guide | Python 3.8+ with PyMuPDF, Chrome / Chromium / Edge; tracker CLI only if attaching |
+| audit-app, test-branch | the app running locally, a browser tool (e.g. Playwright MCP) |
+| boost-seo, show-usage | Node 18+ |
+| enforce-clean-architecture | PowerShell 7 (`pwsh`, cross-platform) or Windows PowerShell 5.1 for the layering guard |
+| deploy-to-vps | GitHub Actions, an Ubuntu VPS with Docker, `gh`; `pwsh` or `bash` for secret migration |
+| review-branch | git; `gh` / `glab` / `az` only for comment mode |
 
-### Hooks (`hooks/`)
+## ❓ FAQ
 
-| Hook | What it does | Install |
-|------|--------------|---------|
-| **secret-hygiene** | Block a commit that introduces a secret (gitleaks when present, conservative regex fallback). | git pre-commit hook, or a Claude Code PreToolUse hook — see `hooks/secret-hygiene/README.md` |
-| **safe-commit** | commit-msg validator: no stray `@`, conventional subject, length; optional em-dash + AI-coauthor rejection. | git commit-msg hook — see `hooks/safe-commit/README.md` |
+**What is a Claude Code skill?**
+A folder with a `SKILL.md` that teaches Claude Code how to do one job well. Claude reads the
+skill's description and loads it automatically when your request matches. You can also run
+it yourself as a slash command.
 
-### Commands (`commands/`)
+**Can I install just one skill?**
+Yes. Copy its folder from `plugins/shipkit/skills/` into `~/.claude/skills/` (for you) or
+`.claude/skills/` in a project (for your team). The pattern skills also read
+`refactor/references/verdict-format.md` when it sits next to them, and fall back to inline
+rules when it doesn't.
 
-User-fired prompt shortcuts. None yet — coming as patterns stabilize.
+**Does it work on Windows?**
+Yes. Every skill runs on Windows, macOS and Linux; where a shell matters there is a bash
+and a PowerShell version. The only Windows-only piece is `make-demo`'s optional adapter for
+WinForms desktop apps.
 
-> See [`INDEX.md`](INDEX.md) for the full catalog.
+**Is it free?**
+Yes, MIT licensed. Skills run inside your own Claude Code session.
 
-## 📦 Installation
+**I installed the old `parvez` plugin. How do I upgrade?**
+Run `/plugin uninstall parvez@parvez-tools` and `/plugin marketplace remove parvez-tools`,
+then the two install commands above. All skill names changed in 1.0.0; see the
+[CHANGELOG](CHANGELOG.md) for the old -> new table.
 
-This repo is a **Claude Code plugin marketplace**. The skills ship as one plugin,
-`parvez`, so on any machine:
-
-```
-/plugin marketplace add parvez-ahammed/claude-skills
-/plugin install parvez@parvez-tools
-```
-
-Every skill goes live, namespaced `parvez:<skill>` (e.g. `parvez:vps-deploy`,
-`parvez:clean-architecture`, `parvez:honest-health-check`), triggering on its
-`description`, or fire one directly with `/parvez:<skill>`. Update later with
-`/plugin marketplace update parvez-tools`.
-
-**Just one skill?** Copy its folder into `~/.claude/skills/` (personal) or a project's
-`.claude/skills/`. Each skill is self-contained; the pattern spokes also read
-`refactoring-guru/references/verdict-format.md` when it is installed next to them and
-fall back to inline rules when it is not.
-
-**Local authoring loop** (test before pushing): `/plugin marketplace add .` from a
-clone, then install — relative paths resolve against the repo.
-
-**Hooks** are **git** hooks (commit-msg / pre-commit), not Claude lifecycle hooks, so
-install per-hook (a git hook, or a `settings.json` snippet). See each hook's `README.md`.
-
-### Local sync (authoring)
-
-`sync-skills.sh` / `sync-skills.ps1` copy every skill into `~/.claude/skills` on the
-current machine (skipping `node_modules` and archives). Handy while editing a skill; the
-plugin marketplace is the way to install elsewhere.
+## 🛠 Develop locally
 
 ```bash
-bash sync-skills.sh --dry-run           # macOS / Linux / Git Bash: preview
-bash sync-skills.sh                     # sync all
+git clone https://github.com/parvez-ahammed/claude-shipkit
+cd claude-shipkit
+bash sync-skills.sh            # or: pwsh -File sync-skills.ps1   (copies skills into ~/.claude/skills)
+claude plugin validate . && claude plugin validate plugins/shipkit
 ```
 
-```powershell
-pwsh -File sync-skills.ps1 -WhatIf      # Windows: preview
-pwsh -File sync-skills.ps1              # sync all
-```
-
-## 🗂️ Layout
+Or point Claude Code at your clone with `/plugin marketplace add .`.
 
 ```
-claude-skills/
-  README.md                  - this file
-  LICENSE                    - MIT
-  INDEX.md                   - catalog
-  .claude-plugin/
-    marketplace.json         - marketplace manifest (name: parvez-tools)
-  plugins/
-    parvez/                  - the installable plugin (namespace prefix)
-      .claude-plugin/plugin.json
-      skills/                - skills (one folder each)
-  _template/                 - starting point for a new skill
-  hooks/                     - git hooks (script + install notes per hook)
-  commands/                  - user-fired commands
-  sync-skills.sh / .ps1      - copy skills into ~/.claude/skills (authoring loop)
+claude-shipkit/
+  .claude-plugin/marketplace.json   marketplace manifest (name: shipkit)
+  plugins/shipkit/                  the plugin
+    .claude-plugin/plugin.json
+    skills/<skill>/SKILL.md         one folder per skill
+  hooks/                            git hooks (bash + PowerShell installers)
+  _template/SKILL.md                starting point for a new skill
+  docs/                             project website (GitHub Pages)
 ```
-
-## ✍️ Writing a good skill
-
-- **Pushy, specific `description`** — the only trigger signal; name the contexts and
-  phrases it should fire on.
-- Keep `SKILL.md` under ~500 lines; push detail into `references/` (loaded on demand).
-- `description` <= 1,024 chars (portable); `description` + `when_to_use` <= 1,536 (Claude
-  Code listing cap). Add `license`, and `compatibility` when the skill needs tools installed.
-- Reference bundled files as `${CLAUDE_SKILL_DIR}/...` and run scripts through their
-  interpreter (`node`, `python`, `bash`, `pwsh`).
-- Bundle deterministic steps as `scripts/`.
-- Explain the **why**; avoid rigid ALWAYS/NEVER walls.
-- If it's really "enforce X every time," make it a **hook**, not a skill.
 
 ## 🤝 Contributing
 
-Issues and PRs welcome. Start from [`_template/SKILL.md`](_template/SKILL.md). Each piece
-should be self-contained, stack-neutral, documented, and (where it has a verifiable
-output) shipped with a tested script. Before opening a PR:
+New skills, fixes and ideas are welcome. Read [CONTRIBUTING.md](CONTRIBUTING.md), start from
+[`_template/SKILL.md`](_template/SKILL.md), and open a PR. Got an idea but no time?
+[Open a skill request](https://github.com/parvez-ahammed/claude-shipkit/issues/new/choose).
 
-```bash
-claude plugin validate . && claude plugin validate plugins/parvez
-```
+If ShipKit saves you time, **a ⭐ helps other developers find it.**
 
 ## 📄 License
 
-MIT © 2026 Parvez Ahammed — see [`LICENSE`](LICENSE).
+MIT © 2026 Parvez Ahammed. See [LICENSE](LICENSE).

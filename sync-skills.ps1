@@ -1,4 +1,4 @@
-# Copy every skill in plugins/parvez/skills into the Claude Code personal skills dir so they go
+# Copy every skill in plugins/shipkit/skills into the Claude Code personal skills dir so they go
 # live. This repo is the source of truth; ~/.claude/skills is a synced copy.
 #
 #   pwsh -File sync-skills.ps1            # sync all
@@ -10,7 +10,7 @@ param(
 )
 
 $ErrorActionPreference = 'Stop'
-$src = Join-Path $PSScriptRoot "plugins\parvez\skills"
+$src = Join-Path $PSScriptRoot "plugins\shipkit\skills"
 
 if (-not (Test-Path $src)) { throw "No skills/ directory found at $src" }
 New-Item -ItemType Directory -Force -Path $Dest | Out-Null

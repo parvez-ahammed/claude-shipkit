@@ -1,26 +1,31 @@
 {
-  "name": "parvez-tools",
+  "name": "shipkit",
   "owner": {
     "name": "Parvez Ahammed",
     "url": "https://github.com/parvez-ahammed"
   },
-  "description": "Parvez Ahammed's open-source Claude Code toolkit: general-purpose skills and git hooks for building, reviewing, testing and shipping software.",
+  "description": "ShipKit: open-source Claude Code skills to review, fix, test, refactor, document and ship software.",
   "plugins": [
     {
-      "name": "parvez",
-      "source": "./plugins/parvez",
-      "description": "24 general-purpose Claude Code skills plus git hooks. Ship: vps-deploy, honest-health-check, clean-architecture. Refactor: refactoring-guru hub with code-smell-detector, refactoring-methods and creational/structural/behavioral pattern scorers. Review: branch-reviewer, grill-feature, platform-audit. Test and QA: branch-test-report, qa-ux, generate-ux-improvements, bug-fixer. Build: story-implementer. Deliver: video-maker, demo-maker, user-guide-maker, seo-aeo. Write: plain-writer. Insight: show-usage, timesheet-from-transcripts.",
+      "name": "shipkit",
+      "source": "./plugins/shipkit",
+      "description": "24 production-ready Claude Code skills that act like a senior dev team: review-branch, fix-bug, build-story, test-branch, audit-app (QA + UX), find-ux-gaps, grill-feature, refactor (with find-code-smells, apply-refactoring and design-pattern scorers), enforce-clean-architecture, deploy-to-vps, add-health-check, boost-seo, make-video, make-demo, write-user-guide, write-plainly, find-shared-code, show-usage and fill-timesheet. Stack-neutral; Windows, macOS and Linux.",
       "category": "development",
       "tags": [
-        "deployment",
-        "refactoring",
         "code-review",
+        "debugging",
+        "refactoring",
         "testing",
         "qa",
+        "ux",
+        "deployment",
+        "seo",
         "documentation",
-        "video",
-        "seo"
+        "video"
       ]
     }
-  ]
+  ],
+  "renames": {
+    "parvez": "shipkit"
+  }
 }

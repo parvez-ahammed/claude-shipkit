@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Copy every skill in plugins/parvez/skills into the Claude Code personal skills dir
+# Copy every skill in plugins/shipkit/skills into the Claude Code personal skills dir
 # so they go live without the plugin. Same as sync-skills.ps1, for macOS / Linux / Git Bash.
 #
 #   bash sync-skills.sh                 # sync all into ~/.claude/skills
@@ -16,7 +16,7 @@ for arg in "$@"; do
   esac
 done
 
-src="$(cd "$(dirname "$0")" && pwd)/plugins/parvez/skills"
+src="$(cd "$(dirname "$0")" && pwd)/plugins/shipkit/skills"
 [ -d "$src" ] || { echo "No skills directory found at $src" >&2; exit 1; }
 [ "$dry" -eq 1 ] || mkdir -p "$dest"
 
