@@ -1,8 +1,8 @@
 {
   "name": "shipkit",
   "owner": {
-    "name": "Parvez Ahammed",
-    "url": "https://github.com/parvez-ahammed"
+    "name": "ShipKit",
+    "url": "https://github.com/parvez-ahammed/shipkit"
   },
   "description": "ShipKit: open-source Claude Code skills to review, fix, test, refactor, document and ship software.",
   "plugins": [
@@ -24,8 +24,5 @@
         "video"
       ]
     }
-  ],
-  "renames": {
-    "parvez": "shipkit"
-  }
+  ]
 }

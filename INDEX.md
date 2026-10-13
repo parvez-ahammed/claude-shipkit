@@ -1,7 +1,7 @@
 # Skill index
 
 Skills currently in this library (`plugins/shipkit/skills/`). Install via the plugin:
-`/plugin marketplace add parvez-ahammed/claude-shipkit` then `/plugin install shipkit@shipkit`.
+`/plugin marketplace add parvez-ahammed/shipkit` then `/plugin install shipkit@shipkit`.
 
 | Skill | What it does | Reuse |
 |-------|--------------|-------|

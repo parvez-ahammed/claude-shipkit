@@ -13,9 +13,8 @@ First public release, rebranded as **ShipKit**.
 
 ### Changed
 
-- **Rebrand to ShipKit.** The plugin is renamed `parvez` -> `shipkit`, the marketplace
-  `parvez-tools` -> `shipkit`, and the repository `claude-skills` -> `claude-shipkit`.
-  Skills are now invoked as `/shipkit:<skill>`.
+- **Rebrand to ShipKit.** The plugin, the marketplace and the repository are all named
+  `shipkit`. Skills are now invoked as `/shipkit:<skill>`.
 - **All skills renamed to verb-object** names, so the name says what the skill does:
 
   | Old name                     | New name                     |
@@ -51,21 +50,10 @@ First public release, rebranded as **ShipKit**.
 - CI workflow that validates skill frontmatter, manifests and script syntax, and blocks
   personal email addresses.
 
-### Migrating from `parvez@parvez-tools`
+### Upgrading
 
-Remove the old plugin and marketplace, then install ShipKit:
-
-```
-/plugin uninstall parvez@parvez-tools
-/plugin marketplace remove parvez-tools
-/plugin marketplace add parvez-ahammed/claude-shipkit
-/plugin install shipkit@shipkit
-```
-
-Then replace old invocations with the new names from the table above, for example
-`/parvez:bug-fixer` becomes `/shipkit:fix-bug`. If you copied skills into
-`~/.claude/skills`, delete the old folders and run `bash sync-skills.sh` (or
-`pwsh -File sync-skills.ps1`) again.
+If you installed a pre-1.0 version, uninstall it, then run the two install commands in the
+README. Replace old skill names with the new ones from the table above.
 
 ## [0.5.0]
 
@@ -91,5 +79,5 @@ Public-readiness audit of every skill.
 - `show-usage`: `--project` option.
 - `branch-reviewer`: base branch detection.
 
-[Unreleased]: https://github.com/parvez-ahammed/claude-shipkit/compare/v1.0.0...HEAD
-[1.0.0]: https://github.com/parvez-ahammed/claude-shipkit/releases/tag/v1.0.0
+[Unreleased]: https://github.com/parvez-ahammed/shipkit/compare/v1.0.0...HEAD
+[1.0.0]: https://github.com/parvez-ahammed/shipkit/releases/tag/v1.0.0

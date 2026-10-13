@@ -10,11 +10,11 @@ a multi-seat code reviewer, a root-cause bug fixer, a QA + UX auditor, a refacto
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Claude Code plugin](https://img.shields.io/badge/Claude%20Code-plugin-d97757.svg)](https://claude.com/claude-code)
 [![Skills: 24](https://img.shields.io/badge/skills-24-6f42c1.svg)](#-the-skills)
-[![Validate](https://github.com/parvez-ahammed/claude-shipkit/actions/workflows/validate.yml/badge.svg)](https://github.com/parvez-ahammed/claude-shipkit/actions/workflows/validate.yml)
+[![Validate](https://github.com/parvez-ahammed/shipkit/actions/workflows/validate.yml/badge.svg)](https://github.com/parvez-ahammed/shipkit/actions/workflows/validate.yml)
 [![Windows | macOS | Linux](https://img.shields.io/badge/OS-Windows%20%7C%20macOS%20%7C%20Linux-informational.svg)](#-requirements)
 [![PRs welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
-[Install](#-install-in-30-seconds) · [Skills](#-the-skills) · [Examples](#-what-you-can-say) · [FAQ](#-faq) · [Website](https://parvez-ahammed.github.io/claude-shipkit/)
+[Install](#-install-in-30-seconds) · [Skills](#-the-skills) · [Examples](#-what-you-can-say) · [FAQ](#-faq) · [Website](https://parvez-ahammed.github.io/shipkit/)
 
 </div>
 
@@ -25,7 +25,7 @@ a multi-seat code reviewer, a root-cause bug fixer, a QA + UX auditor, a refacto
 In Claude Code:
 
 ```
-/plugin marketplace add parvez-ahammed/claude-shipkit
+/plugin marketplace add parvez-ahammed/shipkit
 /plugin install shipkit@shipkit
 ```
 
@@ -167,16 +167,11 @@ WinForms desktop apps.
 **Is it free?**
 Yes, MIT licensed. Skills run inside your own Claude Code session.
 
-**I installed the old `parvez` plugin. How do I upgrade?**
-Run `/plugin uninstall parvez@parvez-tools` and `/plugin marketplace remove parvez-tools`,
-then the two install commands above. All skill names changed in 1.0.0; see the
-[CHANGELOG](CHANGELOG.md) for the old -> new table.
-
 ## 🛠 Develop locally
 
 ```bash
-git clone https://github.com/parvez-ahammed/claude-shipkit
-cd claude-shipkit
+git clone https://github.com/parvez-ahammed/shipkit
+cd shipkit
 bash sync-skills.sh            # or: pwsh -File sync-skills.ps1   (copies skills into ~/.claude/skills)
 claude plugin validate . && claude plugin validate plugins/shipkit
 ```
@@ -184,7 +179,7 @@ claude plugin validate . && claude plugin validate plugins/shipkit
 Or point Claude Code at your clone with `/plugin marketplace add .`.
 
 ```
-claude-shipkit/
+shipkit/
   .claude-plugin/marketplace.json   marketplace manifest (name: shipkit)
   plugins/shipkit/                  the plugin
     .claude-plugin/plugin.json
@@ -198,10 +193,10 @@ claude-shipkit/
 
 New skills, fixes and ideas are welcome. Read [CONTRIBUTING.md](CONTRIBUTING.md), start from
 [`_template/SKILL.md`](_template/SKILL.md), and open a PR. Got an idea but no time?
-[Open a skill request](https://github.com/parvez-ahammed/claude-shipkit/issues/new/choose).
+[Open a skill request](https://github.com/parvez-ahammed/shipkit/issues/new/choose).
 
 If ShipKit saves you time, **a ⭐ helps other developers find it.**
 
 ## 📄 License
 
-MIT © 2026 Parvez Ahammed. See [LICENSE](LICENSE).
+MIT © 2026 ShipKit contributors. See [LICENSE](LICENSE).

@@ -16,7 +16,7 @@ Only the latest release of ShipKit gets security fixes. Update with
 
 Report privately through GitHub:
 
-1. Go to the [Security tab](https://github.com/parvez-ahammed/claude-shipkit/security) of
+1. Go to the [Security tab](https://github.com/parvez-ahammed/shipkit/security) of
    this repository.
 2. Click **Report a vulnerability**.
 3. Describe the problem, the affected skill, script or hook, and steps to reproduce.

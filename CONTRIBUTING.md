@@ -5,7 +5,7 @@ Thanks for helping. ShipKit is a Claude Code plugin: 24 skills under
 skill or a fix to an existing one.
 
 Before you start on anything large, open an issue (or a
-[discussion](https://github.com/parvez-ahammed/claude-shipkit/discussions)) so we can agree
+[discussion](https://github.com/parvez-ahammed/shipkit/discussions)) so we can agree
 on the shape first.
 
 ## Repository layout

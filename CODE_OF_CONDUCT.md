@@ -60,14 +60,10 @@ representative at an online or offline event.
 
 Instances of abusive, harassing, or otherwise unacceptable behavior may be
 reported to the community leaders responsible for enforcement privately through
-GitHub:
-
-* use the repository's private reporting form (the
-  [Security tab](https://github.com/parvez-ahammed/claude-shipkit/security), then
-  **Report a vulnerability**, and say in the title that it is a Code of Conduct
-  report), or
-* contact a maintainer directly through their GitHub profile, for example
-  [@parvez-ahammed](https://github.com/parvez-ahammed).
+the repository's private reporting form (the
+[Security tab](https://github.com/parvez-ahammed/shipkit/security), then
+**Report a vulnerability**, and say in the title that it is a Code of Conduct
+report).
 
 All complaints will be reviewed and investigated promptly and fairly.
 
