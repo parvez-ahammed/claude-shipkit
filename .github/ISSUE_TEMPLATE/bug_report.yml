@@ -16,6 +16,12 @@ body:
       options:
         - review-branch
         - fix-bug
+        - groom-issue
+        - brief-milestone
+        - deliver-issue
+        - price-product
+        - simplify-code
+        - trim-comments
         - build-story
         - test-branch
         - grill-feature

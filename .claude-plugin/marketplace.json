@@ -9,7 +9,7 @@
     {
       "name": "shipkit",
       "source": "./plugins/shipkit",
-      "description": "24 production-ready Claude Code skills that act like a senior dev team: review-branch, fix-bug, build-story, test-branch, audit-app (QA + UX), find-ux-gaps, grill-feature, refactor (with find-code-smells, apply-refactoring and design-pattern scorers), enforce-clean-architecture, deploy-to-vps, add-health-check, boost-seo, make-video, make-demo, write-user-guide, write-plainly, find-shared-code, show-usage and fill-timesheet. Stack-neutral; Windows, macOS and Linux.",
+      "description": "30 production-ready Claude Code skills that act like a senior dev team: review-branch, fix-bug, build-story, test-branch, groom-issue, brief-milestone, deliver-issue, audit-app (QA + UX), find-ux-gaps, grill-feature, refactor (with find-code-smells, apply-refactoring, simplify-code, trim-comments and design-pattern scorers), enforce-clean-architecture, deploy-to-vps, add-health-check, boost-seo, price-product, make-video, make-demo, write-user-guide, write-plainly, find-shared-code, show-usage and fill-timesheet. Stack-neutral; Windows, macOS and Linux.",
       "category": "development",
       "tags": [
         "code-review",
@@ -21,7 +21,9 @@
         "deployment",
         "seo",
         "documentation",
-        "video"
+        "video",
+        "project-management",
+        "pricing"
       ]
     }
   ]

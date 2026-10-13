@@ -7,6 +7,26 @@ project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [1.1.0] - 2026-10-13
+
+### Added
+
+Six new skills (30 in total):
+
+- `groom-issue` - scores a ticket's readiness against a rubric, finds gaps and undeclared
+  blockers, and rewrites it into a buildable plan after you confirm. GitHub, GitLab, Jira,
+  Azure DevOps or plain markdown.
+- `brief-milestone` - executive brief of a milestone or set of issues, in build order, with
+  risks and open questions. Read-only.
+- `deliver-issue` - one issue or a whole milestone end to end: groom, plan, build, review,
+  test, ship. Every push, PR, comment and merge waits for a yes.
+- `price-product` - pricing tiers, per-tier margin check, competitor prices with cited
+  sources (never invented), value metric, and a contradiction check of every price surface.
+- `simplify-code` - removes over-engineering in one behavior-preserving change set, verified
+  by the repo's own lint, build and tests.
+- `trim-comments` - deletes comments that restate code or narrate history, keeps the
+  non-obvious why. Comment-only, any language.
+
 ## [1.0.0] - 2026-10-13
 
 First public release, rebranded as **ShipKit**.

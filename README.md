@@ -1,15 +1,15 @@
 <div align="center">
 
-<img src="docs/og.png" alt="ShipKit - 24 Claude Code skills that review, fix, test and ship your code" width="720">
+<img src="docs/og.png" alt="ShipKit - 30 Claude Code skills that review, fix, test and ship your code" width="720">
 
 # ShipKit: Claude Code skills that review, fix, test and ship your code
 
-**24 production-ready [Claude Code](https://claude.com/claude-code) skills that work like a senior dev team in your terminal:
-a multi-seat code reviewer, a root-cause bug fixer, a QA + UX auditor, a refactoring coach, a VPS deployer, a promo-video maker and more.**
+**30 production-ready [Claude Code](https://claude.com/claude-code) skills that work like a senior dev team in your terminal:
+a multi-seat code reviewer, a root-cause bug fixer, a QA + UX auditor, a refactoring coach, a ticket groomer, a VPS deployer, a promo-video maker and more.**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Claude Code plugin](https://img.shields.io/badge/Claude%20Code-plugin-d97757.svg)](https://claude.com/claude-code)
-[![Skills: 24](https://img.shields.io/badge/skills-24-6f42c1.svg)](#-the-skills)
+[![Skills: 30](https://img.shields.io/badge/skills-30-6f42c1.svg)](#-the-skills)
 [![Validate](https://github.com/parvez-ahammed/shipkit/actions/workflows/validate.yml/badge.svg)](https://github.com/parvez-ahammed/shipkit/actions/workflows/validate.yml)
 [![Windows | macOS | Linux](https://img.shields.io/badge/OS-Windows%20%7C%20macOS%20%7C%20Linux-informational.svg)](#-requirements)
 [![PRs welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
@@ -46,6 +46,9 @@ You don't need to remember any command. Just ask:
 | "find UX problems and file tickets" | `find-ux-gaps` - parallel auditors, evidence per issue, files only after you say yes |
 | "is checkout really bulletproof?" | `grill-feature` - checks the real promise in code: BULLETPROOF / CRACKED / FAKE |
 | "this class is a mess, refactor it" | `refactor` - smells with `file:line`, safe mechanics, patterns only when they score |
+| "is ticket #42 ready to build?" | `groom-issue` - readiness score, gaps, blockers, a buildable plan |
+| "deliver the next milestone" | `deliver-issue` - groom, build, review and test each issue; asks before pushing |
+| "this service is over-engineered, simplify it" | `simplify-code` - behavior-preserving cuts, verified by your gates |
 | "deploy my app to my VPS on every push" | `deploy-to-vps` - GitHub Actions, Caddy HTTPS, DNS, OAuth, server hardening |
 | "make a 30-second promo video of this project" | `make-video` - MP4 with voice-over, music, captions and thumbnail, built from code |
 | "why doesn't my site show up in ChatGPT answers?" | `boost-seo` - SEO + AEO audit, JSON-LD, llms.txt, proven with local tests |
@@ -61,6 +64,15 @@ You don't need to remember any command. Just ask:
 | [`build-story`](plugins/shipkit/skills/build-story/SKILL.md) | One user story or ticket end to end: skeptical requirement analysis, task breakdown, implement, test, and a pre-PR gate (criteria trace, backward compatibility, every caller of a changed endpoint). |
 | [`test-branch`](plugins/shipkit/skills/test-branch/SKILL.md) | Tests a branch against the real running app, not the diff: seeds data, drives the API and browser, and writes an HTML report with screenshots a product owner can read. |
 | [`grill-feature`](plugins/shipkit/skills/grill-feature/SKILL.md) | Interrogates shipped features at the promise level ("can users really do X?") and answers from the code with `file:line` evidence. |
+
+### Plan and deliver
+
+| Skill | What it does |
+|-------|--------------|
+| [`groom-issue`](plugins/shipkit/skills/groom-issue/SKILL.md) | Scores a ticket's readiness against a rubric, finds gaps and undeclared blockers, and rewrites it into a buildable plan only after you confirm. |
+| [`brief-milestone`](plugins/shipkit/skills/brief-milestone/SKILL.md) | Executive brief of a milestone or set of issues: issue by issue in build order, then the whole picture with risks and open questions. |
+| [`deliver-issue`](plugins/shipkit/skills/deliver-issue/SKILL.md) | Delivers one issue or a whole milestone end to end: groom, plan, build, review, test, ship. Pushing, PRs and merges wait for your yes. |
+| [`price-product`](plugins/shipkit/skills/price-product/SKILL.md) | Pricing tiers, margin-safety per tier, competitor prices with cited sources, value metric, and a check of every price surface for contradictions. |
 
 ### QA and UX
 
@@ -81,6 +93,8 @@ You don't need to remember any command. Just ask:
 | [`pick-behavioral-pattern`](plugins/shipkit/skills/pick-behavioral-pattern/SKILL.md) | Same scoring for Strategy, State, Command, Observer, Chain of Responsibility and more. |
 | [`enforce-clean-architecture`](plugins/shipkit/skills/enforce-clean-architecture/SKILL.md) | Clean / Hexagonal architecture rulebook, per-stack bootstrap (.NET, TypeScript, Java, Go, Python) and a layering guard you can run in CI. |
 | [`find-shared-code`](plugins/shipkit/skills/find-shared-code/SKILL.md) | Finds what is worth sharing across a backlog with DRY / KISS / YAGNI judgment, and what to resist abstracting. |
+| [`simplify-code`](plugins/shipkit/skills/simplify-code/SKILL.md) | Removes over-engineering in one behavior-preserving change set: dead code, needless layers, reinvented helpers. Verified by your own build and tests. |
+| [`trim-comments`](plugins/shipkit/skills/trim-comments/SKILL.md) | Deletes comments that restate the code or narrate history and keeps the ones that explain a non-obvious why. Comment-only, gate-verified. |
 
 ### Ship and operate
 

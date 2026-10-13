@@ -28,6 +28,12 @@ Skills currently in this library (`plugins/shipkit/skills/`). Install via the pl
 | **write-plainly** | House style for prose that lands in git, PRs and docs: ASCII punctuation, Simplified Technical English, no jargon, short commit messages, why-only code comments, plus a PR-description sub-skill that fills any repo's template. | generic |
 | **boost-seo** | Audit and improve a site's SEO and AEO (AI answer engines): meta, JSON-LD, robots, sitemap, llms.txt, prerendering for SPAs, then prove it with local test scripts. | generic |
 | **fill-timesheet** | Reconstruct what you worked on for past dates (tickets, descriptions, time blocks) from local Claude Code transcripts, ready for a timesheet. Configurable ticket patterns. | generic |
+| **groom-issue** | Scores a ticket's readiness against a rubric, finds gaps and undeclared blockers, and rewrites it into a buildable plan only after you confirm. | generic |
+| **brief-milestone** | Executive brief of a milestone or set of issues: issue by issue in build order, then the whole picture with risks and open questions. | generic |
+| **deliver-issue** | Delivers one issue or a whole milestone end to end: groom, plan, build, review, test, ship. Pushing, PRs and merges wait for your yes. | generic |
+| **price-product** | Pricing tiers, margin-safety per tier, competitor prices with cited sources, value metric, and a check of every price surface for contradictions. | generic |
+| **simplify-code** | Removes over-engineering in one behavior-preserving change set: dead code, needless layers, reinvented helpers. Verified by your own build and tests. | generic |
+| **trim-comments** | Deletes comments that restate the code or narrate history and keeps the ones that explain a non-obvious why. Comment-only, gate-verified. | generic |
 | **find-ux-gaps** | Fan out parallel read-only UX auditors over an app, then turn what survives into tickets. Partitions the surface into disjoint territories first (unpartitioned agents all return the same loudest two findings), enforces a fixed issue contract with `file:line` evidence, then dedups, drops the unevidenced, writes a markdown file, and files to GitHub, GitLab, Jira or Azure DevOps only after explicit confirmation. Configurable agents (default 3) and issues each (default 3). Works when the app cannot be run. Complements `audit-app`, which needs a running app and emits HTML reports instead of tickets. | generic |
 
 ## Hooks (`hooks/`)
