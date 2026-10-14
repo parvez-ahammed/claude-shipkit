@@ -1,6 +1,10 @@
 ---
 name: fill-timesheet
-description: Reconstructs what the user worked on for one or more past dates, as paste-ready timesheet rows. Use when the user needs to fill in a timesheet or time log - "I need to fill my timesheet for these days", "what did I do on the 13th and 14th", "fill up my time log for last week", "search my conversations and check what I did on Monday". Produces ticket numbers, short descriptions and non-overlapping time blocks per day from local Claude Code session transcripts under ~/.claude/projects, ready to paste into a time tracker.
+description: >-
+  Reconstruct what the user worked on for past dates from local Claude Code transcripts
+  (~/.claude/projects) as paste-ready timesheet rows with ticket numbers and non-overlapping time
+  blocks. Use for "fill my timesheet for these days", "what did I do on the 13th", "fill my time log
+  for last week". Not for total hours or token cost per project (use show-usage).
 argument-hint: "[date | date list | range like \"last week\"]"
 license: MIT
 ---

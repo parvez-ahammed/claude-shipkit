@@ -1,6 +1,11 @@
 ---
 name: test-branch
-description: Tests a branch, pull request or ticket against the real running app and hands back proof. Runs the backend tests, seeds and cleans test data, drives the API and the browser, and writes one self-contained HTML report with screenshots that a product owner can read - a run against the live app, not a reading of the diff. Use when asked "run the tests and give me a report", "test this branch end to end", "automated test with visual verification", "QA this with screenshots", or "give me a test report for this PR".
+description: >-
+  Test one branch, PR or ticket against the real running app and hand back proof: backend tests,
+  seeded test data, API and browser runs, one HTML report with screenshots a product owner can read.
+  Use for "test this branch end to end", "run the tests and give me a report", "QA this PR with
+  screenshots". Not for reading the diff (use review-branch) or auditing the whole app (use audit-
+  app).
 argument-hint: "[branch | PR number | ticket id]"
 license: MIT
 compatibility: "Needs git, the app running locally (API and UI), the project's own test runner, a browser automation tool such as Playwright MCP for UI evidence, and a CLI client for the project's database when seeding test data."

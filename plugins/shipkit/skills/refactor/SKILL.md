@@ -1,100 +1,97 @@
 ---
 name: refactor
-argument-hint: "[file, directory, or symbol] [optional: pattern or smell]"
-description: Orchestrator for code refactoring and design-pattern work. Use when the user wants to improve, clean up, restructure, or "refactor" code; find code smells; decide whether or where to apply a design pattern (Factory, Builder, Strategy, Observer, Adapter, etc.); or asks "is this pattern right here", "where can I use a pattern", "how do I fix this smell". Understands the user's intent, then routes to the right spoke skill (find-code-smells, apply-refactoring, pick-creational-pattern, pick-structural-pattern, pick-behavioral-pattern) and merges their findings. Patterns are only recommended when a code site meets scored preconditions with cited evidence.
+argument-hint: "[file, directory, or symbol] [optional: smell, refactoring or pattern]"
+description: >-
+  Find code smells, plan safe refactoring steps, or score whether a design pattern (Factory,
+  Builder, Adapter, Facade, Decorator, Strategy, State, Observer, ...) fits, with file:line
+  evidence and an APPLY / CONSIDER / REJECT verdict. Report and plan only, no edits. Use for "find
+  code smells", "what is wrong with this code", "how do I extract this method", "break up this
+  class", "should I use a strategy here", "refactor this". Not for making the cleanup (use
+  simplify-code) or for layer rules (use enforce-clean-architecture).
 license: MIT
 ---
 
-# Refactoring Guru (orchestrator)
+# refactor - smells, mechanics and pattern fit
 
-You route refactoring and design-pattern requests to spoke skills and merge their reports.
-You do NOT detect smells or score patterns yourself (except as the fallback in Step 2). You decide intent, invoke the right
-spoke via the `Skill` tool, and present a single ranked result.
+Answer refactoring and design-pattern questions with cited evidence and a scored verdict. The
+catalogs (refactoring.guru's 22 smells, Fowler's refactorings, the GoF patterns) live in
+`references/`; read only the file the question needs. A pattern is recommended only when a site
+meets explicit, scored preconditions. Never apply a pattern for its own sake.
 
-Knowledge is from refactoring.guru / Martin Fowler's catalog and the GoF patterns,
-reframed so a pattern is applied only when a site meets explicit, scored preconditions with
-cited evidence. Never apply a pattern for its own sake.
+## Step 1: pick the mode
 
-## Step 1: classify intent
+| Intent | Trigger phrases | Mode | Read |
+|--------|-----------------|------|------|
+| Find problems | "find smells", "what is wrong with", "what should I clean up" | **smells** | `smells.md` (+ `smells-bloaters.md` / `smells-couplers.md` when that group hits) |
+| Fix a known smell | "how do I extract this method", "this class is too big", "replace this conditional" | **mechanics** | `refactorings.md` (+ `refactorings-composing-methods.md` / `refactorings-simplifying-conditionals.md`) |
+| Is pattern X right here | "should I use a Factory here", "is Strategy a fit" | **score** one site | the one `patterns-<family>.md` |
+| Where can I use a pattern | "scan for pattern opportunities" | **smells** sweep, then **score** each candidate site | `smells.md`, `linkage-map.md`, then the pattern files |
+| Vague "make this better" | "refactor this", "improve this design" | **smells**, then branch on what it finds | as above |
 
-Pick exactly one route from the user's request:
+All files are in `${CLAUDE_SKILL_DIR}/references/`. Pattern families: creational (object
+construction), structural (composition and interfaces), behavioral (interaction and
+responsibility). Unsure which family? `linkage-map.md` maps each symptom to a candidate pattern
+and its file; if two families fit, score both and let the scores decide.
 
-| Intent | Trigger phrases | Route to |
-|--------|-----------------|----------|
-| Find problems | "find smells", "what's wrong with", "clean up this file", "review for quality" | `find-code-smells`, then offer fixes |
-| Fix a named smell | "how do I fix this long method", "this class is too big" | `apply-refactoring` |
-| Where can I apply a pattern | "where can I use a creational pattern", "scan for pattern opportunities" | `find-code-smells` sweep, then the relevant pattern spoke(s) score the sites |
-| Is pattern X right here | "should I use a Factory here", "is Strategy a fit for this" | the one matching pattern spoke, scoring a single site |
-| Vague "make this better" | "refactor this", "improve this" | `find-code-smells` first, then branch on what it finds |
+If the intent is truly ambiguous, ask one short question. Otherwise pick the mode and go.
 
-If intent is ambiguous, ask one short question before routing. Do not guess.
+## Step 2: do the work
 
-## Step 2: dispatch
+- **smells:** follow `smells.md`. A bug is not a smell: report it under `BUGS` and point to
+  `fix-bug`.
+- **mechanics:** follow `refactorings.md`. Every plan rests on its SAFETY RULE (a test run after
+  each small step).
+- **score:** follow `verdict-format.md` and the pattern entry. The VERDICT line shows the
+  arithmetic `(score N / threshold M)` and any veto or downgrade.
 
-Invoke spokes via the `Skill` tool, sequentially, in this conversation. Pass the target
-(file path, dir, function, or pasted snippet) explicitly. Use the name exactly as the
-available-skills list shows it: installed as a plugin, spokes are namespaced (e.g.
-`shipkit:find-code-smells`); copied into `~/.claude/skills/`, they are bare names.
+All of it runs inline. This is reading and scoring a few files; it needs no subagents.
 
-If a spoke is not installed, say which one is missing and answer at reduced depth yourself:
-use `${CLAUDE_SKILL_DIR}/references/linkage-map.md` to name the candidate fix and
-`${CLAUDE_SKILL_DIR}/references/verdict-format.md` to score it, with the same evidence rule.
+## Step 3: report
 
-- Pattern family selection: creational (object construction), structural (object
-  composition / interfaces), behavioral (object interaction / responsibility). If unsure
-  which family, consult `${CLAUDE_SKILL_DIR}/references/linkage-map.md` or invoke more than one spoke and let
-  scoring decide.
-- "Where can I apply pattern P" is a scan split three ways: you coordinate,
-  `find-code-smells` does the symptom sweep that surfaces candidate sites, the pattern
-  spoke owns the applicability test that scores each site. See the linkage map for which
-  symptom points to which candidate pattern.
-- Two entry modes:
-  - top-down (broad): user asks for a sweep -> run detector, then score the candidates.
-  - bottom-up (point): user points at one class/function -> skip the broad detect, send
-    that site straight to the pattern spoke for scoring.
-
-## Step 3: merge and report
-
-Each spoke emits findings in the unified report shape below. Concatenate them, then:
-
-- rank APPLY first, then CONSIDER, then collapsed REJECTs (show REJECTs so the user sees
-  what was considered and why it was vetoed: that is the trust signal);
-- within a verdict, order by score;
-- if one site scores APPLY for two patterns (e.g. Strategy vs State), show both and the
-  single distinguishing precondition that separates them; never silently pick one;
-- if nothing qualifies, say so plainly. Do not invent a smell or a pattern fit.
-
-Unified report shape (every spoke uses this):
+Every finding uses this shape:
 
 ```
 TARGET: path/to/File.ext:Symbol
-FINDING: <smell or pattern-opportunity>
+FINDING: <smell, or pattern opportunity>
 EVIDENCE: file:line - <what was seen>
-VERDICT: APPLY | CONSIDER | REJECT
-RECOMMENDATION: <refactoring/pattern name> - <one line>
-NEXT: <which skill/step, e.g. "apply via apply-refactoring: Extract Method">
+VERDICT: APPLY | CONSIDER | REJECT   (pattern: score N / threshold M)
+RECOMMENDATION: <refactoring or pattern, or the simpler idiom> - <one line>
+NEXT: <e.g. "mechanics: Extract Method", "score Facade", "fix-bug", "leave as is">
 ```
+
+- Put `BUGS` first if there are any, then APPLY, then CONSIDER, then the REJECTs collapsed (show
+  them: what was considered and why it was vetoed is the trust signal).
+- Within a verdict, order by score, or by how much the smell blocks change.
+- If one site scores APPLY for two patterns (Strategy vs State, say), show both and the one
+  precondition that separates them. Never pick one silently.
+- If nothing qualifies, say the code is clean here. Do not invent a smell or a pattern fit.
+- For a chained plan (Extract, then Move, then delete the old copy), use the `STEP n of N`
+  shape in `refactorings.md`, with the characterization tests first.
 
 ## Hard rules
 
-- Recommend and cite mechanics only. Never auto-edit code. The user approves, then
-  `apply-refactoring` gives the safe step sequence.
-- Evidence is mandatory: a recommendation without a `file:line` citation is not valid.
-- Hard veto wins: if a pattern spoke reports an anti-indicator, the verdict is REJECT
-  regardless of score.
-- YAGNI: if a pattern adds more complexity than the problem it solves, cap the verdict at
-  CONSIDER with a warning. Simple, stable code stays simple.
-- Scope: operate only on the files/dirs the user points at. No whole-repo auto-scan unless
-  asked.
-- Not this skill: layer/module boundaries ("which layer does this go in", "did I break the
-  dependency rule") belong to `enforce-clean-architecture`; a full PR review belongs to a code-review
-  skill. This one works at function/class/pattern level.
+- No edits to the user's working tree. The user approves, then follows the mechanics or asks
+  `simplify-code` to make the change. To prove a plan holds, dry-run it in a throwaway copy.
+- Evidence is mandatory: no `file:line`, no finding.
+- A hard veto wins: any anti-indicator means REJECT, whatever the score.
+- YAGNI: if a pattern adds more complexity than the problem it solves, cap it at CONSIDER and
+  say why. Simple, stable code stays simple.
+- Scope: only the files the user points at. Exception: to call something Dead Code, Lazy Class
+  or Shotgun Surgery, search the whole repo for its callers; report only findings in the target.
+- Not this skill: which layer code belongs in (`enforce-clean-architecture`), a branch or PR
+  review (`review-branch`), comment-only cleanup (`trim-comments`).
 
 ## References
 
-- `${CLAUDE_SKILL_DIR}/references/linkage-map.md` - read when choosing which spoke(s) to invoke for a symptom:
-  smell -> candidate refactoring/pattern -> spoke, plus the disambiguation questions.
-- `${CLAUDE_SKILL_DIR}/references/verdict-format.md` - read when merging or explaining verdicts: the shared
-  scored-precondition schema. The pattern spokes and apply-refactoring load it via
-  `${CLAUDE_SKILL_DIR}/../refactor/references/verdict-format.md` and carry an inline
-  summary so they still work if installed without this skill.
+| File | Read when |
+|------|-----------|
+| `smells.md` | finding smells: 22-smell triage table, verdict rubric, report rules |
+| `smells-bloaters.md`, `smells-couplers.md` | a Bloater or Coupler hits and you need signs and fix detail |
+| `refactorings.md` | giving mechanics: the full catalog, SAFETY RULE, plan output shape |
+| `refactorings-composing-methods.md`, `refactorings-simplifying-conditionals.md` | deep mechanics for Extract Method family and conditional refactorings |
+| `patterns-creational.md` | Factory Method, Abstract Factory, Builder, Prototype, Singleton |
+| `patterns-structural.md` | Adapter, Bridge, Composite, Decorator, Facade, Flyweight, Proxy |
+| `patterns-behavioral.md` | Strategy, State, Command, Observer, Chain, Template Method, Visitor, Mediator, Iterator, Memento |
+| `patterns-strategy-state-command.md` | scoring Strategy, State or Command, or any classic confusion |
+| `verdict-format.md` | scoring any pattern: the scored-precondition schema and rules |
+| `linkage-map.md` | choosing which refactoring or pattern a symptom points to |

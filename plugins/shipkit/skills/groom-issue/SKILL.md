@@ -1,18 +1,15 @@
 ---
 name: groom-issue
 description: >-
-  Scores a tracker issue (or every issue in a milestone) for build readiness and, after the user
-  confirms, rewrites it into one current, self-contained implementation plan. Rates each issue
-  against a readiness rubric, finds gaps and undeclared blockers, rates the security surface, checks
-  stale file paths against the live repo, and reconciles review notes that contradict each other.
-  Uses the project's own gold-standard issue template when the repo has one. Use when grooming a
-  backlog, before an agent or developer picks an issue up, after editing an issue, or when an old
-  issue has piled up conflicting comments. Triggers on "/groom-issue", "groom #42", "is this issue
-  ready", "score this ticket", "re-groom the milestone", "validate this issue", "clean up this issue".
+  Score a tracker issue, or every issue in a milestone, for build readiness (gaps, undeclared
+  blockers, stale paths, security surface); after a yes, rewrite it into one self-contained plan;
+  or write a read-only executive brief of a milestone in build order. Use for "groom #42", "is this
+  issue ready", "re-groom the milestone", "brief me on milestone 3", "exec summary of these
+  issues". Not for building it (use deliver-issue).
 when_to_use: >-
-  Not for summarizing a set of groomed issues for a stakeholder (use brief-milestone) or for taking
-  an issue all the way to merged code (use deliver-issue, which calls this skill first).
-argument-hint: "[issue number | URL | milestone name] [apply | dry-run]"
+  Not for taking an issue all the way to merged code (use deliver-issue, which calls this skill
+  first).
+argument-hint: "[issue number | URL | milestone name] [apply | dry-run | brief]"
 license: MIT
 compatibility: "Reads and writes issues through the tracker's CLI or API: gh (GitHub), glab (GitLab), az boards (Azure DevOps) or a Jira CLI/API. Without one, works from pasted issue text and writes markdown."
 ---
@@ -30,8 +27,8 @@ open question beats a fabricated answer.
 
 - Use when: grooming one issue or a milestone; checking an issue before work starts; re-scoring after
   an edit; re-grooming an old issue buried under layered reviews.
-- Not for: a stakeholder overview of many issues (`brief-milestone`); building the issue
-  (`deliver-issue`, or `build-story` / `fix-bug` directly).
+- Also use for: a stakeholder briefing of a milestone, phase, label or issue list (brief mode).
+- Not for: building the issue (`deliver-issue`, or `build-story` / `fix-bug` directly).
 
 ## Before you start
 
@@ -64,6 +61,11 @@ open question beats a fabricated answer.
 | **score** (default) | "groom #42", "is it ready" | nothing; prints the record |
 | **apply** | "groom and fix #42", "apply" | shows the new body (or a diff), waits for an explicit yes, then writes |
 | **dry-run** | "groom to files", "dry-run" | local markdown only, `groomed/issue-<n>.md` (ask before creating the folder) |
+| **brief** | "brief me on", "exec summary", "what is in this phase", "explain the plan" | nothing; a briefing in build order. Follow `${CLAUDE_SKILL_DIR}/references/brief.md` instead of the Process below |
+
+No mode word means **score**, unless the ask is for a summary or briefing, which means **brief**. "Groom #42" alone never writes. If the issues come from a file on
+disk (an export, a pasted list) instead of a tracker, score works the same and apply falls back to
+dry-run, since there is nothing to write back to.
 
 Labels (`needs-decision`, `ready`), comments and body edits are all outward actions: show exactly
 what will be sent and wait for a yes. A yes for one issue is not a yes for the next one, unless the
@@ -112,7 +114,7 @@ Action: scored only | proposed body shown, awaiting yes | written (sections: ...
 ```
 
 For a milestone, end with a table: issue, type, score, verdict, top gap, action. Then a suggested
-build order if dependencies make one obvious (or point at `brief-milestone`).
+build order if dependencies make one obvious (or offer brief mode).
 
 ## Common mistakes
 

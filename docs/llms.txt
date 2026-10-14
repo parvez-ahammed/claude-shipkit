@@ -1,6 +1,6 @@
 # ShipKit
 
-> ShipKit is a free, open-source (MIT) plugin for Claude Code that adds 30 skills and 2 git hooks. The skills review branches, fix bugs from the root cause, test the running app, audit QA and UX, guide refactoring, deploy to a VPS, improve SEO and write videos, demos and user guides. It works on any stack, on Windows, macOS and Linux.
+> ShipKit is a free, open-source (MIT) plugin for Claude Code that adds 24 skills and 2 git hooks. The skills review branches, fix bugs from the root cause, test the running app, audit QA and UX, guide refactoring, deploy to a VPS, improve SEO and write videos, demos and user guides. It works on any stack, on Windows, macOS and Linux.
 
 ShipKit is for developers who use Claude Code. It is not a standalone app, a hosted service or a CI product; the skills run inside Claude Code.
 
@@ -24,8 +24,7 @@ Skills trigger on their own when a request matches their description, or run exp
 
 - [review-branch](https://github.com/parvez-ahammed/shipkit/blob/master/plugins/shipkit/skills/review-branch/SKILL.md): multi-seat code review of a branch or PR with a refutation pass, a ranked punch list and an HTML report
 - [fix-bug](https://github.com/parvez-ahammed/shipkit/blob/master/plugins/shipkit/skills/fix-bug/SKILL.md): one bug end to end; root cause proven before any fix, with a regression test
-- [groom-issue](https://github.com/parvez-ahammed/shipkit/blob/master/plugins/shipkit/skills/groom-issue/SKILL.md): Scores a ticket's readiness against a rubric, finds gaps and undeclared blockers, and rewrites it into a buildable plan only after you confirm.
-- [brief-milestone](https://github.com/parvez-ahammed/shipkit/blob/master/plugins/shipkit/skills/brief-milestone/SKILL.md): Executive brief of a milestone or set of issues: issue by issue in build order, then the whole picture with risks and open questions.
+- [groom-issue](https://github.com/parvez-ahammed/shipkit/blob/master/plugins/shipkit/skills/groom-issue/SKILL.md): Scores a ticket's readiness against a rubric, finds gaps and undeclared blockers, and rewrites it into a buildable plan only after you confirm. Brief mode gives an executive brief of a milestone in build order.
 - [deliver-issue](https://github.com/parvez-ahammed/shipkit/blob/master/plugins/shipkit/skills/deliver-issue/SKILL.md): Delivers one issue or a whole milestone end to end: groom, plan, build, review, test, ship. Pushing, PRs and merges wait for your yes.
 - [price-product](https://github.com/parvez-ahammed/shipkit/blob/master/plugins/shipkit/skills/price-product/SKILL.md): Pricing tiers, margin-safety per tier, competitor prices with cited sources, value metric, and a check of every price surface for contradictions.
 - [simplify-code](https://github.com/parvez-ahammed/shipkit/blob/master/plugins/shipkit/skills/simplify-code/SKILL.md): Removes over-engineering in one behavior-preserving change set: dead code, needless layers, reinvented helpers. Verified by your own build and tests.
@@ -41,12 +40,7 @@ Skills trigger on their own when a request matches their description, or run exp
 
 ## Refactor and architecture
 
-- [refactor](https://github.com/parvez-ahammed/shipkit/blob/master/plugins/shipkit/skills/refactor/SKILL.md): refactoring hub that routes to the right skill and merges findings
-- [find-code-smells](https://github.com/parvez-ahammed/shipkit/blob/master/plugins/shipkit/skills/find-code-smells/SKILL.md): detects the 22 classic code smells with file:line evidence
-- [apply-refactoring](https://github.com/parvez-ahammed/shipkit/blob/master/plugins/shipkit/skills/apply-refactoring/SKILL.md): Martin Fowler's refactoring catalog with safe step-by-step mechanics
-- [pick-creational-pattern](https://github.com/parvez-ahammed/shipkit/blob/master/plugins/shipkit/skills/pick-creational-pattern/SKILL.md): scores creational design patterns against your code
-- [pick-structural-pattern](https://github.com/parvez-ahammed/shipkit/blob/master/plugins/shipkit/skills/pick-structural-pattern/SKILL.md): scores structural design patterns against your code
-- [pick-behavioral-pattern](https://github.com/parvez-ahammed/shipkit/blob/master/plugins/shipkit/skills/pick-behavioral-pattern/SKILL.md): scores behavioral design patterns against your code
+- [refactor](https://github.com/parvez-ahammed/shipkit/blob/master/plugins/shipkit/skills/refactor/SKILL.md): finds code smells, gives safe refactoring mechanics, and scores design patterns against your code
 - [enforce-clean-architecture](https://github.com/parvez-ahammed/shipkit/blob/master/plugins/shipkit/skills/enforce-clean-architecture/SKILL.md): Clean / Hexagonal architecture rulebook, bootstrap and layering guard
 - [find-shared-code](https://github.com/parvez-ahammed/shipkit/blob/master/plugins/shipkit/skills/find-shared-code/SKILL.md): finds what is worth sharing across a backlog, with DRY / KISS / YAGNI judgment
 

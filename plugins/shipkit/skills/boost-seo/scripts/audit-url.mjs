@@ -38,7 +38,7 @@ const agents = {
 async function get(url, userAgent = agents.browser) {
   try {
     const response = await fetch(url, { headers: { "User-Agent": userAgent }, redirect: "manual" });
-    return { status: response.status, type: response.headers.get("content-type") ?? "", location: response.headers.get("location"), body: await response.text() };
+    return { status: response.status, type: response.headers.get("content-type") ?? "", location: response.headers.get("location"), servedBy: response.headers.get("x-served-by"), body: await response.text() };
   } catch (error) {
     return { status: 0, type: "", body: "", error: error.message };
   }
@@ -166,6 +166,9 @@ if (expect.indexable !== undefined) check(indexable === expect.indexable, `page 
 
 const line = (label, value) => console.log(`${label.padEnd(20)} ${value ?? "(missing)"}`);
 console.log(`== ${pageUrl.href} (status ${page.status}) ==`);
+const standIn = page.servedBy === "serve-build" || /^(localhost|127\.|\[::1\])/.test(pageUrl.host);
+if (standIn) console.log("note: local or stand-in server. Content, metadata and site-file results are valid; host behaviour " +
+  "(real headers, compression, redirects, CDN bot rules) is NOT production evidence - report it as not tested.");
 line("title", `${head.title} [${head.title.length} chars]`);
 line("description", head.description && `${head.description} [${head.description.length} chars]`);
 line("canonical", head.canonical.join(", ") || undefined);
@@ -190,7 +193,7 @@ for (const [name, r] of Object.entries(perAgent)) line(name, `${r.status}  ${r.b
 if (warnings.length) console.log(`\nWARNINGS (${warnings.length})\n` + warnings.map((w) => `  - ${w}`).join("\n"));
 if (failures.length) console.log(`\nFAILURES (${failures.length})\n` + failures.map((f) => `  - ${f}`).join("\n"));
 if (option("--json")) {
-  fs.writeFileSync(option("--json"), JSON.stringify({ url: pageUrl.href, status: page.status, head, social, jsonLd, headings, firstAnswer, textLength: text.length, blockedBots, robots: robotsTxt.status, sitemap: sitemap.status, llms: llms.status, unknownUrlStatus: missing.status, perAgent: Object.fromEntries(Object.entries(perAgent).map(([k, r]) => [k, { status: r.status, bytes: r.body.length }])), warnings, failures }, null, 2));
+  fs.writeFileSync(option("--json"), JSON.stringify({ url: pageUrl.href, status: page.status, standIn, head, social, jsonLd, headings, firstAnswer, textLength: text.length, blockedBots, robots: robotsTxt.status, sitemap: sitemap.status, llms: llms.status, unknownUrlStatus: missing.status, perAgent: Object.fromEntries(Object.entries(perAgent).map(([k, r]) => [k, { status: r.status, bytes: r.body.length }])), warnings, failures }, null, 2));
 }
 // Set exitCode instead of calling process.exit(): exiting while fetch keep-alive sockets are
 // still closing aborts Node on Windows (libuv "UV_HANDLE_CLOSING" assertion, exit 127).

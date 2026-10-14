@@ -8,7 +8,10 @@ their surface is present, and then raise the applicable max by 2 each.
 
 If the project has a gold-standard template, map each of its sections onto these dimensions. A
 template section with no matching dimension is scored as an extra required field (0 = missing,
-2 = filled); a dimension with no template section is still scored.
+2 = filled) and raises the applicable max by 2; a dimension with no template section is still
+scored. One template section that covers two dimensions (for example "Testing" holding both
+acceptance criteria and the test plan) is scored once per dimension it covers. Print the mapping
+in one line (`Template "Testing" -> dims 3, 4`) so the score can be checked.
 
 | # | Dimension | What a 2 looks like |
 |---|---|---|
@@ -26,11 +29,14 @@ template section with no matching dimension is scored as an extra required field
 
 ## Readiness gate
 
-Let **M** be the applicable max (18, 20 or 22).
+Let **M** be the applicable max: 18, plus 2 for each conditional dimension that applies and each
+extra template field. For epics and spikes, M is 2 times the number of dimensions that apply.
 
-- **READY** - total >= M - 2, no dimension at 0, and every blocker and open question is declared.
-- **NEEDS WORK** - total between M - 8 and M - 3, or any 0 on dims 2, 3 or 4.
-- **NOT READY** - total below M - 8, or scope or acceptance criteria absent.
+Apply the rules in this order and stop at the first match:
+
+1. **NOT READY** - dim 2 (scope) or dim 3 (acceptance criteria) is 0, or total < M - 8.
+2. **NEEDS WORK** - any dimension is 0, or total < M - 2, or an undeclared blocker exists.
+3. **READY** - everything else (total >= M - 2, no 0, all blockers and open questions declared).
 
 A **declared** blocker ("Blocked by #12, cannot start until it merges") does not lower readiness; the
 issue is ready to queue. An **undeclared** blocker, one the builder would hit mid-build, is the main

@@ -1,17 +1,11 @@
 ---
 name: review-branch
 description: >-
-  Multi-seat code review of a branch, diff or pull request. Six parallel reviewer seats
-  (backend, frontend, architecture, tests, QA, text) review against their own rubrics, plus a
-  dependency seat that runs only when the diff adds a library and reports its licence, commercial-use
-  terms and price. Findings go through a refutation pass and end as one
-  severity-ranked punch list plus a self-contained HTML report. Use for "review my PR", "review this
-  branch", "code review", "audit this branch", "what will be flagged", "second opinion on my
-  changes", "QA this PR", "what should be tested", "what regressions could this cause", "write test
-  cases for this branch". Say `advanced` ("deep review", "full review before PR") for four extra
-  external rubrics, an adversarial round and an HTML artifact; it also starts on its own for critical
-  work (data sync, migrations, auth, background jobs, destructive paths). Say `comment` ("review PR
-  123, comment mode") to post re-verified findings to GitHub, Azure DevOps or GitLab.
+  Code review of a branch, diff or pull request by parallel reviewer seats (backend, frontend,
+  architecture, tests, QA, text, new dependencies), with a refutation pass and one severity-ranked
+  punch list. Use for "review my PR", "code review this branch", "what will be flagged", "what
+  should be tested in this PR". Say `advanced` for a deep review, `comment` to post verified
+  findings to the PR. Not for running the app (use test-branch).
 when_to_use: >-
   Also for "post these findings to PR 123" when the findings already exist (comment-only mode), and
   for "code review only" or "QA only" passes. Use it even on small or "trivial-looking" PRs: many

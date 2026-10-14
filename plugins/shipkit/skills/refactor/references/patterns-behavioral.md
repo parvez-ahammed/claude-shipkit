@@ -1,23 +1,13 @@
----
-name: pick-behavioral-pattern
-argument-hint: "[file or symbol]"
-description: Score whether a behavioral design pattern (Strategy, State, Command, Observer, Chain of Responsibility, Template Method, Visitor, Mediator, Iterator, Memento) fits a code site, and recommend it only when scored preconditions are met. Use when the user asks "should I use a strategy/state/observer here", "where can I apply a behavioral pattern", or when object interaction is awkward (switch on a type to pick an algorithm, behavior driven by internal state, requests needing queue/undo, one-to-many notifications, request handled by a chain, duplicated algorithm skeletons, operations spread across a class hierarchy, tangled many-to-many communication). Each pattern has opportunity signatures, weighted preconditions, a threshold, and hard-veto anti-indicators; emits APPLY / CONSIDER / REJECT with cited evidence. Spoke of refactor; usable standalone.
-license: MIT
----
-
 # Behavioral Patterns
 
 Behavioral patterns are about how objects interact and distribute responsibility. You score
-a site and report a verdict; you do not edit code. Follow the shared scoring rules in
-`${CLAUDE_SKILL_DIR}/../refactor/references/verdict-format.md` (bundled with
-the refactor skill). If it is not installed, the rules are: a precondition scores only
-with a cited `file:line`; any anti-indicator is an absolute veto (REJECT); score >= threshold
-with the anchor met -> APPLY, near-miss or cost outweighs the problem -> CONSIDER, else
-REJECT; apply language notes last and downgrade one step when an idiom makes the pattern
-redundant.
+a site and report a verdict; do not edit code.
+
+Score with the rules in `${CLAUDE_SKILL_DIR}/references/verdict-format.md`: evidence per
+precondition, anti-indicators veto, anchor rule, language notes downgrade one step.
 
 The three highest-value, most-confused patterns (Strategy, State, Command) have deep entries
-with worked disambiguation in `${CLAUDE_SKILL_DIR}/references/strategy-state-command.md`. Read it when scoring
+with worked disambiguation in `${CLAUDE_SKILL_DIR}/references/patterns-strategy-state-command.md`. Read it when scoring
 any of them, when a Switch-Statements smell points here, or when you need a cross-pattern
 distinguishing question. The other seven patterns are fully specified inline below; there is
 no separate reference file for them.
@@ -262,11 +252,11 @@ cost: memento storage and lifecycle.
 
 ## Output
 
-Emit per scored site in the orchestrator's unified report shape, with matched preconditions
+Emit per scored site in the unified report shape from SKILL.md, with matched preconditions
 and `file:line` evidence, score, any veto, verdict, one-line why. For the classic confusions
 (Strategy vs State, Template Method vs Strategy, Decorator vs Chain, Observer vs Mediator),
 state the single distinguishing question; they are all in
-`${CLAUDE_SKILL_DIR}/references/strategy-state-command.md`.
+`${CLAUDE_SKILL_DIR}/references/patterns-strategy-state-command.md`.
 
 ```
 TARGET: path/to/File.ext:Symbol
@@ -274,13 +264,14 @@ FINDING: <pattern> opportunity
 EVIDENCE: file:line - <matched precondition [weight]>   (one line per match; plus any veto)
 VERDICT: APPLY | CONSIDER | REJECT   (score N / threshold M) - <one-line why>
 RECOMMENDATION: <pattern or simpler alternative> - <one line>
-NEXT: <e.g. "safe steps via apply-refactoring" or "leave as is">
+NEXT: <e.g. "mechanics via refactorings.md" or "leave as is">
 ```
 
 ## Evals
 
 - Input: `switch(sortKind) { quicksort | mergesort | bubblesort }`, chosen by a param.
-  Expected: Strategy APPLY (or a function in FP languages -> CONSIDER).
+  Expected: Strategy APPLY in a language without first-class functions; in JS, Python, C#,
+  Kotlin and similar, CONSIDER (downgraded) with RECOMMENDATION "a map of functions".
 - Input: an order with `status` in {draft, paid, shipped} where each status decides which
   status comes next, switched on in 5 methods.
   Expected: State APPLY (variants drive transitions). Proves Strategy/State disambiguation.

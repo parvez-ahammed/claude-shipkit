@@ -1,15 +1,10 @@
 ---
 name: add-health-check
 description: >-
-  Designs and verifies service health endpoints that report REAL readiness (database and
-  critical dependencies reachable) instead of a hardcoded 200, and wires them correctly
-  into deploy gates, container HEALTHCHECKs, and orchestrator probes. Use when
-  adding or reviewing a /health or /healthz endpoint, setting up a Docker/Kubernetes/compose
-  health check or a post-deploy probe, or when the user asks "why did the deploy go
-  green but the app is down?", "add a readiness probe", "make the health check honest",
-  or is debugging a service that's "up" but not actually serving. A health endpoint
-  that returns 200 unconditionally silently defeats every gate built on it - so make it
-  assert something true.
+  Make a service's /health or /readyz endpoint report real readiness (database and required
+  dependencies reachable) and wire it into container HEALTHCHECKs, Kubernetes probes and post-deploy
+  gates. Use for "add a readiness probe", "make the health check honest", "the deploy went green but
+  the app is down". Not for building the whole deploy pipeline (use deploy-to-vps).
 license: MIT
 ---
 
@@ -72,12 +67,17 @@ few seconds if probes are frequent.
 - **Host allowlists reject internal probes** (HTTP 400 "Invalid Hostname") - .NET
   `AllowedHosts`, Django `ALLOWED_HOSTS`, Rails `config.hosts`. Send the real `Host`
   header on the probe.
-- **Matching "healthy" loosely**: `grep -i healthy` also matches `Unhealthy`. Anchor it
-  (`^healthy`) or check the HTTP status code. For JSON bodies (`{"status":"ok"}`), gate
-  on the status code only (`curl -sf`) rather than a body regex.
+- **Gate on the status code, not the body.** Readiness returns 503 when a dependency is
+  down, so `curl -sf` is the gate. If you also check the body, anchor it: `grep -i healthy`
+  matches `Unhealthy`, `^healthy` does not.
 - **"Degraded" is 200 by default in some frameworks** (ASP.NET Core maps `Degraded` to
   HTTP 200 with body `Degraded`). A status-only gate passes it; a `^healthy` body gate
   fails it. Decide which you want and make the probe match.
+- **`localhost` resolves to `::1` first** in Node 17+, many Alpine images and some curl
+  builds. An app listening on `0.0.0.0` (IPv4 only) then refuses the probe and the container
+  stays unhealthy. Probe `127.0.0.1` inside the container, or bind the app to `::`.
+- **Rolling deploys answer from the old container.** A post-deploy probe can get 200 from the
+  version you are replacing. Return the commit SHA from the endpoint and match it.
 - **Liveness that checks the DB**: a transient DB blip then restart-loops the app. Keep
   the DB check in readiness, not liveness.
 - **Probe timeout shorter than a cold dependency**: cross-region DB latency can exceed a
@@ -86,7 +86,7 @@ few seconds if probes are frequent.
 ## Implementation
 
 Most frameworks have a health-checks library; prefer it over hand-rolling. See
-`references/readiness-by-framework.md` for ready/live endpoint snippets in Node,
+`${CLAUDE_SKILL_DIR}/references/readiness-by-framework.md` for ready/live endpoint snippets in Node,
 Python, Go, and .NET, plus the matching deploy-probe and HEALTHCHECK wiring. Pairs
 directly with the `deploy-to-vps` skill's health-check step.
 

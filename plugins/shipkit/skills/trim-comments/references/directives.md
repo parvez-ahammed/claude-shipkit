@@ -25,6 +25,13 @@ decide.
 | YAML / config | `# yaml-language-server: $schema=...`, `# shellcheck`, Renovate / Dependabot markers, `# syntax=docker/dockerfile:1` at the top of a Dockerfile, `# escape=` parser directive |
 | Any | license / SPDX / copyright headers, generated-file markers ("DO NOT EDIT", "auto-generated"), coverage pragmas, region markers that a code generator rewrites between, `TODO(owner)` / `FIXME` lines the project tracks with a tool |
 
+## Directives for a tool the repo does not use
+
+A directive for a tool with no config in the repo (an `eslint-disable` with no ESLint config, a
+`# type: ignore` with no type checker) does nothing today. Keep it anyway: removing it is a tooling
+decision, not comment noise, and it becomes live again the day the tool is added. List it under
+"Noted, not done" in the report so the user can decide.
+
 ## Doc comments that feed outputs
 
 Doc comments on a public or exported API often build published docs, IDE hover text, or OpenAPI /

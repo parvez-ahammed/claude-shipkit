@@ -77,6 +77,8 @@ else {
   const covered = text => claimRows.some(([claim, source]) => source && norm(claim).includes(norm(text)));
   for (const l of allLines(prj.script)) if (!covered(l.say)) unsourced.push(`spoken "${l.say}"`);
   for (const b of blocks.values()) if (norm(b.text).split(" ").length >= 4 && !covered(b.text)) unsourced.push(`on screen at ${b.t} s "${b.text}"`);
+  const placeholders = claimRows.filter(([, source]) => /template placeholder/i.test(source ?? ""));
+  if (placeholders.length) warnings.push(`${placeholders.length} claims.md row(s) still say "template placeholder": replace them with real claims and sources before sharing`);
   if (unsourced.length) problems.push(`${unsourced.length} text(s) without a sourced row in claims.md: ${unsourced.slice(0, 6).join("; ")}${unsourced.length > 6 ? " ..." : ""}`);
 }
 

@@ -1,24 +1,23 @@
----
-name: find-code-smells
-argument-hint: "[file, directory, or function]"
-description: Detect code smells in a file, function, or directory and map each to candidate fixes. Use when the user wants to find what is wrong with code, "find code smells", "review this for quality", "what should I clean up here", or as the first step of a vague "refactor this" / "improve this" request. Covers the 22 refactoring.guru smells across five groups (Bloaters, Object-Orientation Abusers, Change Preventers, Dispensables, Couplers). Reports each smell with cited file:line evidence and the candidate refactoring or design pattern it maps to. Spoke of refactor; usable standalone.
-license: MIT
----
-
 # Code Smell Detector
 
-You scan code the user points at and report smells with cited evidence. You do not edit
-code. Each finding names the candidate fix (a refactoring, sometimes a design pattern) but
-the actual scoring of a pattern belongs to the pattern spokes.
+Scan the code the user points at and report smells with cited evidence. Do not edit code.
+Each finding names the candidate fix (a refactoring, sometimes a design pattern); scoring a
+pattern is a separate step with the `patterns-*.md` files.
 
 ## How to scan
 
-1. Read only the files/dirs the user points at. No whole-repo sweep unless asked.
+1. Read only the files/dirs the user points at. No whole-repo review unless asked. Exception:
+   to call something Dead Code, Lazy Class or Shotgun Surgery you must search the whole repo for
+   its callers (`grep`/`rg` for the symbol). That search is evidence gathering, not a wider review;
+   report only findings inside the target.
 2. Walk the triage table below. For each smell, look for its signature.
 3. A smell counts only with a concrete `file:line` you can cite. No citation, no finding.
 4. Emit each finding in the unified report shape. Rank by severity (how much it blocks
    change), not by how many you can list.
 5. If you find nothing, say the code is clean here. Never manufacture a smell.
+6. **A bug is not a smell.** If you see code that gives a wrong result (an off-by-one, a dropped
+   item, a missing auth check), report it first under a separate `BUGS` heading with `file:line`
+   and how to reproduce it, and point to `fix-bug`. Do not file it as Long Method or Duplicate Code.
 
 ## Triage table (22 smells)
 
@@ -26,7 +25,7 @@ the actual scoring of a pattern belongs to the pattern spokes.
 
 | Smell | Signature | Maps to |
 |-------|-----------|---------|
-| Long Method | function body long; many locals; nested blocks; needs comments to navigate | Extract Method, Replace Temp with Query (apply-refactoring). See references/bloaters.md |
+| Long Method | function body long; many locals; nested blocks; needs comments to navigate | Extract Method, Replace Temp with Query (refactorings.md). See ${CLAUDE_SKILL_DIR}/references/smells-bloaters.md |
 | Large Class | class with many fields/methods, multiple responsibilities | Extract Class / Subclass / Interface |
 | Long Parameter List | 4+ params, or params that travel together | Introduce Parameter Object, Preserve Whole Object |
 | Primitive Obsession | primitives standing in for concepts (string for money, int for status) | Replace Primitive with Object |
@@ -64,7 +63,7 @@ the actual scoring of a pattern belongs to the pattern spokes.
 
 | Smell | Signature | Maps to |
 |-------|-----------|---------|
-| Feature Envy | method uses another object's data more than its own | Move Method (apply-refactoring). See references/couplers.md |
+| Feature Envy | method uses another object's data more than its own | Move Method (refactorings.md). See ${CLAUDE_SKILL_DIR}/references/smells-couplers.md |
 | Inappropriate Intimacy | two classes reach into each other's internals | Move Method/Field, Replace Inheritance with Delegation |
 | Message Chains | `a.getB().getC().getD()` | Hide Delegate; Facade (structural) |
 | Middle Man | class that only delegates to another | Remove Middle Man, Inline |
@@ -79,32 +78,43 @@ Incomplete Library Class (a library lacks a method you need, so call sites work 
 TARGET: path/to/File.ext:Symbol
 FINDING: <smell name> (<group>)
 EVIDENCE: file:line - <what was seen>
-VERDICT: APPLY | CONSIDER | REJECT   (severity of acting, not pattern-scoring)
+VERDICT: APPLY | CONSIDER | REJECT   (severity of acting, not pattern-scoring; see below)
 RECOMMENDATION: <candidate refactoring/pattern> - <one line>
-NEXT: <which spoke, e.g. "score with pick-creational-pattern" or "apply via apply-refactoring: Extract Method">
+NEXT: <next step, e.g. "score with patterns-creational.md" or "mechanics: Extract Method">
 ```
 
-For smells whose fix is a design pattern, set NEXT to the pattern spoke so the orchestrator
-routes there for scoring. Do not score the pattern yourself. Used standalone (spoke not
-installed), still name the candidate fix in RECOMMENDATION and mark the pattern as
-unscored, so the user knows a fit was not tested.
+Verdict rubric for a smell (this is not the pattern score):
+
+- **APPLY** - the smell blocks a change that is planned or likely (the code is edited often, a
+  ticket touches it, a bug hides in it), and the fix is local and covered by tests or easy to cover.
+- **CONSIDER** - the smell is real but the code is stable, or the fix crosses a public surface,
+  or it needs tests that do not exist yet.
+- **REJECT** - the signature matches but acting costs more than it saves: generated code, a
+  framework-mandated shape, a one-off script, or code that is about to be deleted. Say why.
+
+For Comments (as deodorant), set NEXT to `trim-comments` when the problem is the comments
+themselves, and to `mechanics: Extract Method` or `Rename` when the comments hide bad code.
+
+For smells whose fix is a design pattern, set NEXT to `score <pattern> with patterns-<family>.md`.
+If you stop before scoring it, mark the pattern `unscored` in RECOMMENDATION, so the user knows
+a fit was not tested.
 
 ## References
 
 Only two groups have deep reference files; the other three (OO Abusers, Change Preventers,
 Dispensables) are covered by the triage table above, which is enough to detect and route
-them. The full fix mechanics for every group live in `apply-refactoring`.
+them. The fix mechanics for every group are in `refactorings.md`.
 
-- `${CLAUDE_SKILL_DIR}/references/bloaters.md` - read when a Bloater is found and you need signs/fix detail
+- `${CLAUDE_SKILL_DIR}/references/smells-bloaters.md` - read when a Bloater is found and you need signs/fix detail
   (Long Method, Large Class, Long Parameter List, Primitive Obsession, Data Clumps).
-- `${CLAUDE_SKILL_DIR}/references/couplers.md` - read when a Coupler is found (Feature Envy, Inappropriate
+- `${CLAUDE_SKILL_DIR}/references/smells-couplers.md` - read when a Coupler is found (Feature Envy, Inappropriate
   Intimacy, Message Chains, Middle Man); the costliest group in layered apps.
 
 ## Evals
 
 - Input: a 120-line function with 8 locals and nested conditionals.
-  Expected: Long Method finding, NEXT = apply-refactoring Extract Method.
+  Expected: Long Method finding, NEXT = mechanics: Extract Method.
 - Input: `order.getCustomer().getAddress().getCountry().getCode()`.
-  Expected: Message Chains finding, NEXT = pick-structural-pattern Facade or Hide Delegate.
+  Expected: Message Chains finding, NEXT = score Facade with patterns-structural.md, or mechanics: Hide Delegate.
 - Input: a 15-line single-purpose function, no duplication.
   Expected: no findings, "clean here". (Proves the detector does not manufacture smells.)

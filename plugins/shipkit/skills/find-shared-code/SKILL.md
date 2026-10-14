@@ -1,14 +1,11 @@
 ---
 name: find-shared-code
 description: >-
-  Finds what could be made common, shared, or reusable across a milestone, phase or backlog of
-  feature issues so features stop reimplementing the wheel, using software-engineering judgment
-  (DRY, KISS, YAGNI, rule-of-three) rather than abstraction for its own sake. Produces a
-  shared-platform design: the candidate common engines/primitives/UI, a verdict on each (build-now
-  / build-but-narrow / keep-per-feature), a list of over-abstractions to resist, a cross-phase ownership check (what an earlier phase already owns so this
-  one depends not rebuilds), and a build order. Invoke for "find common patterns", "what can be
-  shared/reused", "make a platform layer", "are we reimplementing this", "decompose the milestone
-  into shared + thin", "review for DRY across these issues".
+  Plan what should be built once and shared across a milestone or backlog of feature issues
+  (engines, helpers, UI), with build-now / build-narrow / keep-per-feature verdicts, over-
+  abstractions to resist, and a build order. Use for "what can be shared across these issues", "are
+  we reimplementing this", "design the platform layer for this milestone". Not for deduplicating
+  existing code (use simplify-code).
 argument-hint: "[milestone | phase | label | issue list]"
 license: MIT
 ---
@@ -116,5 +113,5 @@ Always produce, in this order:
 - A single feature: nothing to share across, just build it.
 - Ungroomed issues: the candidates will be vague. Groom the issues first.
 - A request to summarise rather than restructure: that is a briefing, not an audit.
-- Duplication inside existing code rather than across planned issues: use `refactor` /
-  `find-code-smells` (Duplicate Code, Shotgun Surgery) instead.
+- Duplication inside existing code rather than across planned issues: use `refactor`
+  (smells mode: Duplicate Code, Shotgun Surgery) or `simplify-code` instead.

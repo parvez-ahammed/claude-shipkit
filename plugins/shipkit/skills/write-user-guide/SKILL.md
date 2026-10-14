@@ -1,13 +1,10 @@
 ---
 name: write-user-guide
 description: >-
-  Write a user-facing feature guide for a ticket, issue or pull request as one self-contained HTML
-  file in a fixed, print-ready format, check every claim in it against the code with a fresh agent,
-  print it to PDF, and attach it to the tracker item (GitHub, Jira, Azure DevOps or other). Use
-  whenever the user asks for a "user guide", "feature guide", "guide for this ticket / card / PR",
-  "end-user docs for this feature", wants such a guide as HTML or PDF, wants it attached to the
-  ticket, or asks to update, re-verify or re-attach a guide after the code changed - even if they do
-  not say "skill".
+  Write a print-ready, user-facing HTML feature guide for a ticket, issue or PR, have a fresh agent
+  check every claim against the code, print it to PDF, and attach it to the tracker item. Use for
+  "write a user guide for this ticket", "feature guide", "end-user docs for this PR", or to update,
+  re-verify or re-attach a guide after the code changed.
 argument-hint: "[ticket-id or PR number]"
 license: MIT
 compatibility: "PDF step needs Python 3.8+, PyMuPDF (pip install pymupdf) and Chrome, Chromium or Edge (set CHROME_PATH if not found). Attaching needs the tracker's CLI or API access: gh, az (Azure DevOps) or curl with a Jira token."

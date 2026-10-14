@@ -42,7 +42,7 @@ Mechanics:
 6. Repeat for the other duplicated conditionals; they collapse to the same call.
 
 When the type also drives transitions or is chosen at runtime, this is really State or
-Strategy: route to pick-behavioral-pattern to score which, rather than hand-rolling the
+Strategy: score which one with patterns-behavioral.md, rather than hand-rolling the
 hierarchy.
 
 ## Introduce Null Object

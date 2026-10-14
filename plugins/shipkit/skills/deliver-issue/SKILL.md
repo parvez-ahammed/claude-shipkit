@@ -1,16 +1,13 @@
 ---
 name: deliver-issue
 description: >-
-  Carries one tracker issue, or a whole milestone, from backlog item to a reviewed, review-ready pull
-  request by chaining the ShipKit skills: groom-issue to make the plan buildable, a plan the user
-  approves, build-story (or fix-bug for bugs) to implement it test-first, review-branch to review the
-  diff, and optionally test-branch to prove it on the running app. Pushing, opening PRs, commenting on
-  issues and merging each wait for an explicit yes. Use when the user wants an issue or milestone
-  shipped end to end, not only groomed or summarized. Triggers on "/deliver-issue", "deliver #42",
-  "pick an issue and ship it", "groom and build #42", "deliver the milestone", "work through
-  milestone 3 on one branch".
+  Ship a tracker issue, or a whole milestone, end to end to a review-ready pull request by chaining
+  groom-issue, an approved plan, build-story or fix-bug, review-branch and optionally test-branch.
+  Push, PR and merge each wait for a yes. Use for "deliver #42", "pick an issue and ship it", "groom
+  and build #42", "work through milestone 3". Not for implementing a feature described in chat (use
+  build-story).
 when_to_use: >-
-  Not for grooming alone (use groom-issue), a stakeholder summary (use brief-milestone), or a quick
+  Not for grooming alone (use groom-issue), a stakeholder summary (use groom-issue brief mode), or a quick
   edit that needs no issue. For a single feature with no tracker issue, use build-story directly.
 argument-hint: "[issue number | URL | milestone name] [unattended]"
 license: MIT
@@ -31,7 +28,7 @@ appears. Nothing leaves the machine (push, PR, issue comment, label, merge) with
 ## When to use / not use
 
 - Use when: an issue or a milestone is to be delivered, not just discussed.
-- Not for: grooming only (`groom-issue`); a summary (`brief-milestone`); a feature with no issue
+- Not for: grooming only (`groom-issue`); a summary (`groom-issue` brief mode); a feature with no issue
   (`build-story`); a bug report with no issue (`fix-bug`).
 
 ## Before you start
@@ -119,8 +116,8 @@ GitLab: `glab mr create`. Azure DevOps: `az repos pr create`. No tracker CLI: pr
 
 ## Milestone mode
 
-For "deliver the milestone": order with `brief-milestone`'s build waves (or the dependency sort it
-describes), run phases 1-4 per issue serially, and land them on one integration branch or one branch
+For "deliver the milestone": order with `groom-issue` brief mode's build waves (or the dependency sort
+its `references/brief.md` describes), run phases 1-4 per issue serially, and land them on one integration branch or one branch
 per issue, as the user chooses. Unattended runs, skip rules, batch PR and the handoff report are in
 `${CLAUDE_SKILL_DIR}/references/milestone-mode.md`. Read it before starting a milestone.
 

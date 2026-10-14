@@ -1,11 +1,11 @@
 ---
 name: build-story
 description: >-
-  Drives ONE user story, feature request or ticket from raw ask to verified, review-ready code:
-  skeptical requirement analysis, code exploration, task breakdown, user picks tasks, implement,
-  test, verify. Use when the user hands over a single scoped feature and wants the whole process
-  driven, not a one-off edit. Triggers on "/build-story", "build this story", "implement this
-  ticket", "drive this feature", or a single scoped feature ask. One command, one user story.
+  Implement ONE user story, feature request or ticket from the raw ask to tested, review-ready code
+  in the current branch: question the requirement, explore the code, break it into tasks, build
+  test-first, verify. Use for "build this story", "implement this ticket", "drive this feature". Not
+  for bugs (use fix-bug) or for taking a tracker issue all the way to an opened PR (use deliver-
+  issue).
 argument-hint: "[story text | ticket id | issue URL]"
 license: MIT
 ---

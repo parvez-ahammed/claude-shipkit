@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>ShipKit | Claude Code skills to review, fix and ship code</title>
-<meta name="description" content="ShipKit is a free, open-source Claude Code plugin: 30 skills that review branches, fix bugs, audit QA and UX, refactor, deploy and write docs. MIT licensed.">
+<meta name="description" content="ShipKit is a free, open-source Claude Code plugin: 24 skills that review branches, fix bugs, audit QA and UX, refactor, deploy and write docs. MIT licensed.">
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="https://parvez-ahammed.github.io/shipkit/">
 <meta name="author" content="ShipKit contributors">
@@ -15,18 +15,18 @@
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="ShipKit">
 <meta property="og:title" content="ShipKit | Claude Code skills to review, fix and ship code">
-<meta property="og:description" content="A free, open-source Claude Code plugin: 30 skills that review branches, fix bugs, audit QA and UX, refactor, deploy and write docs.">
+<meta property="og:description" content="A free, open-source Claude Code plugin: 24 skills that review branches, fix bugs, audit QA and UX, refactor, deploy and write docs.">
 <meta property="og:url" content="https://parvez-ahammed.github.io/shipkit/">
 <meta property="og:image" content="https://parvez-ahammed.github.io/shipkit/og.png">
 <meta property="og:image:width" content="1280">
 <meta property="og:image:height" content="640">
-<meta property="og:image:alt" content="ShipKit - 30 Claude Code skills that review, fix, test and ship your code">
+<meta property="og:image:alt" content="ShipKit - 24 Claude Code skills that review, fix, test and ship your code">
 <meta property="og:locale" content="en_US">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="ShipKit | Claude Code skills to review, fix and ship code">
-<meta name="twitter:description" content="A free, open-source Claude Code plugin: 30 skills that review branches, fix bugs, audit QA and UX, refactor, deploy and write docs.">
+<meta name="twitter:description" content="A free, open-source Claude Code plugin: 24 skills that review branches, fix bugs, audit QA and UX, refactor, deploy and write docs.">
 <meta name="twitter:image" content="https://parvez-ahammed.github.io/shipkit/og.png">
-<meta name="twitter:image:alt" content="ShipKit - 30 Claude Code skills that review, fix, test and ship your code">
+<meta name="twitter:image:alt" content="ShipKit - 24 Claude Code skills that review, fix, test and ship your code">
 
 <script type="application/ld+json">
 {
@@ -52,7 +52,7 @@
       "@id": "https://parvez-ahammed.github.io/shipkit/#webpage",
       "url": "https://parvez-ahammed.github.io/shipkit/",
       "name": "ShipKit | Claude Code skills to review, fix and ship code",
-      "description": "ShipKit is a free, open-source Claude Code plugin: 30 skills that review branches, fix bugs, audit QA and UX, refactor, deploy and write docs. MIT licensed.",
+      "description": "ShipKit is a free, open-source Claude Code plugin: 24 skills that review branches, fix bugs, audit QA and UX, refactor, deploy and write docs. MIT licensed.",
       "inLanguage": "en",
       "isPartOf": { "@id": "https://parvez-ahammed.github.io/shipkit/#website" },
       "primaryImageOfPage": "https://parvez-ahammed.github.io/shipkit/og.png",
@@ -64,7 +64,7 @@
       "name": "ShipKit",
       "url": "https://parvez-ahammed.github.io/shipkit/",
       "codeRepository": "https://github.com/parvez-ahammed/shipkit",
-      "description": "ShipKit is a free, open-source plugin for Claude Code that adds 30 skills and 2 git hooks. The skills review branches, fix bugs from the root cause, test the running app, audit QA and UX, guide refactoring, deploy to a VPS, improve SEO and write videos, demos and user guides. It works on any stack, on Windows, macOS and Linux.",
+      "description": "ShipKit is a free, open-source plugin for Claude Code that adds 24 skills and 2 git hooks. The skills review branches, fix bugs from the root cause, test the running app, audit QA and UX, guide refactoring, deploy to a VPS, improve SEO and write videos, demos and user guides. It works on any stack, on Windows, macOS and Linux.",
       "applicationCategory": "DeveloperApplication",
       "operatingSystem": "Windows, macOS, Linux",
       "license": "https://opensource.org/licenses/MIT",
@@ -76,7 +76,6 @@
       "image": "https://parvez-ahammed.github.io/shipkit/og.png",
       "featureList": [
         "groom-issue: scores a ticket's readiness against a rubric, finds gaps and undeclared blockers, and rewrites it into a buildable plan only after you confirm",
-        "brief-milestone: executive brief of a milestone or set of issues",
         "deliver-issue: delivers one issue or a whole milestone end to end",
         "price-product: pricing tiers, margin-safety per tier, competitor prices with cited sources, value metric, and a check of every price surface for contradictions",
         "simplify-code: removes over-engineering in one behavior-preserving change set",
@@ -88,12 +87,7 @@
         "grill-feature: checks whether a shipped feature's promise holds in the code",
         "audit-app: QA release report and UX audit of a running web app",
         "find-ux-gaps: parallel UX auditors that turn findings into tickets",
-        "refactor: routes refactoring and design-pattern work to the right skill",
-        "find-code-smells: detects the 22 classic code smells with file:line evidence",
-        "apply-refactoring: Martin Fowler's refactoring catalog with safe mechanics",
-        "pick-creational-pattern: scores creational design patterns against your code",
-        "pick-structural-pattern: scores structural design patterns against your code",
-        "pick-behavioral-pattern: scores behavioral design patterns against your code",
+        "refactor: finds code smells, gives safe refactoring mechanics, and scores design patterns against your code",
         "enforce-clean-architecture: Clean / Hexagonal architecture rulebook and layering guard",
         "find-shared-code: finds what is worth sharing across a backlog",
         "deploy-to-vps: push-to-deploy CI/CD to a VPS with Caddy HTTPS and hardening",
@@ -258,13 +252,13 @@ footer p{margin:0}
     <section class="hero" aria-labelledby="hero-title" style="border-top:0">
       <p class="eyebrow">Open-source plugin for Claude Code</p>
       <h1 id="hero-title">Claude Code skills that review, fix, test and <em>ship</em> your code</h1>
-      <p class="lede" id="what-is">ShipKit is a free, open-source plugin for Claude Code that adds 30 skills and 2 git hooks. The skills review branches, fix bugs from the root cause, test the running app, audit QA and UX, guide refactoring, deploy to a VPS, improve SEO and write videos, demos and user guides. It works on any stack, on Windows, macOS and Linux.</p>
+      <p class="lede" id="what-is">ShipKit is a free, open-source plugin for Claude Code that adds 24 skills and 2 git hooks. The skills review branches, fix bugs from the root cause, test the running app, audit QA and UX, guide refactoring, deploy to a VPS, improve SEO and write videos, demos and user guides. It works on any stack, on Windows, macOS and Linux.</p>
       <div class="cta">
         <a class="btn primary" href="#install">Install in two commands</a>
         <a class="btn" href="https://github.com/parvez-ahammed/shipkit">View on GitHub</a>
       </div>
       <ul class="facts" aria-label="Key facts">
-        <li>30 skills</li>
+        <li>24 skills</li>
         <li>2 git hooks</li>
         <li>MIT license</li>
         <li>Any stack</li>
@@ -292,7 +286,7 @@ footer p{margin:0}
   <section id="skills" aria-labelledby="skills-title">
     <div class="wrap">
       <h2 id="skills-title">What skills are in ShipKit?</h2>
-      <p class="sub">30 skills in seven groups. Each card shows the slash command. Select a name to read its <code>SKILL.md</code> on GitHub.</p>
+      <p class="sub">24 skills in seven groups. Each card shows the slash command. Select a name to read its <code>SKILL.md</code> on GitHub.</p>
 
       <h3 id="review-fix">Review and fix</h3>
       <ul class="grid">
@@ -305,8 +299,7 @@ footer p{margin:0}
 
       <h3 id="plan-deliver">Plan and deliver</h3>
       <ul class="grid">
-        <li class="card"><h4><a href="https://github.com/parvez-ahammed/shipkit/blob/master/plugins/shipkit/skills/groom-issue/SKILL.md">groom-issue</a></h4><p>Scores a ticket's readiness against a rubric, finds gaps and undeclared blockers, and rewrites it into a buildable plan only after you confirm.</p><span class="cmd">/shipkit:groom-issue</span></li>
-        <li class="card"><h4><a href="https://github.com/parvez-ahammed/shipkit/blob/master/plugins/shipkit/skills/brief-milestone/SKILL.md">brief-milestone</a></h4><p>Executive brief of a milestone or set of issues: issue by issue in build order, then the whole picture with risks and open questions.</p><span class="cmd">/shipkit:brief-milestone</span></li>
+        <li class="card"><h4><a href="https://github.com/parvez-ahammed/shipkit/blob/master/plugins/shipkit/skills/groom-issue/SKILL.md">groom-issue</a></h4><p>Scores a ticket's readiness against a rubric, finds gaps and undeclared blockers, and rewrites it into a buildable plan only after you confirm. Brief mode gives an executive brief of a milestone in build order.</p><span class="cmd">/shipkit:groom-issue</span></li>
         <li class="card"><h4><a href="https://github.com/parvez-ahammed/shipkit/blob/master/plugins/shipkit/skills/deliver-issue/SKILL.md">deliver-issue</a></h4><p>Delivers one issue or a whole milestone end to end: groom, plan, build, review, test, ship. Pushing, PRs and merges wait for your yes.</p><span class="cmd">/shipkit:deliver-issue</span></li>
         <li class="card"><h4><a href="https://github.com/parvez-ahammed/shipkit/blob/master/plugins/shipkit/skills/price-product/SKILL.md">price-product</a></h4><p>Pricing tiers, margin-safety per tier, competitor prices with cited sources, value metric, and a check of every price surface for contradictions.</p><span class="cmd">/shipkit:price-product</span></li>
       </ul>
@@ -319,12 +312,7 @@ footer p{margin:0}
 
       <h3 id="refactor-architecture">Refactor and architecture</h3>
       <ul class="grid">
-        <li class="card"><h4><a href="https://github.com/parvez-ahammed/shipkit/blob/master/plugins/shipkit/skills/refactor/SKILL.md">refactor</a></h4><p>The refactoring hub: understands what you want, routes to the right skill below and merges their findings.</p><span class="cmd">/shipkit:refactor</span></li>
-        <li class="card"><h4><a href="https://github.com/parvez-ahammed/shipkit/blob/master/plugins/shipkit/skills/find-code-smells/SKILL.md">find-code-smells</a></h4><p>Detects the 22 classic code smells with <code>file:line</code> evidence, each mapped to a candidate fix.</p><span class="cmd">/shipkit:find-code-smells</span></li>
-        <li class="card"><h4><a href="https://github.com/parvez-ahammed/shipkit/blob/master/plugins/shipkit/skills/apply-refactoring/SKILL.md">apply-refactoring</a></h4><p>Martin Fowler's refactoring catalog: preconditions and ordered, safe step-by-step mechanics.</p><span class="cmd">/shipkit:apply-refactoring</span></li>
-        <li class="card"><h4><a href="https://github.com/parvez-ahammed/shipkit/blob/master/plugins/shipkit/skills/pick-creational-pattern/SKILL.md">pick-creational-pattern</a></h4><p>Scores Factory Method, Abstract Factory, Builder, Prototype and Singleton against your code: APPLY, CONSIDER or REJECT with evidence.</p><span class="cmd">/shipkit:pick-creational-pattern</span></li>
-        <li class="card"><h4><a href="https://github.com/parvez-ahammed/shipkit/blob/master/plugins/shipkit/skills/pick-structural-pattern/SKILL.md">pick-structural-pattern</a></h4><p>Same scoring for Adapter, Bridge, Composite, Decorator, Facade, Flyweight and Proxy.</p><span class="cmd">/shipkit:pick-structural-pattern</span></li>
-        <li class="card"><h4><a href="https://github.com/parvez-ahammed/shipkit/blob/master/plugins/shipkit/skills/pick-behavioral-pattern/SKILL.md">pick-behavioral-pattern</a></h4><p>Same scoring for Strategy, State, Command, Observer, Chain of Responsibility and more.</p><span class="cmd">/shipkit:pick-behavioral-pattern</span></li>
+        <li class="card"><h4><a href="https://github.com/parvez-ahammed/shipkit/blob/master/plugins/shipkit/skills/refactor/SKILL.md">refactor</a></h4><p>Finds the 22 classic code smells, gives Martin Fowler's safe refactoring mechanics, and scores creational, structural and behavioral design patterns against your code: APPLY, CONSIDER or REJECT with evidence.</p><span class="cmd">/shipkit:refactor</span></li>
         <li class="card"><h4><a href="https://github.com/parvez-ahammed/shipkit/blob/master/plugins/shipkit/skills/enforce-clean-architecture/SKILL.md">enforce-clean-architecture</a></h4><p>Clean / Hexagonal architecture rulebook, bootstrap for .NET, TypeScript, Java, Go and Python, and a layering guard.</p><span class="cmd">/shipkit:enforce-clean-architecture</span></li>
         <li class="card"><h4><a href="https://github.com/parvez-ahammed/shipkit/blob/master/plugins/shipkit/skills/find-shared-code/SKILL.md">find-shared-code</a></h4><p>Finds what is worth sharing across a backlog with DRY, KISS and YAGNI judgment, and what to resist abstracting.</p><span class="cmd">/shipkit:find-shared-code</span></li>
         <li class="card"><h4><a href="https://github.com/parvez-ahammed/shipkit/blob/master/plugins/shipkit/skills/simplify-code/SKILL.md">simplify-code</a></h4><p>Removes over-engineering in one behavior-preserving change set: dead code, needless layers, reinvented helpers. Verified by your own build and tests.</p><span class="cmd">/shipkit:simplify-code</span></li>

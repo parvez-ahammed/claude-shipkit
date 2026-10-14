@@ -17,7 +17,6 @@ body:
         - review-branch
         - fix-bug
         - groom-issue
-        - brief-milestone
         - deliver-issue
         - price-product
         - simplify-code
@@ -28,11 +27,6 @@ body:
         - audit-app
         - find-ux-gaps
         - refactor
-        - find-code-smells
-        - apply-refactoring
-        - pick-creational-pattern
-        - pick-structural-pattern
-        - pick-behavioral-pattern
         - enforce-clean-architecture
         - find-shared-code
         - deploy-to-vps

@@ -1,14 +1,11 @@
 ---
 name: trim-comments
 description: >-
-  Audits and trims bloated, low-value code comments in any language, keeping only the comments that
-  explain a non-obvious WHY, an invariant or a gotcha, and deleting the ones that restate the code,
-  narrate history, or log decisions. Comment-only and behavior-preserving, verified by the repo's own
-  lint, build and test gates. Use when asked to "clean up comments", "the comments are bloated",
-  "remove redundant comments", "strip history / migration comments", "make comments precise",
-  "remove commented-out code", "kill the dated decision-log headers", audit a file or folder for
-  comment noise, or for a boy-scout comment cleanup in a file already being edited. One target per
-  run (a file, a small module, or one feature folder), never a whole-repo sweep.
+  Delete or tighten the existing code comments in one file or folder that restate code, narrate
+  history or log decisions, keeping only the non-obvious why, invariants and gotchas. Comment-only,
+  verified by the repo's gates. Use for "clean up comments", "the comments are bloated", "remove
+  commented-out code", "strip history comments". Not for writing new prose (use write-plainly) or
+  code cleanup (use simplify-code).
 argument-hint: "[file | folder | module]"
 license: MIT
 ---
@@ -49,7 +46,10 @@ how it got here / who decided it?* The second kind always goes.
   ```
 - **Dated decision logs and authority stamps.** A comment is not a changelog or meeting record.
   Triggers: a bare `#123` ticket ref, an ISO date, "authority:", "decision:", "per <person>",
-  "owner decision", a project codename. Rescue the one durable fact if there is one, drop the rest:
+  "owner decision", a project codename. Rescue the one durable fact if there is one, drop the rest.
+  Exception: a ticket ref that points at a **still-open** problem the reader must know about
+  (`// Workaround for #301 (upstream rounding bug); remove when it closes`) is a current gotcha.
+  Keep it. Check the ticket state if you can; if you cannot, keep the ref and say so in the report.
   ```
   // Decision (#47, 2025-06-12, per platform team): ReportsPage is the one canonical /reports page.
   ->  // ReportsPage is the canonical /reports page.
@@ -88,7 +88,8 @@ Precise beats present: when you keep a rambling comment, rewrite it to one or tw
 3. **Detect the language and comment syntax** of every file in scope (`//`, `/* */`, `#`, `--`,
    `<!-- -->`, `;`, `%`, docstrings). Read `${CLAUDE_SKILL_DIR}/references/directives.md` before
    cutting anything: it lists the comment forms that are really code.
-4. **Survey.** Read the target. For a bigger folder, if the Agent tool is available, fan the reading
+4. **Survey.** Read the target. One file or a few hundred lines: just read it top to bottom; the
+   grep helpers below add nothing at that size. For a bigger folder, if the Agent tool is available, fan the reading
    out to read-only subagents (one per file group) that return every comment as
    `file:line | keep/kill | one-line reason`; you make the final call. Without subagents, read the
    files yourself in sequence. Grep only surfaces candidates (patterns below).
@@ -109,6 +110,10 @@ Typical: `npm run typecheck && npm run lint && npm test`, `dotnet build && dotne
 `go vet ./... && go test ./...`, `cargo check && cargo test`, `ruff check . && pytest`.
 
 - Run each gate on its own and read its exit code. Piping through `tail` or `head` masks a failure.
+- **Prove the diff is comment-only.** `git diff -U0 <target>` must show only comment lines and blank
+  lines. For a stronger check, strip comments from the old and new file with the language's own
+  tool (for example `npx esbuild --minify-whitespace`, `python -m tokenize`, or `gcc -fpreprocessed
+  -E`) and diff the results; they must be identical.
 - Do not run a formatter over the whole file unless the project already formats on commit; it buries
   the real diff.
 - A gate that turns red after a comment-only change means you removed a directive. Restore it.
@@ -141,8 +146,8 @@ TRIM-COMMENTS REPORT
 Target:     <file | folder>
 Removed:    <n> comments (<n> history, <n> decision-log, <n> restated, <n> banner, <n> dead code, <n> doc-echo)
 Tightened:  <n> comments
-Kept:       <n> load-bearing (directives and legal headers not counted)
-Noted, not done: <renames or code smells seen; suggest simplify-code>
+Kept:       <n> load-bearing (directives and legal headers not counted; list kept ticket refs)
+Noted, not done: <renames or code smells seen (suggest simplify-code); directives for tools the repo lacks>
 Gates:      <command> -> exit <code>, one line each, or "unverified: <why>"
 Status:     DONE | DONE_WITH_CONCERNS | BLOCKED
 ```

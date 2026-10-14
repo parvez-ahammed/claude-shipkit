@@ -1,14 +1,10 @@
 ---
 name: price-product
 description: >-
-  Sets or reviews the price of a software product: proposes tiers, checks that each tier is
-  margin-safe, researches competitor prices with cited sources and access dates, picks a value
-  metric, and audits every price surface in the repo for contradictions. Works for seat-based SaaS,
-  usage or credit billing, one-time licences and open-core. Interviews the owner first, then grounds
-  every number in the code and in cited sources, and produces a standalone HTML report. Use when the
-  user asks "how should we price this", "are we charging enough", "what should our tiers be", "is
-  this tier profitable", "competitor pricing analysis", "pricing report", "our pricing page
-  contradicts itself", or "check our prices match Stripe".
+  Set or review a software product's pricing: tiers, margin per tier, cited competitor prices, value
+  metric, and an audit of every price surface in the repo for contradictions, as a standalone HTML
+  report. Use for "how should we price this", "are we charging enough", "what should our tiers be",
+  "is this tier profitable", "competitor pricing", "our pricing page contradicts Stripe".
 argument-hint: "[product or repo | 'audit surfaces only' | competitor list]"
 license: MIT
 ---

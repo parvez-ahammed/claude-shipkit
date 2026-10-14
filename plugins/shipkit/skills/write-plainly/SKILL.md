@@ -1,6 +1,11 @@
 ---
 name: write-plainly
-description: An opinionated, adoptable house style for prose that lands in git history or on a reviewer's screen - PR descriptions, commit subjects and bodies, PR comments, code comments, README and docs prose, ticket notes. By default it applies ASCII-only punctuation, Simplified Technical English (ASD-STE100), no filler, no jargon, and comments that only explain a non-obvious why; a repo's own style guide overrides it. Carries a PR-description sub-skill that finds and fills the repo's own PR template section by section. Use BEFORE writing or editing such prose. Triggers on "write the PR description", "fill the PR template", "draft the PR body", "write a commit message", "write this up", "clean up this comment", "make this readable", and on any request to generate text destined for a commit, a PR, a code comment or repo docs.
+description: >-
+  House style for NEW prose a reviewer will read: PR descriptions, commit messages, PR comments, new
+  code comments, README and docs. ASCII-only punctuation, plain short sentences, no filler; fills
+  the repo's PR template. Use before writing "the PR description", "a commit message", "this write-
+  up", or any text going into a commit, PR or repo docs. Not for trimming existing comments (use
+  trim-comments).
 license: MIT
 ---
 

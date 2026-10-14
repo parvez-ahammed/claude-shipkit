@@ -1,6 +1,10 @@
 ---
 name: show-usage
-description: Shows how much time, how many sessions, and how many tokens and dollars were spent on a coding project, from local Claude Code transcripts. Triggers on "show usage", "how long have I worked on this", "how much time did I spend", "my claude time", "wakatime for claude", "session stats", "token usage", "cost per project", "how many hours on this project". Prints WakaTime-style active time plus token/cost/tool tables. Local, read-only, zero deps.
+description: >-
+  Show time spent, sessions, tokens and dollars per coding project from local Claude Code
+  transcripts, WakaTime style. Use for "show usage", "how long have I worked on this", "how much did
+  this project cost", "token usage", "session stats". Local, read-only, zero dependencies. Not for
+  per-day timesheet rows (use fill-timesheet).
 argument-hint: "[--by day|week|dow|hour|session|model|tool] [--since YYYY-MM-DD] [--project <path>]"
 license: MIT
 compatibility: "Requires Node 16+ on PATH. Reads Claude Code transcripts under ~/.claude/projects (or $CLAUDE_CONFIG_DIR/projects); works on macOS, Linux and Windows."

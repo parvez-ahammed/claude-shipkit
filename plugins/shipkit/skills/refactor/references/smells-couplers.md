@@ -35,8 +35,8 @@ Detection: chained accessor calls more than two deep, especially crossing object
 boundaries.
 
 Fix: Hide Delegate (the first object exposes a method that hides the rest of the chain). If
-the chain crosses into a whole subsystem, that is a Facade opportunity: route to
-pick-structural-pattern to score Facade. Beware over-applying Hide Delegate, which can create
+the chain crosses into a whole subsystem, that is a Facade opportunity: score Facade
+with patterns-structural.md. Beware over-applying Hide Delegate, which can create
 Middle Man.
 
 ## Middle Man
@@ -47,4 +47,4 @@ Detection: most methods are one-liners forwarding to a single collaborator.
 
 Fix: Remove Middle Man (let clients talk to the real object), Inline the class. Exception:
 the middle man is a deliberate Proxy/Decorator/Facade with real intent. Confirm intent
-before removing; route to pick-structural-pattern if the indirection is a real pattern.
+before removing; score with patterns-structural.md if the indirection is a real pattern.

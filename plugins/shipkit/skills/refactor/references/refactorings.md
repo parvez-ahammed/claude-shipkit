@@ -1,14 +1,7 @@
----
-name: apply-refactoring
-argument-hint: "[smell or refactoring name] [file or symbol]"
-description: Apply Martin Fowler's refactoring techniques to fix a known code smell. Use when the user knows what is wrong and wants the safe step-by-step mechanics to fix it, "how do I extract this method", "how do I break up this class", "replace this conditional with polymorphism", "introduce a parameter object". Holds the refactoring catalog grouped as composing methods, moving features, organizing data, simplifying conditionals, simplifying method calls, and dealing with generalization, with a one-line mechanic per entry, deep step-by-step mechanics for the most-used ones, and a test-after-each-step safety rule. Recommends and gives mechanics only; never auto-edits. Spoke of refactor; usable standalone.
-license: MIT
----
-
 # Refactoring Methods
 
-You give the safe mechanics to apply a refactoring once a smell is known. You do not edit
-code; you produce the ordered steps and the safety check between them. Refactoring changes
+The safe mechanics to apply a refactoring once a smell is known. Do not edit the working
+tree; produce the ordered steps and the safety check between them. Refactoring changes
 structure without changing behavior, so every sequence rests on one rule:
 
 SAFETY RULE: run the tests (or the tightest available check) after each small step. If a
@@ -22,11 +15,10 @@ mechanics, risk) are bundled only for the two groups marked with a reference fil
 every other entry, expand the one-line mechanic into small steps yourself, each followed by
 a test run per the SAFETY RULE, and state the preconditions you checked. Preconditions
 decide whether the refactoring is the right move; mechanics decide how. (This is the same
-scored-precondition idea the pattern spokes use, applied lightly; the full schema is in
-`${CLAUDE_SKILL_DIR}/../refactor/references/verdict-format.md` when the plugin is
-installed.)
+scored-precondition idea the pattern files use, applied lightly; the full schema is in
+`${CLAUDE_SKILL_DIR}/references/verdict-format.md`.)
 
-### Composing methods (most common; see references/composing-methods.md)
+### Composing methods (most common; see ${CLAUDE_SKILL_DIR}/references/refactorings-composing-methods.md)
 
 | Refactoring | Fixes | One-line mechanic |
 |-------------|-------|-------------------|
@@ -49,6 +41,7 @@ installed.)
 | Hide Delegate | Message Chains | expose a method on the server that hides the delegate chain |
 | Remove Middle Man | Middle Man | let the client talk to the delegate directly |
 | Introduce Foreign Method / Local Extension | Incomplete Library Class | add the missing behavior in a client-side helper or wrapper/extension |
+| Extract Function + Move Function (cross-module) | Duplicate Code in two unrelated modules | pin both copies with characterization tests, extract one copy into a shared module, point each caller at it one at a time, delete the other copy last |
 
 ### Organizing data
 
@@ -56,13 +49,13 @@ installed.)
 |-------------|-------|-------------------|
 | Replace Primitive with Object | Primitive Obsession | give the concept a small type that owns its validation/behavior |
 | Replace Type Code with Subclasses | Switch Statements on a type code | one subclass per type-code value |
-| Replace Type Code with State/Strategy | type code that drives behavior + changes | route to pick-behavioral-pattern to score State/Strategy |
+| Replace Type Code with State/Strategy | type code that drives behavior + changes | score with patterns-behavioral.md State/Strategy |
 | Introduce Parameter Object | Long Parameter List, Data Clumps | group co-traveling params into one object |
 | Preserve Whole Object | Long Parameter List | pass the source object instead of values pulled from it |
 | Encapsulate Field / Encapsulate Collection | Data Class | make fields private behind accessors; return read-only views of collections |
 | Change Bidirectional Association to Unidirectional | Inappropriate Intimacy | drop the back-reference the other side does not need |
 
-### Simplifying conditionals (see references/simplifying-conditionals.md)
+### Simplifying conditionals (see ${CLAUDE_SKILL_DIR}/references/refactorings-simplifying-conditionals.md)
 
 | Refactoring | Fixes | One-line mechanic |
 |-------------|-------|-------------------|
@@ -94,7 +87,7 @@ installed.)
 | Extract Subclass | Large Class with features used only in some cases | move the conditional features into a subclass |
 | Extract Interface | Large Class, several clients using the same subset | declare the subset as an interface |
 | Collapse Hierarchy | Lazy Class, Speculative Generality | merge a subclass that adds nothing into its parent |
-| Form Template Method | Duplicate Code with the same step order | pull the skeleton up, leave varying steps as overrides; route to pick-behavioral-pattern to score Template Method vs Strategy |
+| Form Template Method | Duplicate Code with the same step order | pull the skeleton up, leave varying steps as overrides; score with patterns-behavioral.md Template Method vs Strategy |
 | Replace Inheritance with Delegation | Refused Bequest, Inappropriate Intimacy with a parent | hold the former parent as a field and forward only what is used |
 | Replace Delegation with Inheritance | Middle Man forwarding everything to one delegate | inherit instead, when the subclass truly is-a delegate |
 
@@ -103,14 +96,18 @@ config, public API), delete, run tests.
 
 ## References
 
-- `${CLAUDE_SKILL_DIR}/references/composing-methods.md` - read when giving mechanics for Extract Method,
+- `${CLAUDE_SKILL_DIR}/references/refactorings-composing-methods.md` - read when giving mechanics for Extract Method,
   Replace Temp with Query, or Replace Method with Method Object.
-- `${CLAUDE_SKILL_DIR}/references/simplifying-conditionals.md` - read when giving mechanics for Decompose
+- `${CLAUDE_SKILL_DIR}/references/refactorings-simplifying-conditionals.md` - read when giving mechanics for Decompose
   Conditional, Guard Clauses, Replace Conditional with Polymorphism, or Introduce Null Object.
 
 ## Output
 
-For the chosen refactoring, emit:
+For one refactoring, emit the block below. For a plan that chains several (for example Extract
+Method, then Move Method, then delete the dead copy), emit one block per refactoring in the order
+they run, numbered `STEP 1 of N`, and start with a `CHARACTERIZATION TESTS` list: the tests to
+write first that pin current behavior, including any bug you are deliberately preserving.
+
 ```
 REFACTORING: <name>
 WHY HERE: <the smell + cited file:line>
@@ -124,6 +121,10 @@ RISK: <what can silently break> + the mitigating check
 
 If preconditions are not met, say so and recommend the prerequisite refactoring first (e.g.
 Extract Method before Move Method when only part of a method envies another class).
+
+This skill does not edit the user's working tree. If the user wants proof that the plan holds,
+dry-run it in a throwaway copy (a scratch folder or a separate git worktree), run the tests after
+each step, report the results, and delete the copy.
 
 ## Evals
 

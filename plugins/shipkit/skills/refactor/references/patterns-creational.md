@@ -1,27 +1,15 @@
----
-name: pick-creational-pattern
-argument-hint: "[file or symbol]"
-description: Score whether a creational design pattern (Factory Method, Abstract Factory, Builder, Prototype, Singleton) fits a code site, and recommend it only when scored preconditions are met. Use when the user asks "should I use a factory/builder here", "where can I apply a creational pattern", "how should I construct these objects", or when object construction is awkward (telescoping constructors, scattered `new`, type-switch instantiation, expensive clones, hand-rolled globals). Each pattern has opportunity signatures, weighted preconditions, a threshold, and hard-veto anti-indicators; emits APPLY / CONSIDER / REJECT with cited evidence. Spoke of refactor; usable standalone.
-license: MIT
----
-
 # Creational Patterns
 
 Creational patterns are about object construction: making the system independent of how its
-objects are created. You score a code site against each candidate and report a verdict. You
-do not edit code.
+objects are created. Score a code site against each candidate and report a verdict. Do not
+edit code.
 
-Follow the shared scoring rules in
-`${CLAUDE_SKILL_DIR}/../refactor/references/verdict-format.md` (bundled with the
-refactor skill). If it is not installed, the rules are: a precondition scores only
-with a cited `file:line`; any anti-indicator is an absolute veto (REJECT); score >= threshold
-with the anchor met -> APPLY, near-miss or cost outweighs the problem -> CONSIDER, else
-REJECT; apply language notes last and downgrade one step when an idiom makes the pattern
-redundant.
+Score with the rules in `${CLAUDE_SKILL_DIR}/references/verdict-format.md`: evidence per
+precondition, anti-indicators veto, anchor rule, language notes downgrade one step.
 
 When the user points at a site, score it. When asked "where can I apply one", run the
-opportunity signatures over the target first (or ask find-code-smells to), then score
-the hits.
+opportunity signatures over the target first (or the smell sweep in `smells.md`), then
+score the hits.
 
 ---
 
@@ -162,7 +150,7 @@ correctness requirement is real.
 
 ## Output
 
-Emit per scored site, in the orchestrator's unified report shape, with the matched
+Emit per scored site, in the unified report shape from SKILL.md, with the matched
 preconditions and their `file:line` evidence, the score, any veto, and APPLY/CONSIDER/REJECT
 plus a one-line why. If two creational patterns both fit (rare), show both and the
 distinguishing precondition.
@@ -173,7 +161,7 @@ FINDING: <pattern> opportunity
 EVIDENCE: file:line - <matched precondition [weight]>   (one line per match; plus any veto)
 VERDICT: APPLY | CONSIDER | REJECT   (score N / threshold M) - <one-line why>
 RECOMMENDATION: <pattern or simpler alternative> - <one line>
-NEXT: <e.g. "safe steps via apply-refactoring" or "leave as is">
+NEXT: <e.g. "mechanics via refactorings.md" or "leave as is">
 ```
 
 ## Evals

@@ -45,7 +45,7 @@ function send(req, res, status, file, transform) {
   let body = fs.readFileSync(file);
   if (transform) body = Buffer.from(transform(body.toString()));
   const type = types[path.extname(file).toLowerCase()] ?? "application/octet-stream";
-  const headers = { "Content-Type": type };
+  const headers = { "Content-Type": type, "X-Served-By": "serve-build" };
   // Production hosts compress text; without it Lighthouse numbers are far worse than production.
   if (/text|javascript|json|xml|svg/.test(type) && /gzip/.test(req.headers["accept-encoding"] ?? "")) {
     body = zlib.gzipSync(body);

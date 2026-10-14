@@ -1,15 +1,15 @@
 <div align="center">
 
-<img src="docs/og.png" alt="ShipKit - 30 Claude Code skills that review, fix, test and ship your code" width="720">
+<img src="docs/og.png" alt="ShipKit - 24 Claude Code skills that review, fix, test and ship your code" width="720">
 
 # ShipKit: Claude Code skills that review, fix, test and ship your code
 
-**30 production-ready [Claude Code](https://claude.com/claude-code) skills that work like a senior dev team in your terminal:
+**24 production-ready [Claude Code](https://claude.com/claude-code) skills that work like a senior dev team in your terminal:
 a multi-seat code reviewer, a root-cause bug fixer, a QA + UX auditor, a refactoring coach, a ticket groomer, a VPS deployer, a promo-video maker and more.**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Claude Code plugin](https://img.shields.io/badge/Claude%20Code-plugin-d97757.svg)](https://claude.com/claude-code)
-[![Skills: 30](https://img.shields.io/badge/skills-30-6f42c1.svg)](#-the-skills)
+[![Skills: 24](https://img.shields.io/badge/skills-24-6f42c1.svg)](#-the-skills)
 [![Validate](https://github.com/parvez-ahammed/shipkit/actions/workflows/validate.yml/badge.svg)](https://github.com/parvez-ahammed/shipkit/actions/workflows/validate.yml)
 [![Windows | macOS | Linux](https://img.shields.io/badge/OS-Windows%20%7C%20macOS%20%7C%20Linux-informational.svg)](#-requirements)
 [![PRs welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
@@ -69,8 +69,7 @@ You don't need to remember any command. Just ask:
 
 | Skill | What it does |
 |-------|--------------|
-| [`groom-issue`](plugins/shipkit/skills/groom-issue/SKILL.md) | Scores a ticket's readiness against a rubric, finds gaps and undeclared blockers, and rewrites it into a buildable plan only after you confirm. |
-| [`brief-milestone`](plugins/shipkit/skills/brief-milestone/SKILL.md) | Executive brief of a milestone or set of issues: issue by issue in build order, then the whole picture with risks and open questions. |
+| [`groom-issue`](plugins/shipkit/skills/groom-issue/SKILL.md) | Scores a ticket's readiness against a rubric, finds gaps and undeclared blockers, and rewrites it into a buildable plan only after you confirm. Brief mode gives an executive brief of a milestone in build order, with risks and open questions. |
 | [`deliver-issue`](plugins/shipkit/skills/deliver-issue/SKILL.md) | Delivers one issue or a whole milestone end to end: groom, plan, build, review, test, ship. Pushing, PRs and merges wait for your yes. |
 | [`price-product`](plugins/shipkit/skills/price-product/SKILL.md) | Pricing tiers, margin-safety per tier, competitor prices with cited sources, value metric, and a check of every price surface for contradictions. |
 
@@ -85,12 +84,7 @@ You don't need to remember any command. Just ask:
 
 | Skill | What it does |
 |-------|--------------|
-| [`refactor`](plugins/shipkit/skills/refactor/SKILL.md) | The refactoring hub: understands what you want and routes to the skills below, merging their findings. |
-| [`find-code-smells`](plugins/shipkit/skills/find-code-smells/SKILL.md) | Detects the 22 classic code smells with `file:line` evidence, each mapped to a candidate fix. |
-| [`apply-refactoring`](plugins/shipkit/skills/apply-refactoring/SKILL.md) | Martin Fowler's refactoring catalog: preconditions and ordered, safe mechanics. |
-| [`pick-creational-pattern`](plugins/shipkit/skills/pick-creational-pattern/SKILL.md) | Scores Factory, Builder, Prototype, Singleton... against your code. APPLY / CONSIDER / REJECT with evidence. |
-| [`pick-structural-pattern`](plugins/shipkit/skills/pick-structural-pattern/SKILL.md) | Same scoring for Adapter, Bridge, Composite, Decorator, Facade, Flyweight, Proxy. |
-| [`pick-behavioral-pattern`](plugins/shipkit/skills/pick-behavioral-pattern/SKILL.md) | Same scoring for Strategy, State, Command, Observer, Chain of Responsibility and more. |
+| [`refactor`](plugins/shipkit/skills/refactor/SKILL.md) | Finds the 22 classic code smells, gives Martin Fowler's safe refactoring mechanics, and scores creational, structural and behavioral design patterns against your code: APPLY / CONSIDER / REJECT with `file:line` evidence. |
 | [`enforce-clean-architecture`](plugins/shipkit/skills/enforce-clean-architecture/SKILL.md) | Clean / Hexagonal architecture rulebook, per-stack bootstrap (.NET, TypeScript, Java, Go, Python) and a layering guard you can run in CI. |
 | [`find-shared-code`](plugins/shipkit/skills/find-shared-code/SKILL.md) | Finds what is worth sharing across a backlog with DRY / KISS / YAGNI judgment, and what to resist abstracting. |
 | [`simplify-code`](plugins/shipkit/skills/simplify-code/SKILL.md) | Removes over-engineering in one behavior-preserving change set: dead code, needless layers, reinvented helpers. Verified by your own build and tests. |
@@ -169,9 +163,7 @@ it yourself as a slash command.
 
 **Can I install just one skill?**
 Yes. Copy its folder from `plugins/shipkit/skills/` into `~/.claude/skills/` (for you) or
-`.claude/skills/` in a project (for your team). The pattern skills also read
-`refactor/references/verdict-format.md` when it sits next to them, and fall back to inline
-rules when it doesn't.
+`.claude/skills/` in a project (for your team). Each skill folder is self-contained.
 
 **Does it work on Windows?**
 Yes. Every skill runs on Windows, macOS and Linux; where a shell matters there is a bash

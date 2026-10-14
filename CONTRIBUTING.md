@@ -1,6 +1,6 @@
 # Contributing to ShipKit
 
-Thanks for helping. ShipKit is a Claude Code plugin: 30 skills under
+Thanks for helping. ShipKit is a Claude Code plugin: 24 skills under
 `plugins/shipkit/skills/`, plus two git hooks under `hooks/`. Most contributions are a new
 skill or a fix to an existing one.
 

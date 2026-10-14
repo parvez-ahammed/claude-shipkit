@@ -1,11 +1,10 @@
 ---
 name: fix-bug
 description: >-
-  Drives ONE reported bug from report to verified fix, with the root cause proven before any fix is
-  written. Use when the user reports a bug, defect, regression, wrong or missing data, a 500, a stack
-  trace, "it broke", "it was working yesterday", or hands over a bug ticket and wants it taken
-  end-to-end. Triggers on "/fix-bug", "fix this bug", "why is this broken", "root cause this",
-  "this wrote wrong data". One command, one bug, root cause before fix.
+  Take ONE reported bug from report to verified fix, proving the root cause before writing any fix,
+  with a regression test that fails without it. Use for a bug, regression, wrong or missing data, a
+  500, a stack trace, "it broke", "it was working yesterday", "root cause this", or a bug ticket.
+  Not for new features (use build-story).
 argument-hint: "[bug description | ticket id | error text]"
 license: MIT
 ---
@@ -30,12 +29,14 @@ a fix for a symptom only moves the bug somewhere harder to find.
 
 - **Read the project's `CLAUDE.md` and its docs index first.** They tell you the hosts, the test
   command, the build rules and the known traps. Project rules override the defaults in this file.
+  No `CLAUDE.md` or docs index? Read `README`, the package manifest (`package.json`, `*.csproj`,
+  `pyproject.toml`, ...) and the CI config for the test command, and carry on. Do not stop to ask.
 - **Builds:** follow the project's rule. If the user compiles in their IDE, do not run the full build
   or the full test suite; write the fix and the test, and tell them exactly what to run. A filtered run
   of the one new test is fine.
 - **Notes and artifacts** go in a per-ticket folder the project already uses (for example
-  `notes/<ticket>/`), never outside the repo. If it has none, ask before creating one, and keep it out
-  of version control unless the project says otherwise.
+  `notes/<ticket>/`). If it has none, keep notes in your session scratch space and put the debug
+  report in your reply. Do not create a folder in the repo just for notes.
 - **Comments in code:** only the WHY that the code cannot say, one or two lines.
 - **Verify before asserting.** Read every step of the code path before you claim a mechanism. Label
   each claim Verified (`file:line`) / Hypothesis (say what would confirm it) / Unknown. Evidence that
@@ -98,6 +99,9 @@ mapper, query, transform, client. The step you skip is the step that breaks the 
   you read code.
 - **Before you blame a config value, ask what set it.** If the code under review, a new default, or
   an open finding set that value, it is a code cause, not a config problem.
+- **Loop bounds and collection edges** - on a wrong total, sum or count, check the first and last
+  element, the empty and single-item cases, and `< length - 1` / `<= length` bounds. An item that is
+  silently skipped looks like a pricing or rounding bug.
 - Match against common patterns: race condition (intermittent), null propagation, partial writes,
   integration failure (timeout or bad response from an external system), config drift (works locally,
   fails in production), stale cache or stale query data.
@@ -139,13 +143,18 @@ A UI-only fix with no test runner: record the click path you checked instead.
 - **Adjacent hunt:** other callers of the changed method, missing cache or query invalidation, the
   other side of the operation (sender and receiver, owner and shared-with party), other integrations
   that share the path, branches that are now dead.
+- **An adjacent finding needs the same proof as the main one.** Before you report "X would crash" or
+  "Y is missing", run it or open the file it names. A path that looks wrong in a diff often resolves
+  (an index file, a re-export, a path alias). If you did not check it, label it Hypothesis or leave it
+  out.
 - **Judge on the final tree.** A later commit can undo an earlier fix. Re-read the final diff, not your
   memory of the commits.
 
 ### Phase 7 - Debug report and review
 
-Write the report, then run your code review skill (for example `review-branch`, or ask for a
-review) on the diff:
+Write the report, then get the diff reviewed: invoke `review-branch` if the Skill tool is available;
+otherwise re-read the full final diff yourself against Phases 4-6 and say in the report that no
+separate review ran.
 
 ```
 DEBUG REPORT

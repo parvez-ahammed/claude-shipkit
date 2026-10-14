@@ -1,18 +1,11 @@
 ---
 name: deploy-to-vps
 description: >-
-  Stands up a push-to-deploy GitHub Actions pipeline that ships a containerized web
-  app (Node.js, Python, Go, .NET, Rust...) to a VPS over SSH, with secrets from GitHub
-  Secrets, Caddy for automatic HTTPS, a domain via any DNS/CDN provider, OAuth/OIDC
-  redirect wiring, and baseline hardening (fail2ban, non-standard SSH port, firewall,
-  origin lockdown). Use when the user wants CI/CD to a server/VPS/VM, to move a backend
-  off a PaaS (Render, Heroku, Fly, Railway, Vercel, Azure/AWS/GCP) onto a plain box, to
-  wire Caddy / Let's Encrypt TLS, to point a domain (Cloudflare, Namecheap, Route53) at
-  a server, to harden a fresh VPS, or to debug redirect_uri_mismatch, ACME cert or
-  container health-check failures during such a deploy. Vendor-neutral; configures
-  strictly in order: VPS + pipeline, then OAuth, then DNS/TLS. Triggers on "deploy my
-  node app to a vps with github actions", "point my domain at my server", "harden my
-  new ubuntu box", "why is my cert stuck on staging".
+  Set up push-to-deploy CI/CD (GitHub Actions over SSH) for a containerized app on a VPS, with Caddy
+  HTTPS, a domain via any DNS provider, OAuth redirect wiring and server hardening. Use for "deploy
+  my app to a VPS", "move off Heroku/Render/Fly to my own server", "point my domain at my server",
+  "harden my Ubuntu box", redirect_uri_mismatch or stuck ACME certs after a move. Not for only the
+  health endpoint (use add-health-check).
 when_to_use: >-
   Trigger even when the user mentions only one piece of the flow, e.g.
   "redirect_uri_mismatch after moving hosts", "move off Heroku to my own server",

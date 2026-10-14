@@ -29,7 +29,7 @@ When it genuinely earns its place:
 - the selection conditional is duplicated or will grow;
 - you want each algorithm unit-tested in isolation.
 
-Mechanics if APPLY (hand to apply-refactoring for the safe steps):
+Mechanics if APPLY (safe steps from refactorings.md):
 1. Define a strategy interface for the one varying operation.
 2. Move each branch of the conditional into a concrete strategy.
 3. Inject the chosen strategy; replace the conditional with a call to it.

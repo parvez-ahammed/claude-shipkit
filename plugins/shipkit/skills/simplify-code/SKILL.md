@@ -1,14 +1,11 @@
 ---
 name: simplify-code
 description: >-
-  Makes one target simpler (a file, a module, a layer slice, or a named duplication cluster) by
-  removing over-engineering, dead code, duplication and wrong-layer code in a single
-  behavior-preserving change set, verified by the repo's own lint, build and test gates. Works on
-  any stack, frontend or backend. Use when asked to "simplify this", "clean up this service /
-  component / module", "find over-engineering", "remove dead or duplicate code", "make this less
-  complex", "these two modules do the same thing", "dedup this", "this logic is in the wrong layer",
-  "kill this redundant query", or for a boy-scout cleanup of code already being edited. Quality only:
-  it does not hunt bugs, and it never pushes.
+  Make one file, module, layer slice or duplication cluster simpler by actually removing over-
+  engineering, dead code, duplication and wrong-layer code, in one behavior-preserving change
+  verified by the repo's gates. Use for "simplify this", "clean up this module", "remove dead or
+  duplicate code", "these two modules do the same thing". Not for comment-only cleanup (use trim-
+  comments), bugs (use fix-bug) or a smell report without edits (use refactor).
 argument-hint: "[file | folder | module | duplication cluster]"
 license: MIT
 ---
@@ -43,9 +40,8 @@ cleanup (use `trim-comments`); finding what to share across a backlog of feature
   `go.mod`, `Cargo.toml`, `pom.xml`, `build.gradle`, `Gemfile`, `composer.json`). Find where layers
   live; do not assume a folder structure.
 - **Find the gates** (see Verify). If none exist for the target, most cuts become flag-only.
-- **Optional siblings:** `find-code-smells` for a cited smell pass, `apply-refactoring` for safe
-  step-by-step mechanics on anything bigger than a delete, `refactor` to score whether a shared
-  abstraction is justified. All optional; this skill works without them.
+- **Optional sibling:** `refactor` for a cited smell pass, safe step-by-step mechanics on
+  anything bigger than a delete, or a score of whether a shared abstraction is justified. All optional; this skill works without them.
 
 ## The checklist (walk top-down; the highest rung that applies wins)
 
@@ -81,15 +77,20 @@ say how you will prove a change is safe, do not make it.
    cluster. Edits across that slice are in scope; another feature's files are a second target.
    **Boy-scout mode** (reached mid-task while editing for another reason): the target is the code
    your diff touches, not the whole file, and the cleanup rides in that task's commit and branch.
-2. **Survey (read-only).** If the Agent tool is available, dispatch one read-only finder per smell
-   class in a single message so they run in parallel; prompts are in
-   `${CLAUDE_SKILL_DIR}/references/finder-prompts.md`. Finders report, they never edit. Without
-   subagents, run the same charters yourself in sequence over the target.
+2. **Survey (read-only).** The charters are in `${CLAUDE_SKILL_DIR}/references/finder-prompts.md`.
+   **Small target (under ~500 lines, or one to three files): run the charters yourself in
+   sequence.** Subagents cost more than they find at that size. Only for a larger slice, and only if
+   the Agent tool is available, dispatch finders in one message so they run in parallel, at most
+   four at once (group related charters into one finder). If a dispatch fails or hits an agent cap,
+   run the missing charters yourself; do not retry in a loop. Finders report, they never edit.
 3. **Triage.** Merge reports, drop false positives (see Leave these), rank by value and risk: deletes
    and dedup first, expression collapses next, relocations after, shared abstractions last and only
    when scored. `${CLAUDE_SKILL_DIR}/references/smell-to-cut.md` maps each smell to its cut.
 4. **Cut, smallest diff first.** Keep the public surface identical: route shapes, response bodies,
-   exported types and signatures, component props, CLI flags, event names.
+   exported types and signatures, component props, CLI flags, event names. An export with zero
+   callers anywhere in the repo (search proves it) is dead code, not public surface, and may be
+   deleted. The exception is a package other repos consume (a published library, an SDK, a plugin
+   API): there an export is public surface even with no local callers, so defer it.
 5. **Verify.** Re-check the touched code for the smell, then run every gate and read every exit code.
 6. **Report** (shape below). Make one focused local commit if the user wants a commit; stage only the
    intended files, never `git add -A`. Never push, open a PR, or merge without an explicit yes.

@@ -74,18 +74,23 @@ Returns 200 "Healthy" / 503 "Unhealthy", and **200 "Degraded"** by default - a
 ## Deploy probe (CI) - the honest gate
 
 Probe **readiness** after deploy; a curl sidecar avoids the no-curl-in-image problem and
-carries the real Host header. Retry across the startup window, then assert the DB is
-actually reachable (don't trust liveness alone):
+carries the real Host header. Retry across the startup window. The gate is the **HTTP status
+code**: readiness returns 503 when a dependency is down, and `curl -f` fails on it. Add a
+body check only to reject a 200 `Degraded` (see .NET above), and then anchor it.
 
 ```bash
 for i in $(seq 1 25); do
-  if docker run --rm --network "$NET" curlimages/curl -sf --max-time 5 \
-       -H "Host: your.domain" http://app:8080/readyz | grep -qi '^healthy'; then
+  if docker run --rm --network "$NET" curlimages/curl -sf --max-time 5 -o /dev/null \
+       -H "Host: your.domain" http://app:8080/readyz; then
     echo ready; exit 0
   fi; sleep 6
 done
 echo "not ready"; docker compose logs --tail=60 app; exit 1
 ```
+
+**Rolling or blue-green deploy?** A ready answer can come from the OLD container that is still
+serving. Have the endpoint return the build's commit SHA (for example from a `GIT_SHA` env var
+baked in at build time) and make the probe check that it equals the SHA being deployed.
 
 ## Container HEALTHCHECK / compose
 
@@ -101,14 +106,14 @@ service_healthy`), and a DB blip must not trigger a replacement:
 
 ```yaml
 healthcheck:
-  test: ["CMD", "curl", "-fsS", "http://localhost:8080/healthz"]   # or wget -qO- ...
+  test: ["CMD", "curl", "-fsS", "http://127.0.0.1:8080/healthz"]   # or wget -qO- ...
   interval: 15s
   timeout: 3s
   retries: 3
   start_period: 40s
 ```
 
-Node images without curl can use `["CMD", "node", "-e", "fetch('http://localhost:8080/healthz').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]` (Node 18+).
+Node images without curl can use `["CMD", "node", "-e", "fetch('http://127.0.0.1:8080/healthz').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]` (Node 18+).
 
 ## Kubernetes
 

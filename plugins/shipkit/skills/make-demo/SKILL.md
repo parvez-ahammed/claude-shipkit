@@ -1,13 +1,10 @@
 ---
 name: make-demo
 description: >-
-  Builds a pixel-exact, clickable HTML demo of a planned workflow that looks exactly like the app's
-  real components, captured as a DOM + CSS snapshot of the running, signed-in web app (with an
-  optional Windows desktop adapter that renders a WinForms app's own controls off-screen). Use
-  whenever the user asks for an HTML demo, clickable mockup, prototype, "pixel perfect demo", "how
-  exactly will this workflow look", "show the product owner / stakeholders how it will look", or a
-  demo for a ticket or user story - even if they do not say "skill". Not for free-form design
-  exploration or Figma work.
+  Build a pixel-exact, clickable HTML demo of a planned workflow from a DOM and CSS snapshot of the
+  running, signed-in app (or a WinForms app's own controls), so it looks exactly like the real
+  product. Use for "make an HTML demo", "clickable mockup", "pixel perfect prototype", "show the PO
+  how this workflow will look". Not for free-form design exploration or Figma work.
 argument-hint: "[ticket-id or story]"
 license: MIT
 compatibility: "Needs the target web app running locally and signed in, a browser-automation tool that can run page JavaScript (Playwright MCP, Claude in Chrome or similar) and Python 3. Optional desktop adapter is Windows-only and needs the .NET 8 SDK."

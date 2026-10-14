@@ -1,7 +1,7 @@
 # Smell to cut
 
 Read when triaging finder output. For each smell: where to start looking, the cut, and the safe
-mechanic (`apply-refactoring` has step-by-step mechanics for each name). Searches are starting
+mechanic (`refactor` has step-by-step mechanics for each name). Searches are starting
 points, not proof; read the code and cite `file:line` before cutting.
 
 ## Dispensables (first: highest value, lowest risk)

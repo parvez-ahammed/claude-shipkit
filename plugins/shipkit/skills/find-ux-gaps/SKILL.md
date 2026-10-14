@@ -1,6 +1,11 @@
 ---
 name: find-ux-gaps
-description: Fans out parallel read-only UX auditors over disjoint parts of an existing application (from source, plus a browser pass when the app runs), triages their findings, and turns the survivors into evidence-backed improvement tickets - written to a markdown file by default, and filed to GitHub, GitLab, Jira or Azure DevOps only after explicit confirmation. Use when asked to find UX gaps, usability problems, product polish, or pre-release rough edges and turn them into tracked work - "audit the UX", "what should we fix before launch", "find usability issues", "file UX tickets", "polish the product" - or when the app cannot be run locally and the UI must be judged from source.
+description: >-
+  Find usability gaps and pre-release rough edges in an existing app (from source, plus the browser
+  when it runs) and turn them into evidence-backed tickets, written to markdown and filed to GitHub,
+  GitLab, Jira or Azure DevOps only after a yes. Use for "find UX gaps", "file UX tickets", "what
+  should we polish before launch". Not for a screenshot-backed QA/UX report without tickets (use
+  audit-app).
 argument-hint: "[--agents N] [--issues M] [--scope <area>] [--tracker <name>] [--dry-run]"
 license: MIT
 ---
@@ -50,6 +55,13 @@ Bare invocation means 3 agents, 3 issues each, 9 issues. Plain-language counts c
 Carve by **user journey**, not by file type. Each territory gets its own screens, its own
 backing endpoints, and a one-line charter. Territories must not share a primary screen.
 
+**Small app (one to three screens)?** Screens cannot be split, so partition by **axis**
+instead: (a) task flow and feedback (loading, success, errors, double submit), (b) input and
+validation, (c) accessibility and responsive layout, (d) copy, trust and empty states. Every
+auditor may read every file but owns one axis. If even that gives fewer than two sensible
+territories, skip the fan-out and audit the app yourself in one pass against the same contract;
+the partition rule exists to stop duplicate findings, not to force subagents.
+
 A reliable ordering for a CRUD-plus-pipeline product, take the first N:
 
 1. First run, sign-in, empty states
@@ -76,6 +88,10 @@ server settles it. Agents told "the app cannot run" will not try, so a wrong ass
 here costs you the whole browser dimension.
 
 ### 3. Dispatch all N in one message
+
+No Agent tool, or the dispatch hits a concurrency or agent cap? Do not wait in a queue or retry in
+a loop. Run the remaining territories yourself, one after another, with the same prompt and
+contract, and say in the report which ones ran inline.
 
 Every auditor prompt carries, in this order:
 
@@ -162,7 +178,8 @@ dropped and why.
 | No design system file | Say so; auditors judge internal consistency instead. |
 | No tracker, or not a git repo | Run the audit, write the markdown file, offer to file later. |
 | No web search available for comparables | Name the comparables from knowledge, mark patterns "unverified", drop the URL requirement. |
-| Fewer than N sensible territories | Reduce N. Say why. Do not split one screen in two. |
+| Fewer than N sensible territories | Reduce N, or partition by axis (small app). Say why. Do not split one screen in two. |
+| Subagents unavailable or capped | Run the territories inline in sequence. Same contract. |
 | User wants a specific count | N x M must equal it. Adjust M, not the partition. |
 
 ## Common mistakes

@@ -1,16 +1,11 @@
 ---
 name: grill-feature
 description: >-
-  Stands up a "grill room": independent, code-grounded agents that interrogate shipped features at
-  the PROMISE level (does the real user-facing promise actually hold in the code, not "does it
-  compile"), plus an optional CEO cost evaluator for unit economics. Each interrogator asks
-  fundamental questions and ANSWERS them by reading the real code, then returns a verdict
-  (BULLETPROOF / CRACKED / FAKE) with file:line evidence. Use whenever the request is to "grill"
-  or pressure-test a feature, "is X actually ready / bulletproof", "can users really do Y" (e.g.
-  publish to a third-party platform, download the export, does checkout really charge once), audit
-  promise-vs-reality across a codebase, interview features by reviewing code, make features
-  bulletproof, or evaluate whether the cost/margin is too much. One feature (inline) or a whole
-  release/phase (workflow sweep).
+  Pressure-test whether shipped features keep their user-facing PROMISE, by reading (and where
+  possible running) the real code, with a BULLETPROOF / CRACKED / FAKE verdict and file:line
+  evidence; optional unit-economics check. Use for "grill this feature", "is X actually ready", "can
+  users really do Y", "audit promise vs reality", "is the margin too thin". Not for reviewing a
+  branch diff (use review-branch).
 argument-hint: "[feature name | release or phase]"
 license: MIT
 ---
@@ -51,7 +46,11 @@ For one feature:
    - For multi-step pipelines: does the CONTENT survive each hand-off between steps, or only the
      format (the file exists, but is it the right data)?
 4. **Answer each question from the code**, citing `file:line`. No vibes.
-5. Assign a verdict and list concrete gaps.
+5. **Reproduce what you can.** If the app or its tests can run locally, confirm every CRACKED or
+   FAKE gap with a real request, a script or a failing test, and quote the result (`GET
+   /orders/7 as customer 2 -> 200 with customer 1's order`). A gap you could not run is labelled
+   `code-reading inference`. A ship-blocker should be reproduced whenever the app can run.
+6. Assign a verdict and list concrete gaps.
 
 ### Verdicts
 
@@ -66,18 +65,29 @@ Set `shipBlocker: true` when a gap would hurt a paying customer or lose money/da
 
 ### One feature, inline (fast)
 
-Dispatch a single read-only interrogator with the Agent tool (the `Explore` agent type fits) with the
-protocol above for the one feature, and report its verdict. Use this for a "grill X" request about a
-single feature. If no subagent tool is available, run the protocol yourself in the main context.
+Run the protocol above yourself in the main context for the one feature, and report its verdict.
+One feature does not need a subagent; dispatch a read-only interrogator (the `Explore` agent type
+fits) only when you want to keep a large codebase read out of your context.
 
 ### A whole release/phase, as a sweep (the room)
 
 **Prerequisite:** the sweep runs on Claude Code's Workflow tool. Use it only when that tool is available
 in the session and the user has opted in to running a workflow (say what it will fan out and ask first if
-they have not). Otherwise use the **fallback**: dispatch one inline interrogator per feature with the
-Agent tool, in parallel batches, plus the cost evaluator if wanted, then write the synthesis report
-yourself in the same shape the script asks for (executive summary, verdict table, ship-blockers, cracks,
-cost read, top 10 fixes).
+they have not). Otherwise use the **fallback**: dispatch one interrogator per feature with the Agent tool, in
+parallel batches of at most four, plus the cost evaluator if wanted. No Agent tool either: run
+the protocol yourself, feature by feature. Then write the synthesis report yourself in this
+order:
+
+1. One-paragraph executive summary: counts of BULLETPROOF / CRACKED / FAKE, number of
+   ship-blockers, the single biggest risk.
+2. Verdict table: Feature | Area | Verdict | Ship-blocker | one-line headline gap.
+3. Ship-blockers: every `shipBlocker: true` item with gaps and evidence, worst first.
+4. Cracks: CRACKED and FAKE items grouped by area, with gaps and evidence.
+5. CEO cost read (only when the cost pass ran): per-action economics, per-plan margin, verdict,
+   concerns.
+6. Top 10 fixes, ranked by customer or money impact times how cheap the fix is.
+
+Keep `file:line` evidence inline and mark each gap reproduced or `code-reading inference`.
 
 Run the bundled workflow, which fans out one interrogator per feature plus the CEO cost pass and
 synthesizes one report. The script ships beside this skill at

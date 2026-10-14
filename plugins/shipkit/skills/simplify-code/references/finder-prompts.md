@@ -1,8 +1,10 @@
 # Finder prompts
 
-Read when running the survey step. Each finder is read-only and owns one smell class. With the Agent
-tool, launch all finders for a target in ONE message so they run in parallel (a read-only search or
-code-review agent type is enough). Without it, run each charter yourself in sequence. Either way you
+Read when running the survey step. Each charter is read-only and owns one smell class. For a small
+target, run the charters yourself in sequence. For a large slice with the Agent tool available,
+launch finders in ONE message so they run in parallel, at most four, grouping related charters (for
+example dead code + duplication, expression + platform, layer + efficiency); a read-only search or
+code-review agent type is enough. Without it, run each charter yourself in sequence. Either way you
 are the only writer, so there is no edit conflict and the gates run once over one diff.
 
 Fill `<target>` with the files of the slice and `<stack notes>` with what you detected (language,

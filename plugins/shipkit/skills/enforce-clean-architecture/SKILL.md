@@ -1,15 +1,11 @@
 ---
 name: enforce-clean-architecture
 description: >-
-  Provides a rulebook, bootstrap and guard for building software with Clean / Hexagonal
-  (Ports-and-Adapters) Architecture, in any language (.NET, TypeScript/Node, Java/Kotlin,
-  Go, Python). Use when starting a new project and you want to lay out the layers
-  correctly, when structuring or refactoring code into Domain / Application /
-  Infrastructure / Presentation, when deciding "where does this code go?", when adding a
-  dependency or project reference and unsure if it inverts the architecture, or when the
-  user asks "set up clean architecture", "how should I structure this", "is this the
-  right layer", "did I break the dependency rule", "bootstrap a hexagonal project". Ships
-  a config-driven layering guard so the boundaries are enforced, not just hoped for.
+  Lay out, check and enforce Clean / Hexagonal (ports and adapters) layering in any language, with a
+  config-driven guard that fails CI on a forbidden import. Use for "set up clean architecture",
+  "where does this code go", "is this the right layer", "did I break the dependency rule",
+  "bootstrap a hexagonal project". Not for problems inside one layer such as long methods or pattern
+  choice (use refactor).
 license: MIT
 compatibility: "Layering guard (scripts/check-layering.ps1) needs PowerShell 7+ (pwsh), which runs on Windows, macOS and Linux; Windows PowerShell 5.1 also works. Without PowerShell, apply the same config by hand with grep. The rulebook and bootstrap guidance need nothing installed."
 ---
@@ -78,7 +74,12 @@ Folder discipline decays under deadline pressure, and these violations never fai
 or a test - they're architectural. Add the guard:
 
 1. Copy `${CLAUDE_SKILL_DIR}/assets/clean-arch.json` to your repo root and edit it: declare each layer's
-   source paths and the imports/namespaces forbidden in that layer.
+   source paths and the imports/namespaces forbidden in that layer. The defaults name common
+   folders (`src/domain`, `src/infra`, `src/adapters`, ...) and common I/O imports per stack
+   (Node `fs`/`http` and DB drivers, EF Core, Spring, SQLAlchemy/requests, Go `database/sql`).
+   List the repo's real layer folders first, then rename `roots` and the relative-path patterns
+   (`../infra`, `../db`) to match. Roots that match nothing exit 2; patterns that name the wrong
+   folder pass silently, which is why step 3 exists.
 2. Run the guard:
    ```
    pwsh -File "${CLAUDE_SKILL_DIR}/scripts/check-layering.ps1" -Config clean-arch.json -Root .
@@ -90,7 +91,12 @@ or a test - they're architectural. Add the guard:
    It scans each layer for forbidden imports (language-agnostic) and, for .NET, can
    verify the `.csproj` reference DAG. Exit 1 on a hard violation; exit 2 when no layer
    root matched any source file (a mistyped `roots` must not pass silently).
-3. Wire it into CI and/or a pre-commit hook so the boundary is checked every change, not
+3. **Prove the guard bites.** Add one throwaway forbidden import to a domain file, run the
+   guard, confirm exit 1 and the VIOLATION line, then revert. A guard never seen failing is not
+   evidence. If the repo has no PowerShell and a zero-dependency checker in the repo's own
+   language fits better (for example a small Node script run by `npm run lint`), write that
+   instead; keep the same config shape and this same prove-it step.
+4. Wire it into CI and/or a pre-commit hook so the boundary is checked every change, not
    remembered. CI does not have the skill folder: commit a copy of the script (e.g.
    `scripts/check-layering.ps1`) next to `clean-arch.json` and call that copy.
 
@@ -106,5 +112,5 @@ of frameworks and testable in isolation. Apply the dependency rule strictly wher
 pays; don't add ceremony where it doesn't.
 
 For problems inside one layer (a long method, a god class, "should this be a Strategy")
-use `refactor` and its spokes instead; this skill is about where code lives and
+use `refactor` instead; this skill is about where code lives and
 which way dependencies point.

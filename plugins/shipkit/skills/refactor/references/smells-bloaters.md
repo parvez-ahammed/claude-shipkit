@@ -14,7 +14,7 @@ Signs:
 Why it hurts: the longer a method, the harder to understand, reuse, and test. Locals tangle
 so extraction feels hard, which makes it grow further.
 
-Fixes (route to apply-refactoring):
+Fixes (mechanics in refactorings.md):
 - Extract Method for any coherent block. This is 90% of the cure.
 - Replace Temp with Query when locals only cache a computation.
 - Introduce Parameter Object / Preserve Whole Object when extraction is blocked by a long
@@ -42,8 +42,8 @@ appear together.
 
 Fixes: Introduce Parameter Object (group co-traveling params), Preserve Whole Object (pass
 the source object instead of pulling values out of it), Replace Parameter with Method Call
-(when the callee can derive the value). Flag params often signal a hidden Strategy: route to
-pick-behavioral-pattern to score.
+(when the callee can derive the value). Flag params often signal a hidden Strategy: score it
+with patterns-behavioral.md.
 
 ## Primitive Obsession
 

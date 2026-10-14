@@ -1,6 +1,10 @@
 ---
 name: make-video
-description: Makes animated promo, explainer, product-launch, feature-announcement, tutorial-teaser or social-media videos entirely from code, as a ready-to-publish MP4 with voice-over, music, captions and a thumbnail. Use this skill whenever the user asks for a video, promo, teaser, ad, explainer, reel, short, TikTok, LinkedIn or YouTube clip, motion graphic, animated walkthrough, or "a video about this project/product/feature" - even if they do not name any tool - and whenever they want to change, lengthen, shorten, re-colour, re-voice or re-render a video made this way.
+description: >-
+  Make an animated promo, explainer, launch, tutorial-teaser or social video entirely from code, as
+  a ready-to-publish MP4 with voice-over, music, captions and a thumbnail. Use whenever the user
+  asks for a video, promo, teaser, ad, reel, short, TikTok, LinkedIn or YouTube clip, or motion
+  graphic, even without naming a tool, and to change or re-render a video made this way.
 license: MIT
 compatibility: "Requires Node.js 18+ and npm (engine deps installed once with npm ci; ffmpeg ships via ffmpeg-static), Playwright Chromium, about 1 GB free RAM per render worker, and network access on first run to download Chromium and the ~90 MB Kokoro voice model."
 ---

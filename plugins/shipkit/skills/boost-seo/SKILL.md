@@ -1,6 +1,11 @@
 ---
 name: boost-seo
-description: Audits and improves a website's SEO (search engines) and AEO (answer engines - ChatGPT, Perplexity, Google AI Overviews, Copilot, voice assistants), then proves the result with local tests. Use this whenever the user wants a site, landing page or marketing page to rank better, be found or cited by AI assistants, show correct previews when shared, or asks about meta tags, JSON-LD / schema.org, robots.txt, sitemap.xml, llms.txt, canonical URLs, noindex, prerendering or SSR for crawlers, Core Web Vitals / Lighthouse for a public page, featured snippets, FAQ schema, or "does our site follow this SEO/AEO article". Also use it when the user pastes an SEO or AEO blog post and asks whether the site does what it says. Works on any stack (React/Vite SPA, Next.js, static HTML, CMS) and on a live URL or a local build.
+description: >-
+  Audit and improve a public website's SEO and AEO (being found and cited by Google, ChatGPT,
+  Perplexity), then prove it with local tests. Use for meta tags, JSON-LD / schema.org, robots.txt,
+  sitemap.xml, llms.txt, canonical URLs, noindex, prerendering or SSR for crawlers, Lighthouse on a
+  public page, share previews, or "does our site follow this SEO article". Works on a live URL or a
+  local build of any stack.
 argument-hint: "[url or build-dir]"
 license: MIT
 compatibility: "Bundled scripts need Node 18+ (no packages). Optional: Playwright (Chromium) for no-JavaScript screenshots and Lighthouse via npx (needs Chrome) for speed cases."
@@ -124,6 +129,11 @@ scripts removed:
 ```bash
 node "${CLAUDE_SKILL_DIR}/scripts/serve-build.mjs" <build-dir> 4180 --app-routes "^(app|dashboard|settings)(/|$)"
 ```
+
+Run it in the background and stop it when done. On Windows, `Ctrl+C` in the same shell or
+`Stop-Process -Id <pid>` works; find the pid with `Get-NetTCPConnection -LocalPort 4180`. On macOS
+and Linux, `kill %1` or `kill $(lsof -t -i :4180)`. The audit prints a stand-in note when it sees this
+server or a localhost URL: host-level behaviour from it is not production evidence.
 
 Always compare against the base branch built the same way (`git worktree add` or `git archive` the base
 into a folder, build it, serve it on another port). Numbers without a baseline mean nothing to a reviewer.

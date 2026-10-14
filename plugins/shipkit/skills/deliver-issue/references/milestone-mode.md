@@ -9,7 +9,7 @@ Ask, recommendation first, and record the answers in the run notes:
 1. **Branch layout.** One integration branch for the batch (for example `milestone/<slug>`, created
    off the base branch if missing), with each issue as its own commit(s); or one branch and PR per
    issue. Default: per-issue branches, unless the project's docs say otherwise.
-2. **Order.** Run `brief-milestone` (or its dependency sort) and show the waves. Default build order
+2. **Order.** Run `groom-issue` in brief mode (or its dependency sort) and show the waves. Default build order
    when dependencies do not decide it: data model -> data access and services -> API -> UI wiring ->
    background jobs -> dependent features -> polish -> clean-up last. An epic is delivered through its
    children and closed when all of them land.

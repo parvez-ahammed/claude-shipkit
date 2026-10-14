@@ -1,15 +1,10 @@
 ---
 name: audit-app
 description: >-
-  Pressure-tests a RUNNING web app and produces two cross-linked, executive-grade HTML reports by
-  default: a Staff-QA release report (qa-report.html, 14 sections from release recommendation to
-  defect tickets and risk register) and a Product Experience audit (ux-report.html, six personas
-  across six journeys, scoring confusing, ugly, cheap, unfinished, inconsistent or frustrating
-  moments into a Product Experience Score with prioritized redesigns). Every claim is backed by a
-  browser screenshot or out-of-band evidence (API responses, data checks, file probes); nothing is
-  invented and anything unverified is marked UNKNOWN. Use when the user asks to "QA the app",
-  "release readiness", "write a QA/test report", "UX review", "design review", "product experience
-  audit", "judge the UX", or invokes audit-app.
+  QA and UX audit of a whole RUNNING web app before a release, delivered as two screenshot-backed
+  HTML reports (QA release report and product-experience audit). Use for "QA the app", "release
+  readiness", "write a QA report", "UX review of the app", "judge the UX". Not for testing one
+  branch or PR (use test-branch) or for turning UX gaps into tracker tickets (use find-ux-gaps).
 when_to_use: >-
   Also triggers on "find what feels confusing/ugly/unfinished/cheap", "where would users hesitate or
   abandon", "is this ready to ship", or a request for screenshot-backed QA including mobile (via
